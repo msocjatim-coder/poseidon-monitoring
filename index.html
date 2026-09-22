@@ -25,6 +25,11 @@
             70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
         }
+        /* Word wrap untuk teks panjang */
+        .break-word {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -45,7 +50,6 @@
                 <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">
                     Memuat Waktu...
                 </div>
-                <!-- ✅ TAMBAHAN: Indikator terakhir update -->
                 <div id="last-updated" class="text-xs text-cyan-400/70 mt-2 font-mono">
                     Menunggu data...
                 </div>
@@ -60,17 +64,12 @@
     </div>
 
     <script>
-        // URL Apps Script sudah dimasukkan di sini
         const API_URL = "https://script.google.com/macros/s/AKfycbzCNvv7_i-4IXRxdazS16cMTjNwVubkx1tENShvKjEfwCMLEE5JbkExtcyOR81tMiWaEQ/exec";
 
         window.onload = function() {
             updateClock();
             setInterval(updateClock, 1000);
-            
-            // 1. Ambil data pertama kali saat halaman dibuka
-            fetchPoseidonData(true); 
-            
-            // ✅ 2. TAMBAHAN REAL-TIME: Ambil data otomatis setiap 30 detik (30000 ms)
+            fetchPoseidonData(true);
             setInterval(() => fetchPoseidonData(false), 30000);
         };
 
@@ -80,7 +79,6 @@
             document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
         }
 
-        // ✅ TAMBAHAN PARAMETER isFirstLoad agar loading screen hanya muncul di awal
         async function fetchPoseidonData(isFirstLoad = false) {
             try {
                 if (isFirstLoad) {
@@ -88,13 +86,11 @@
                     document.getElementById('main-content').classList.add('hidden');
                 }
 
-                // Tambahkan timestamp agar browser tidak mengambil data dari cache
                 const response = await fetch(API_URL + "?t=" + new Date().getTime());
                 const data = await response.json();
                 
                 renderDashboard(data);
                 
-                // Update indikator waktu terakhir refresh
                 const now = new Date();
                 document.getElementById('last-updated').innerText = `🔄 Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')}`;
 
@@ -116,14 +112,11 @@
 
             const container = document.getElementById('ticket-container');
             let hasAnyTickets = false;
-            
-            // Kosongkan container sebelum render ulang (penting untuk auto-refresh)
-            container.innerHTML = ''; 
+            container.innerHTML = '';
 
             data.priorities.forEach(category => {
                 const tickets = data.tickets[category];
                 
-                // LOGIKA: Sembunyikan kategori jika tidak ada data
                 if (tickets && tickets.length > 0) {
                     hasAnyTickets = true;
                     let borderClass = "border-l-cyan-500";
@@ -141,26 +134,25 @@
                     tickets.forEach((ticket, index) => {
                         html += `
                             <div class="glass rounded-xl p-5 hover:bg-blue-900/30 transition-all duration-300 border-l-4 ${borderClass}">
-                                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-3 mb-2">
-                                            <span class="text-cyan-500 font-bold text-lg">${index + 1}.</span>
-                                            <span class="bg-slate-900/80 text-cyan-300 text-sm font-mono px-3 py-1 rounded-md border border-cyan-800/50">${ticket.siteId}</span>
-                                        </div>
-                                        <h3 class="text-lg font-semibold text-white mb-1 break-words">${ticket.noTiket}</h3>
-                                        <p class="text-cyan-100/80 text-sm mb-4 leading-relaxed">${ticket.headline}</p>
-                                        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cyan-200/70 font-mono">
-                                            <span>📅 ${ticket.tglOpen}</span>
-                                            <span class="text-cyan-400 font-bold">⏱️ TTR: ${ticket.ttr}</span>
-                                        </div>
-                                    </div>
-                                    <div class="lg:w-1/3 mt-2 lg:mt-0 bg-slate-900/40 rounded-lg p-4 border border-cyan-900/30">
-                                        <p class="text-xs text-cyan-400 uppercase font-bold mb-2 tracking-wider">Update Terakhir:</p>
-                                        <p class="text-sm text-cyan-100 italic mb-3 leading-snug">"${ticket.update}"</p>
-                                        <p class="text-xs text-cyan-300/60 flex items-start gap-2">
-                                            <span>Tiket sudah diupdate pada: <br><strong class="text-cyan-200">${ticket.lastUpd}</strong></span>
-                                        </p>
-                                    </div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-cyan-500 font-bold text-lg">${index + 1}.</span>
+                                    <span class="bg-slate-900/80 text-cyan-300 text-sm font-mono px-3 py-1 rounded-md border border-cyan-800/50">${ticket.siteId}</span>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white mb-2 break-word">${ticket.noTiket}</h3>
+                                <p class="text-cyan-100/80 text-sm mb-4 leading-relaxed break-word">${ticket.headline}</p>
+                                
+                                <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cyan-200/70 font-mono mb-4">
+                                    <span> ${ticket.tglOpen}</span>
+                                    <span class="text-cyan-400 font-bold">⏱️ TTR: ${ticket.ttr}</span>
+                                </div>
+                                
+                                <div class="bg-slate-900/40 rounded-lg p-4 border border-cyan-900/30">
+                                    <p class="text-xs text-cyan-400 uppercase font-bold mb-2 tracking-wider">Update Terakhir:</p>
+                                    <p class="text-sm text-cyan-100 italic mb-2 leading-relaxed break-word">"${ticket.update}"</p>
+                                    <p class="text-xs text-cyan-300/60 flex items-center gap-2">
+                                        <span>Tiket sudah diupdate pada:</span>
+                                        <strong class="text-cyan-200">${ticket.lastUpd}</strong>
+                                    </p>
                                 </div>
                             </div>`;
                     });
@@ -172,7 +164,7 @@
             if (!hasAnyTickets) {
                 container.innerHTML = `
                     <div class="text-center py-20 glass rounded-2xl border border-cyan-800/30">
-                        <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! 🌊</h2>
+                        <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! </h2>
                         <p class="text-cyan-200/60">Tidak ada tiket Open/Backend yang memerlukan penanganan saat ini.</p>
                     </div>`;
             }
