@@ -68,15 +68,20 @@
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
         
-        /* ✅ TABLE WHITE THEME - OVERRIDE SEMUA STYLE DATATABLES */
+        /* ✅ FULL WIDTH TABLE - NO SPACES */
         .table-white-container {
             background: #ffffff !important;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box;
         }
         .table-white-container .dataTables_wrapper {
             color: #1e293b !important;
             width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
         .table-white-container .dataTables_length,
         .table-white-container .dataTables_filter,
@@ -84,13 +89,23 @@
         .table-white-container .dataTables_processing,
         .table-white-container .dataTables_paginate {
             color: #1e293b !important;
+            padding: 10px !important;
+        }
+        .table-white-container .dataTables_filter {
+            float: right !important;
+            margin-bottom: 10px !important;
+        }
+        .table-white-container .dataTables_length {
+            float: left !important;
+            margin-bottom: 10px !important;
         }
         .table-white-container .dataTables_paginate .paginate_button {
             color: #1e293b !important;
             background: #f1f5f9 !important;
             border: 1px solid #cbd5e1 !important;
-            border-radius: 6px !important;
-            margin: 0 2px !important;
+            border-radius: 4px !important;
+            margin: 0 1px !important;
+            padding: 4px 10px !important;
         }
         .table-white-container .dataTables_paginate .paginate_button.current,
         .table-white-container .dataTables_paginate .paginate_button:hover {
@@ -102,37 +117,43 @@
             background: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
             color: #1e293b !important;
-            border-radius: 6px;
-            padding: 6px 12px;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-left: 8px;
         }
         .table-white-container .dataTables_length select {
             background: #ffffff !important;
             border: 1px solid #cbd5e1 !important;
             color: #1e293b !important;
-            border-radius: 6px;
-            padding: 4px 8px;
+            border-radius: 4px;
+            padding: 4px;
+            margin: 0 4px;
         }
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
             width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
             table-layout: auto !important;
         }
         .table-white-container table.dataTable thead th {
             background: #1e293b !important;
             color: #ffffff !important;
             border-bottom: 2px solid #334155 !important;
-            font-size: 12px;
-            padding: 12px 8px !important;
+            font-size: 11px;
+            padding: 10px 6px !important;
             white-space: nowrap;
             text-align: left;
+            font-weight: 600;
         }
         .table-white-container table.dataTable tbody td {
             background: #ffffff !important;
             color: #1e293b !important;
             border-bottom: 1px solid #e2e8f0 !important;
-            font-size: 12px;
-            padding: 10px 8px !important;
+            font-size: 11px;
+            padding: 8px 6px !important;
             vertical-align: top;
+            word-break: break-word;
         }
         .table-white-container table.dataTable tbody tr:hover td {
             background: #f1f5f9 !important;
@@ -142,6 +163,11 @@
         }
         .table-white-container table.dataTable tbody tr:nth-child(even):hover td {
             background: #f1f5f9 !important;
+        }
+        .table-white-container .dataTables_wrapper::after {
+            content: "";
+            display: table;
+            clear: both;
         }
         
         /* Badge Styles */
@@ -181,7 +207,7 @@
 
     <!-- Loading -->
     <div id="loading" class="flex justify-center items-center h-screen">
-        <div class="text-cyan-400 text-xl animate-pulse"> Menghubungkan ke Poseidon...</div>
+        <div class="text-cyan-400 text-xl animate-pulse">🌊 Menghubungkan ke Poseidon...</div>
     </div>
 
     <!-- Main Content -->
@@ -562,7 +588,8 @@
                 pageLength: 10,
                 order: [[10, 'desc']],
                 autoWidth: true,
-                dom: '<"flex justify-between items-center mb-4"lf>rtip',
+                scrollX: false,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
                     { extend: 'excel', text: 'Excel', className: 'dt-button' }
@@ -609,7 +636,8 @@
                 pageLength: 10,
                 order: [[10, 'desc']],
                 autoWidth: true,
-                dom: '<"flex justify-between items-center mb-4"lf>rtip',
+                scrollX: false,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
                     { extend: 'excel', text: 'Excel', className: 'dt-button' }
