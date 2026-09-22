@@ -68,70 +68,79 @@
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
         
-        /* DataTables Dark Theme Overrides (Default) */
-        .dataTables_wrapper { color: #e0f2fe; }
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_filter,
-        .dataTables_wrapper .dataTables_info,
-        .dataTables_wrapper .dataTables_processing,
-        .dataTables_wrapper .dataTables_paginate { color: #e0f2fe; }
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            color: #e0f2fe !important;
-            background: rgba(30, 58, 138, 0.4) !important;
-            border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        /* ✅ TABLE WHITE THEME - OVERRIDE SEMUA STYLE DATATABLES */
+        .table-white-container {
+            background: #ffffff !important;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .table-white-container .dataTables_wrapper {
+            color: #1e293b !important;
+            width: 100% !important;
+        }
+        .table-white-container .dataTables_length,
+        .table-white-container .dataTables_filter,
+        .table-white-container .dataTables_info,
+        .table-white-container .dataTables_processing,
+        .table-white-container .dataTables_paginate {
+            color: #1e293b !important;
+        }
+        .table-white-container .dataTables_paginate .paginate_button {
+            color: #1e293b !important;
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
             margin: 0 2px !important;
         }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: rgba(34, 211, 238, 0.3) !important;
-            color: #22d3ee !important;
-            border-color: #22d3ee !important;
+        .table-white-container .dataTables_paginate .paginate_button.current,
+        .table-white-container .dataTables_paginate .paginate_button:hover {
+            background: #3b82f6 !important;
+            color: #ffffff !important;
+            border-color: #3b82f6 !important;
         }
-        .dataTables_wrapper .dataTables_filter input {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #e0f2fe;
+        .table-white-container .dataTables_filter input {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
             border-radius: 6px;
             padding: 6px 12px;
         }
-        .dataTables_wrapper .dataTables_length select {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #e0f2fe;
+        .table-white-container .dataTables_length select {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
             border-radius: 6px;
             padding: 4px 8px;
         }
-        table.dataTable { border-collapse: collapse !important; width: 100% !important; }
-        table.dataTable thead th {
-            background: rgba(15, 23, 42, 0.8) !important;
-            color: #22d3ee !important;
-            border-bottom: 2px solid rgba(34, 211, 238, 0.4) !important;
-            font-size: 12px;
-            padding: 10px 8px !important;
-            white-space: nowrap;
+        .table-white-container table.dataTable {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            table-layout: auto !important;
         }
-        table.dataTable tbody td {
-            background: rgba(30, 58, 138, 0.15) !important;
-            border-bottom: 1px solid rgba(56, 189, 248, 0.1) !important;
-            font-size: 12px;
-            padding: 8px !important;
-            color: #e0f2fe;
-        }
-        table.dataTable tbody tr:hover td { background: rgba(34, 211, 238, 0.1) !important; }
-        
-        /* ✅ TABLE WHITE THEME (KHUSUS UNTUK LAPORAN CNOP) */
-        .table-white thead th {
+        .table-white-container table.dataTable thead th {
             background: #1e293b !important;
             color: #ffffff !important;
             border-bottom: 2px solid #334155 !important;
+            font-size: 12px;
+            padding: 12px 8px !important;
+            white-space: nowrap;
+            text-align: left;
         }
-        .table-white tbody td {
+        .table-white-container table.dataTable tbody td {
             background: #ffffff !important;
             color: #1e293b !important;
             border-bottom: 1px solid #e2e8f0 !important;
+            font-size: 12px;
+            padding: 10px 8px !important;
+            vertical-align: top;
         }
-        .table-white tbody tr:hover td {
+        .table-white-container table.dataTable tbody tr:hover td {
+            background: #f1f5f9 !important;
+        }
+        .table-white-container table.dataTable tbody tr:nth-child(even) td {
+            background: #f8fafc !important;
+        }
+        .table-white-container table.dataTable tbody tr:nth-child(even):hover td {
             background: #f1f5f9 !important;
         }
         
@@ -172,7 +181,7 @@
 
     <!-- Loading -->
     <div id="loading" class="flex justify-center items-center h-screen">
-        <div class="text-cyan-400 text-xl animate-pulse">🌊 Menghubungkan ke Poseidon...</div>
+        <div class="text-cyan-400 text-xl animate-pulse"> Menghubungkan ke Poseidon...</div>
     </div>
 
     <!-- Main Content -->
@@ -236,10 +245,10 @@
 
         <!-- TAB 2: LAPORAN CNOP -->
         <div id="tab-laporan" class="tab-content">
-            <!-- Sub-Tab Areas (HAPUS SEMUA AREA, DEFAULT JATIM) -->
+            <!-- Sub-Tab Areas (TANPA SEMUA AREA, DEFAULT JATIM) -->
             <div class="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2">
                 <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">
-                    📍 JATIM
+                     JATIM
                 </button>
                 <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="MATARAM">
                      MATARAM
@@ -261,18 +270,18 @@
                     <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center">
                         Tiket Gangguan CNOP <span id="label-area-down">(JATIM DOWN)</span>
                     </h2>
-                    <div class="glass rounded-xl p-4 overflow-x-auto">
-                        <table id="table-down" class="w-full table-white" style="width:100%"></table>
+                    <div class="table-white-container">
+                        <table id="table-down" class="w-full" style="width:100%"></table>
                     </div>
                 </section>
 
                 <!-- Tabel non-DOWN -->
                 <section>
                     <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center">
-                        Tiket Gangguan CNOP (non-DOWN)
+                        Tiket Gangguan CNOP (non-DOWN / CNQ)
                     </h2>
-                    <div class="glass rounded-xl p-4 overflow-x-auto">
-                        <table id="table-nondown" class="w-full table-white" style="width:100%"></table>
+                    <div class="table-white-container">
+                        <table id="table-nondown" class="w-full" style="width:100%"></table>
                     </div>
                 </section>
             </main>
@@ -284,13 +293,12 @@
     </div>
 
     <script>
-        // ✅ URL APP SCRIPT YANG BARU
         const API_URL = "https://script.google.com/macros/s/AKfycbxQIykjBZM3OUxVC6T_CC6YmJ9V-jQnLe_1yAiiNaPvOcPjPmibaz0yKrY5oUiIFAIIlQ/exec";
         let tableDownInstance = null;
         let tableNonDownInstance = null;
-        let currentArea = "JATIM"; // Default ke JATIM
+        let currentArea = "JATIM";
         let lastUpdateTime = null;
-        const OFFLINE_THRESHOLD = 5 * 60 * 1000; // 5 menit dalam milidetik
+        const OFFLINE_THRESHOLD = 5 * 60 * 1000;
 
         window.onload = function() {
             updateClock();
@@ -304,7 +312,6 @@
         };
 
         function initTabs() {
-            // Main Tabs
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tab = btn.dataset.tab;
@@ -319,7 +326,6 @@
                 });
             });
 
-            // Sub-Tabs untuk Monitoring
             document.querySelectorAll('.sub-tab-btn[data-subtab]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const subtab = btn.dataset.subtab;
@@ -336,7 +342,6 @@
                 });
             });
 
-            // Sub-Tabs untuk Area di Laporan CNOP
             document.querySelectorAll('.sub-tab-btn[data-area]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const area = btn.dataset.area;
@@ -347,7 +352,6 @@
                 });
             });
 
-            // Search functionality
             document.getElementById('search-metro').addEventListener('input', (e) => {
                 filterTickets('metro', e.target.value);
             });
@@ -361,7 +365,6 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
             document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
             
-            // Check connection status
             if (lastUpdateTime) {
                 const timeDiff = Date.now() - lastUpdateTime;
                 if (timeDiff > OFFLINE_THRESHOLD) {
@@ -507,11 +510,9 @@
             showContent();
         }
 
-        // ✅ PERBAIKAN LOGIKA PENCARIAN (SEARCH)
         function filterTickets(type, searchTerm) {
             const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
             const container = document.getElementById(containerId);
-            // Mengambil semua elemen kartu tiket yang memiliki atribut data-site
             const tickets = container.querySelectorAll('[data-site]');
             
             const term = searchTerm.toLowerCase();
@@ -541,9 +542,9 @@
                 { title: "District", data: "district" },
                 { title: "Area", data: "area" },
                 { title: "No Tiket", data: "noTiket" },
-                { title: "Headline", data: "headline", className: "break-word", width: "200px" },
+                { title: "Headline", data: "headline", className: "break-word" },
                 { title: "Status", data: "status" },
-                { title: "Update", data: "update", className: "break-word", width: "200px" },
+                { title: "Update", data: "update", className: "break-word" },
                 { title: "Tglopen", data: "tglopen" },
                 { 
                     title: "Ttr", 
@@ -560,6 +561,7 @@
                 columns: columns,
                 pageLength: 10,
                 order: [[10, 'desc']],
+                autoWidth: true,
                 dom: '<"flex justify-between items-center mb-4"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
@@ -587,9 +589,9 @@
                 { title: "District", data: "district" },
                 { title: "Area", data: "area" },
                 { title: "No Tiket", data: "noTiket" },
-                { title: "Headline", data: "headline", className: "break-word", width: "200px" },
+                { title: "Headline", data: "headline", className: "break-word" },
                 { title: "Status", data: "status" },
-                { title: "Update", data: "update", className: "break-word", width: "200px" },
+                { title: "Update", data: "update", className: "break-word" },
                 { title: "Tglopen", data: "tglopen" },
                 { 
                     title: "Ttr", 
@@ -606,6 +608,7 @@
                 columns: columns,
                 pageLength: 10,
                 order: [[10, 'desc']],
+                autoWidth: true,
                 dom: '<"flex justify-between items-center mb-4"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
