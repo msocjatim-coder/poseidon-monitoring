@@ -41,8 +41,14 @@
                 <div class="w-3 h-3 bg-cyan-400 rounded-full live-dot"></div>
                 <h1 class="text-3xl md:text-4xl font-bold text-cyan-300 glow-text tracking-widest">POSEIDON</h1>
             </div>
-            <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">
-                Memuat Waktu...
+            <div class="text-right">
+                <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">
+                    Memuat Waktu...
+                </div>
+                <!-- ✅ TAMBAHAN: Indikator terakhir update -->
+                <div id="last-updated" class="text-xs text-cyan-400/70 mt-2 font-mono">
+                    Menunggu data...
+                </div>
             </div>
         </header>
 
@@ -55,12 +61,17 @@
 
     <script>
         // URL Apps Script sudah dimasukkan di sini
-              const API_URL = "https://script.google.com/macros/s/AKfycbzCNvv7_i-4IXRxdazS16cMTjNwVubkx1tENShvKjEfwCMLEE5JbkExtcyOR81tMiWaEQ/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzCNvv7_i-4IXRxdazS16cMTjNwVubkx1tENShvKjEfwCMLEE5JbkExtcyOR81tMiWaEQ/exec";
 
         window.onload = function() {
             updateClock();
             setInterval(updateClock, 1000);
-            fetchPoseidonData();
+            
+            // 1. Ambil data pertama kali saat halaman dibuka
+            fetchPoseidonData(true); 
+            
+            // ✅ 2. TAMBAHAN REAL-TIME: Ambil data otomatis setiap 30 detik (30000 ms)
+            setInterval(() => fetchPoseidonData(false), 30000);
         };
 
         function updateClock() {
@@ -69,15 +80,30 @@
             document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
         }
 
-        async function fetchPoseidonData() {
+        // ✅ TAMBAHAN PARAMETER isFirstLoad agar loading screen hanya muncul di awal
+        async function fetchPoseidonData(isFirstLoad = false) {
             try {
-                const response = await fetch(API_URL);
+                if (isFirstLoad) {
+                    document.getElementById('loading').classList.remove('hidden');
+                    document.getElementById('main-content').classList.add('hidden');
+                }
+
+                // Tambahkan timestamp agar browser tidak mengambil data dari cache
+                const response = await fetch(API_URL + "?t=" + new Date().getTime());
                 const data = await response.json();
+                
                 renderDashboard(data);
+                
+                // Update indikator waktu terakhir refresh
+                const now = new Date();
+                document.getElementById('last-updated').innerText = `🔄 Terakhir diperbarui: ${now.toLocaleTimeString('id-ID')}`;
+
             } catch (error) {
-                document.getElementById('ticket-container').innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">Gagal mengambil data: ${error.message}. Pastikan URL API benar.</div>`;
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
+                console.error("Gagal mengambil data:", error);
+                if (isFirstLoad) {
+                    document.getElementById('ticket-container').innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">Gagal mengambil data: ${error.message}. Pastikan URL API benar.</div>`;
+                    showContent();
+                }
             }
         }
 
@@ -90,6 +116,9 @@
 
             const container = document.getElementById('ticket-container');
             let hasAnyTickets = false;
+            
+            // Kosongkan container sebelum render ulang (penting untuk auto-refresh)
+            container.innerHTML = ''; 
 
             data.priorities.forEach(category => {
                 const tickets = data.tickets[category];
