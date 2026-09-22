@@ -25,7 +25,6 @@
             70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
         }
-        /* Word wrap untuk teks panjang */
         .break-word {
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -132,20 +131,28 @@
                             <div class="grid gap-4">`;
 
                     tickets.forEach((ticket, index) => {
+                        // ✅ LAYOUT VERTIKAL PENUH - UPDATE TERAKHIR DI BAWAH
                         html += `
                             <div class="glass rounded-xl p-5 hover:bg-blue-900/30 transition-all duration-300 border-l-4 ${borderClass}">
+                                <!-- Nomor dan Site ID -->
                                 <div class="flex items-center gap-3 mb-3">
                                     <span class="text-cyan-500 font-bold text-lg">${index + 1}.</span>
                                     <span class="bg-slate-900/80 text-cyan-300 text-sm font-mono px-3 py-1 rounded-md border border-cyan-800/50">${ticket.siteId}</span>
                                 </div>
+                                
+                                <!-- No Tiket -->
                                 <h3 class="text-lg font-semibold text-white mb-2 break-word">${ticket.noTiket}</h3>
+                                
+                                <!-- Headline -->
                                 <p class="text-cyan-100/80 text-sm mb-4 leading-relaxed break-word">${ticket.headline}</p>
                                 
-                                <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cyan-200/70 font-mono mb-4">
-                                    <span> ${ticket.tglOpen}</span>
-                                    <span class="text-cyan-400 font-bold">⏱️ TTR: ${ticket.ttr}</span>
+                                <!-- Tanggal dan TTR -->
+                                <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cyan-200/70 font-mono mb-4 pb-4 border-b border-cyan-700/30">
+                                    <span>📅 ${ticket.tglOpen}</span>
+                                    <span class="text-cyan-400 font-bold">️ TTR: ${ticket.ttr}</span>
                                 </div>
                                 
+                                <!-- Update Terakhir (DI BAWAH) -->
                                 <div class="bg-slate-900/40 rounded-lg p-4 border border-cyan-900/30">
                                     <p class="text-xs text-cyan-400 uppercase font-bold mb-2 tracking-wider">Update Terakhir:</p>
                                     <p class="text-sm text-cyan-100 italic mb-2 leading-relaxed break-word">"${ticket.update}"</p>
@@ -164,7 +171,7 @@
             if (!hasAnyTickets) {
                 container.innerHTML = `
                     <div class="text-center py-20 glass rounded-2xl border border-cyan-800/30">
-                        <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! </h2>
+                        <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! 🌊</h2>
                         <p class="text-cyan-200/60">Tidak ada tiket Open/Backend yang memerlukan penanganan saat ini.</p>
                     </div>`;
             }
