@@ -319,7 +319,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbw9LMRr_8VHTSI3ErHVqmpztrY-1eXrinCsOV1LsB7oGi16OhLH23o49O7J3rwF-CpTGw/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzZBPy-0hMmaeK9GLooJff5-h5F-3UZfp3saIEVYGFqsvo_AHQSTDdcGxhO6a-ODx70yA/exec";
         let tableDownInstance = null;
         let tableNonDownInstance = null;
         let currentArea = "JATIM";
@@ -423,14 +423,11 @@ async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
             document.getElementById('main-content').classList.add('hidden');
         }
         
-        // 1. Tentukan URL dasar dengan waktu saat ini (agar tidak di-cache browser)
         let url = API_URL + "?t=" + new Date().getTime();
         
-        // 2. Tambahkan perintah spesifik berdasarkan tab yang aktif
         if (type === 'radio') {
             url = API_URL + "?view=radio&t=" + new Date().getTime();
         } else if (type === 'metro') {
-            // Inilah kuncinya: Memberi tahu backend untuk menjalankan fungsi getDataMetro()
             url = API_URL + "?view=metro&t=" + new Date().getTime();
         }
             
