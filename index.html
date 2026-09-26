@@ -318,7 +318,7 @@
         </footer>
     </div>
 
-    <script>
+        <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzoJxPy4RIroCyKih1lxkqm1XKY7NJUEL9N_JgTQ3CQpGOT7Bj2TVPlZCP7Isojow2vMw/exec";
         let tableDownInstance = null;
         let tableNonDownInstance = null;
@@ -415,47 +415,22 @@
             }
         }
 
-      // ✅ INI ADALAH KODE BARU YANG SUDAH DIPERBAIKI
-async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
-    try {
-        if (isFirstLoad) {
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-        }
-        
-        let url = API_URL + "?t=" + new Date().getTime();
-        
-        if (type === 'radio') {
-            url = API_URL + "?view=radio&t=" + new Date().getTime();
-        } else if (type === 'metro') {
-            url = API_URL + "?view=metro&t=" + new Date().getTime();
-        }
-            
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        lastUpdateTime = Date.now();
-        setConnectionStatus(true);
-        
-        if (type === 'radio') {
-            renderDashboard(data, 'radio');
-        } else {
-            renderDashboard(data, 'metro');
-        }
-        
-        const now = new Date();
-        document.getElementById('last-updated').innerText = now.toLocaleTimeString('id-ID');
-        
-    } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        setConnectionStatus(false);
-        if (isFirstLoad) {
-            const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-            document.getElementById(containerId).innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">Gagal mengambil data: ${error.message}</div>`;
-            showContent();
-        }
-    }
-}
+        async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
+            try {
+                if (isFirstLoad) {
+                    document.getElementById('loading').classList.remove('hidden');
+                    document.getElementById('main-content').classList.add('hidden');
+                }
+                
+                let url = API_URL + "?t=" + new Date().getTime();
+                
+                if (type === 'radio') {
+                    url = API_URL + "?view=radio&t=" + new Date().getTime();
+                } else if (type === 'metro') {
+                    url = API_URL + "?view=metro&t=" + new Date().getTime();
+                }
+                    
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 lastUpdateTime = Date.now();
