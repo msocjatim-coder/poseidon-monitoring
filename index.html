@@ -319,7 +319,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzIVxE4hVFUGDfuZTxeqkyxBBa1MTzwmKh9yeDeyeT2ZVFjAQMpwPzkHOu7wMNiRxKGeQ/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbw9LMRr_8VHTSI3ErHVqmpztrY-1eXrinCsOV1LsB7oGi16OhLH23o49O7J3rwF-CpTGw/exec";
         let tableDownInstance = null;
         let tableNonDownInstance = null;
         let currentArea = "JATIM";
@@ -415,18 +415,50 @@
             }
         }
 
-        async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
-            try {
-                if (isFirstLoad) {
-                    document.getElementById('loading').classList.remove('hidden');
-                    document.getElementById('main-content').classList.add('hidden');
-                }
-                
-                const url = type === 'radio' 
-                    ? API_URL + "?view=radio&t=" + new Date().getTime()
-                    : API_URL + "?t=" + new Date().getTime();
-                    
-                const response = await fetch(url);
+      // ✅ INI ADALAH KODE BARU YANG SUDAH DIPERBAIKI
+async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
+    try {
+        if (isFirstLoad) {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+        }
+        
+        // 1. Tentukan URL dasar dengan waktu saat ini (agar tidak di-cache browser)
+        let url = API_URL + "?t=" + new Date().getTime();
+        
+        // 2. Tambahkan perintah spesifik berdasarkan tab yang aktif
+        if (type === 'radio') {
+            url = API_URL + "?view=radio&t=" + new Date().getTime();
+        } else if (type === 'metro') {
+            // Inilah kuncinya: Memberi tahu backend untuk menjalankan fungsi getDataMetro()
+            url = API_URL + "?view=metro&t=" + new Date().getTime();
+        }
+            
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        lastUpdateTime = Date.now();
+        setConnectionStatus(true);
+        
+        if (type === 'radio') {
+            renderDashboard(data, 'radio');
+        } else {
+            renderDashboard(data, 'metro');
+        }
+        
+        const now = new Date();
+        document.getElementById('last-updated').innerText = now.toLocaleTimeString('id-ID');
+        
+    } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        setConnectionStatus(false);
+        if (isFirstLoad) {
+            const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
+            document.getElementById(containerId).innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">Gagal mengambil data: ${error.message}</div>`;
+            showContent();
+        }
+    }
+}
                 const data = await response.json();
                 
                 lastUpdateTime = Date.now();
