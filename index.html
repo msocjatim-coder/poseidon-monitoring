@@ -321,8 +321,8 @@
             transform: translateY(0) scale(0.95);
         }
 
-        /* Capture main header/footer */
-        .capture-main-header, .capture-main-footer {
+        /* Capture main header */
+        .capture-main-header {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
@@ -399,9 +399,12 @@
             <!-- ✅ WRAPPER UTAMA UNTUK CAPTURE (Kedua tabel dalam 1 container) -->
             <main class="max-w-7xl mx-auto space-y-10" id="capture-wrapper">
                 
-                <!-- Header yang akan muncul di capture -->
-                <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; text-align: center; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
-                    TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span>
+                <!-- ✅ Header yang akan muncul di capture (Dengan Waktu di Kanan) -->
+                <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span></div>
+                        <div style="font-size: 14px; font-weight: normal; opacity: 0.9;" class="capture-timestamp-inline"></div>
+                    </div>
                 </div>
 
                 <!-- Tabel DOWN -->
@@ -424,10 +427,7 @@
                     </div>
                 </section>
 
-                <!-- Footer yang akan muncul di capture -->
-                <div class="capture-main-footer" style="background: #0f172a; color: #94a3b8; padding: 12px; text-align: center; font-size: 12px; border-radius: 0 0 12px 12px; display: none;">
-                    Poseidon Monitoring System • <span class="capture-timestamp"></span>
-                </div>
+                <!-- ✅ Footer DIHILANGKAN agar capture murni laporan -->
             </main>
 
             <!-- ✅ TOMBOL CAPTURE ICON (Di luar wrapper agar tidak ikut ter-capture) -->
@@ -438,9 +438,7 @@
             </div>
         </div>
 
-        <footer class="text-center text-cyan-200/30 text-sm mt-16 mb-8">
-            &copy; 2026 Poseidon Monitoring System. Hosted on GitHub Pages.
-        </footer>
+        <!-- ✅ Footer Halaman DIHILANGKAN sesuai permintaan -->
     </div>
 
     <!-- ✅ CAPTURE MODAL -->
@@ -805,26 +803,39 @@
         }
         
         // =============================================
-        // ✅ FUNGSI CAPTURE LAPORAN (KEDUA TABEL SEKALIGUS)
+        // ✅ FUNGSI CAPTURE LAPORAN (DENGAN WAKTU DI KANAN & TANPA FOOTER)
         // =============================================
         function captureBothTables() {
             const wrapper = document.getElementById('capture-wrapper');
             const header = wrapper.querySelector('.capture-main-header');
-            const footer = wrapper.querySelector('.capture-main-footer');
             const areaLabel = wrapper.querySelector('.capture-area-label');
-            const timestampLabel = wrapper.querySelector('.capture-timestamp');
+            const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
             
-            // Update label area dan timestamp
+            // Update label area
             areaLabel.textContent = currentArea;
-            timestampLabel.textContent = new Date().toLocaleString('id-ID', { 
-                timeZone: 'Asia/Jakarta',
-                dateStyle: 'full',
-                timeStyle: 'short'
-            });
             
-            // Tampilkan header & footer
+            // ✅ Format waktu manual agar persis: "Minggu, 27 September 2026 pukul 12.16.39"
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            const dayName = days[now.getDay()];
+            const date = now.getDate();
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const finalDate = `${dayName}, ${date} ${monthName} ${year} pukul ${hours}.${minutes}.${seconds}`;
+            
+            if (timestampInline) {
+                timestampInline.textContent = finalDate;
+            }
+            
+            // Tampilkan header, pastikan footer tetap tersembunyi
             header.style.display = 'block';
-            footer.style.display = 'block';
             
             // Scroll ke atas wrapper agar capture dimulai dari atas
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -841,9 +852,8 @@
                     windowWidth: wrapper.scrollWidth,
                     windowHeight: wrapper.scrollHeight // ✅ KUNCI: Memaksa capture seluruh tinggi konten
                 }).then(canvas => {
-                    // Sembunyikan kembali header & footer
+                    // Sembunyikan kembali header
                     header.style.display = 'none';
-                    footer.style.display = 'none';
                     
                     // Simpan gambar
                     lastCaptureImage = canvas.toDataURL('image/png');
@@ -856,7 +866,6 @@
                     copyCaptureToClipboard();
                 }).catch(err => {
                     header.style.display = 'none';
-                    footer.style.display = 'none';
                     showToast('❌ Gagal capture: ' + err.message, true);
                 });
             }, 300);
