@@ -72,13 +72,14 @@
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
         
-        /* ✅ FULL WIDTH TABLE - NO SPACES */
+        /* ✅ FULL WIDTH TABLE - DIPERLEBAR */
         .table-white-container {
             background: #ffffff !important;
             border-radius: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
             box-sizing: border-box;
         }
         .table-white-container .dataTables_wrapper {
@@ -86,6 +87,7 @@
             width: 100% !important;
             padding: 0 !important;
             margin: 0 !important;
+            overflow-x: auto !important;
         }
         .table-white-container .dataTables_length,
         .table-white-container .dataTables_filter,
@@ -133,19 +135,22 @@
             padding: 4px;
             margin: 0 4px;
         }
+        
+        /* ✅ TABLE DIPERLEBAR - MINIMUM WIDTH 1400PX */
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
             width: 100% !important;
             max-width: 100% !important;
             margin: 0 !important;
             table-layout: auto !important;
+            min-width: 1400px !important; /* ✅ KUNCI: Tabel minimum 1400px */
         }
         .table-white-container table.dataTable thead th {
             background: #1e293b !important;
             color: #ffffff !important;
             border-bottom: 2px solid #334155 !important;
-            font-size: 11px;
-            padding: 10px 6px !important;
+            font-size: 12px;
+            padding: 12px 10px !important;
             white-space: nowrap;
             text-align: left;
             font-weight: 600;
@@ -154,10 +159,11 @@
             background: #ffffff !important;
             color: #1e293b !important;
             border-bottom: 1px solid #e2e8f0 !important;
-            font-size: 11px;
-            padding: 8px 6px !important;
+            font-size: 12px;
+            padding: 10px 10px !important;
             vertical-align: top;
-            word-break: break-word;
+            white-space: nowrap !important; /* ✅ KUNCI: Text tidak terpotong */
+            word-break: normal !important;  /* ✅ KUNCI: Tidak pecah kata */
         }
         .table-white-container table.dataTable tbody tr:hover td {
             background: #f1f5f9 !important;
@@ -175,8 +181,8 @@
         }
         
         /* Badge Styles */
-        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
-        .ttr-high { background: #dc2626; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
+        .ttr-low { background: #16a34a; color: white; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; text-align: center; min-width: 45px; white-space: nowrap;}
+        .ttr-high { background: #dc2626; color: white; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; text-align: center; min-width: 45px; white-space: nowrap;}
         
         /* DataTables Buttons */
         .dt-button {
@@ -227,7 +233,7 @@
             background: #0f172a;
             border-radius: 16px;
             padding: 24px;
-            max-width: 90%;
+            max-width: 95%;
             max-height: 90vh;
             overflow: auto;
             border: 2px solid rgba(34, 211, 238, 0.3);
@@ -399,10 +405,9 @@
             <!-- ✅ WRAPPER UTAMA UNTUK CAPTURE (Kedua tabel dalam 1 container) -->
             <main class="max-w-7xl mx-auto space-y-10" id="capture-wrapper">
                 
-                <!-- ✅ Header yang akan muncul di capture (Dengan Waktu di Kanan) -->
+                <!-- ✅ Header Capture: HANYA WAKTU di KANAN (judul di kiri dihapus) -->
                 <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                        <div>TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span></div>
+                    <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div style="font-size: 14px; font-weight: normal; opacity: 0.9;" class="capture-timestamp-inline"></div>
                     </div>
                 </div>
@@ -433,7 +438,7 @@
             <!-- ✅ TOMBOL CAPTURE ICON (Di luar wrapper agar tidak ikut ter-capture) -->
             <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end">
                 <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">
-                    📸
+                    
                 </button>
             </div>
         </div>
@@ -734,7 +739,7 @@
                 pageLength: 10,
                 order: [[10, 'desc']],
                 autoWidth: true,
-                scrollX: false,
+                scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
@@ -782,7 +787,7 @@
                 pageLength: 10,
                 order: [[10, 'desc']],
                 autoWidth: true,
-                scrollX: false,
+                scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [
                     { extend: 'copy', text: 'Copy', className: 'dt-button' },
@@ -803,16 +808,12 @@
         }
         
         // =============================================
-        // ✅ FUNGSI CAPTURE LAPORAN (DENGAN WAKTU DI KANAN & TANPA FOOTER)
+        // ✅ FUNGSI CAPTURE LAPORAN (HANYA WAKTU DI KANAN, TANPA JUDUL DI KIRI)
         // =============================================
         function captureBothTables() {
             const wrapper = document.getElementById('capture-wrapper');
             const header = wrapper.querySelector('.capture-main-header');
-            const areaLabel = wrapper.querySelector('.capture-area-label');
             const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
-            
-            // Update label area
-            areaLabel.textContent = currentArea;
             
             // ✅ Format waktu manual agar persis: "Minggu, 27 September 2026 pukul 12.16.39"
             const now = new Date();
@@ -834,7 +835,7 @@
                 timestampInline.textContent = finalDate;
             }
             
-            // Tampilkan header, pastikan footer tetap tersembunyi
+            // Tampilkan header (hanya berisi waktu di kanan)
             header.style.display = 'block';
             
             // Scroll ke atas wrapper agar capture dimulai dari atas
@@ -866,7 +867,7 @@
                     copyCaptureToClipboard();
                 }).catch(err => {
                     header.style.display = 'none';
-                    showToast('❌ Gagal capture: ' + err.message, true);
+                    showToast(' Gagal capture: ' + err.message, true);
                 });
             }, 300);
         }
