@@ -206,30 +206,6 @@
             box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
         }
         
-        /* ✅ CAPTURE BUTTON STYLES */
-        .capture-btn {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
-            color: #ffffff !important;
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 10px 20px !important;
-            font-size: 14px !important;
-            font-weight: bold !important;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
-        }
-        .capture-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.6);
-        }
-        .capture-btn:active {
-            transform: translateY(0);
-        }
-        
         /* ✅ CAPTURE MODAL STYLES */
         .capture-modal {
             display: none;
@@ -286,27 +262,12 @@
             font-size: 13px;
             transition: all 0.2s;
         }
-        .modal-btn-copy {
-            background: #10b981;
-            color: white;
-        }
-        .modal-btn-copy:hover {
-            background: #059669;
-        }
-        .modal-btn-download {
-            background: #3b82f6;
-            color: white;
-        }
-        .modal-btn-download:hover {
-            background: #2563eb;
-        }
-        .modal-btn-close {
-            background: #ef4444;
-            color: white;
-        }
-        .modal-btn-close:hover {
-            background: #dc2626;
-        }
+        .modal-btn-copy { background: #10b981; color: white; }
+        .modal-btn-copy:hover { background: #059669; }
+        .modal-btn-download { background: #3b82f6; color: white; }
+        .modal-btn-download:hover { background: #2563eb; }
+        .modal-btn-close { background: #ef4444; color: white; }
+        .modal-btn-close:hover { background: #dc2626; }
         .capture-preview-img {
             max-width: 100%;
             border-radius: 8px;
@@ -332,33 +293,37 @@
             align-items: center;
             gap: 10px;
         }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .toast.error {
-            background: #ef4444;
-        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { background: #ef4444; }
         
-        /* Capture area header/footer */
-        .capture-header {
-            background: #0f172a !important;
-            color: #22d3ee !important;
-            padding: 16px !important;
-            text-align: center !important;
-            font-weight: bold !important;
-            font-size: 18px !important;
-            border-radius: 8px 8px 0 0 !important;
-            display: none;
+        /* ✅ CAPTURE ICON BUTTON (Estetik & Proporsional) */
+        .capture-icon-btn {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+            line-height: 1;
         }
-        .capture-footer {
-            background: #0f172a !important;
-            color: #94a3b8 !important;
-            padding: 10px !important;
-            text-align: center !important;
-            font-size: 11px !important;
-            border-radius: 0 0 8px 8px !important;
-            display: none;
+        .capture-icon-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
+        }
+        .capture-icon-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Capture main header/footer */
+        .capture-main-header, .capture-main-footer {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
 </head>
@@ -401,17 +366,11 @@
 
         <!-- TAB 1: MONITORING -->
         <div id="tab-monitoring" class="tab-content active">
-            <!-- Sub-Tab: Metro & Radio -->
             <div class="max-w-7xl mx-auto mb-4 flex gap-2">
-                <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-subtab="metro">
-                     METRO
-                </button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-subtab="radio">
-                     RADIO
-                </button>
+                <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-subtab="metro">METRO</button>
+                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-subtab="radio">RADIO</button>
             </div>
 
-            <!-- Sub-Tab: METRO -->
             <div id="subtab-metro" class="sub-tab-content active">
                 <div class="max-w-7xl mx-auto mb-4 flex justify-between items-center">
                     <input type="text" id="search-metro" class="search-box" placeholder="🔍 Cari Site ID atau No Tiket...">
@@ -419,7 +378,6 @@
                 <main class="max-w-6xl mx-auto space-y-10" id="ticket-container-metro"></main>
             </div>
 
-            <!-- Sub-Tab: RADIO -->
             <div id="subtab-radio" class="sub-tab-content">
                 <div class="max-w-7xl mx-auto mb-4 flex justify-between items-center">
                     <input type="text" id="search-radio" class="search-box" placeholder="🔍 Cari Site ID atau No Tiket Radio...">
@@ -428,70 +386,56 @@
             </div>
         </div>
 
-        <!-- ✅ TAB 2: LAPORAN CNOP (UPDATED DENGAN TOMBOL CAPTURE) -->
+        <!-- TAB 2: LAPORAN CNOP -->
         <div id="tab-laporan" class="tab-content">
-            <!-- Sub-Tab Areas -->
             <div class="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2">
-                <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">
-                     JATIM
-                </button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="MATARAM">
-                     MATARAM
-                </button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="FLORES">
-                    📍 FLORES
-                </button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="KUPANG">
-                     KUPANG
-                </button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="BALI">
-                     BALI
-                </button>
+                <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">JATIM</button>
+                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="MATARAM">MATARAM</button>
+                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="FLORES">FLORES</button>
+                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="KUPANG">KUPANG</button>
+                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="BALI">BALI</button>
             </div>
 
-            <main class="max-w-7xl mx-auto space-y-10">
-                <!-- ✅ Tabel DOWN dengan Tombol Capture -->
+            <!-- ✅ WRAPPER UTAMA UNTUK CAPTURE (Kedua tabel dalam 1 container) -->
+            <main class="max-w-7xl mx-auto space-y-10" id="capture-wrapper">
+                
+                <!-- Header yang akan muncul di capture -->
+                <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; text-align: center; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
+                    TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span>
+                </div>
+
+                <!-- Tabel DOWN -->
                 <section id="section-down">
-                    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
-                        <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest text-center flex-1">
-                            Tiket Gangguan CNOP <span id="label-area-down">(JATIM DOWN)</span>
-                        </h2>
-                        <button class="capture-btn" onclick="captureTable('down')">
-                            📸 Capture Laporan
-                        </button>
-                    </div>
-                    <div class="table-white-container" id="capture-container-down">
-                        <div class="capture-header">
-                            TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span> (DOWN)
-                        </div>
+                    <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center">
+                        Tiket Gangguan CNOP <span id="label-area-down">(JATIM DOWN)</span>
+                    </h2>
+                    <div class="table-white-container">
                         <table id="table-down" class="w-full" style="width:100%"></table>
-                        <div class="capture-footer">
-                            Poseidon Monitoring System • <span class="capture-timestamp"></span>
-                        </div>
                     </div>
                 </section>
 
-                <!-- ✅ Tabel non-DOWN dengan Tombol Capture -->
+                <!-- Tabel non-DOWN -->
                 <section id="section-nondown">
-                    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
-                        <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest text-center flex-1">
-                            Tiket Gangguan CNOP (non-DOWN / CNQ)
-                        </h2>
-                        <button class="capture-btn" onclick="captureTable('nondown')">
-                            📸 Capture Laporan
-                        </button>
-                    </div>
-                    <div class="table-white-container" id="capture-container-nondown">
-                        <div class="capture-header">
-                            TIKET GANGGUAN CNOP - <span class="capture-area-label">JATIM</span> (NON-DOWN / CNQ)
-                        </div>
+                    <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center">
+                        Tiket Gangguan CNOP (non-DOWN / CNQ)
+                    </h2>
+                    <div class="table-white-container">
                         <table id="table-nondown" class="w-full" style="width:100%"></table>
-                        <div class="capture-footer">
-                            Poseidon Monitoring System • <span class="capture-timestamp"></span>
-                        </div>
                     </div>
                 </section>
+
+                <!-- Footer yang akan muncul di capture -->
+                <div class="capture-main-footer" style="background: #0f172a; color: #94a3b8; padding: 12px; text-align: center; font-size: 12px; border-radius: 0 0 12px 12px; display: none;">
+                    Poseidon Monitoring System • <span class="capture-timestamp"></span>
+                </div>
             </main>
+
+            <!-- ✅ TOMBOL CAPTURE ICON (Di luar wrapper agar tidak ikut ter-capture) -->
+            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end">
+                <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">
+                    📸
+                </button>
+            </div>
         </div>
 
         <footer class="text-center text-cyan-200/30 text-sm mt-16 mb-8">
@@ -611,7 +555,8 @@
             } else {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.className = 'text-xs text-red-400/70 mt-2 font-mono flex items-center justify-end gap-2';
-                statusText.innerHTML = '<span>️</span><span>Sistem Offline</span>';
+                // ✅ DIPERBAIKI: Menambahkan emoji ⚠️ yang sebelumnya hilang
+                statusText.innerHTML = '<span>⚠️</span><span>Sistem Offline</span>';
             }
         }
 
@@ -733,7 +678,7 @@
 
             if (!hasAnyTickets) {
                 container.innerHTML = `<div class="text-center py-20 glass rounded-2xl border border-cyan-800/30">
-                    <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! </h2>
+                    <h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! 🌊</h2>
                     <p class="text-cyan-200/60">Tidak ada tiket ${type === 'radio' ? 'Radio' : 'Metro'} yang memerlukan penanganan saat ini.</p>
                 </div>`;
             }
@@ -861,16 +806,14 @@
         }
         
         // =============================================
-        // ✅ FUNGSI CAPTURE LAPORAN (BARU)
+        // ✅ FUNGSI CAPTURE LAPORAN (KEDUA TABEL SEKALIGUS)
         // =============================================
-        
-        function captureTable(type) {
-            const containerId = type === 'down' ? 'capture-container-down' : 'capture-container-nondown';
-            const container = document.getElementById(containerId);
-            const header = container.querySelector('.capture-header');
-            const footer = container.querySelector('.capture-footer');
-            const areaLabel = container.querySelector('.capture-area-label');
-            const timestampLabel = container.querySelector('.capture-timestamp');
+        function captureBothTables() {
+            const wrapper = document.getElementById('capture-wrapper');
+            const header = wrapper.querySelector('.capture-main-header');
+            const footer = wrapper.querySelector('.capture-main-footer');
+            const areaLabel = wrapper.querySelector('.capture-area-label');
+            const timestampLabel = wrapper.querySelector('.capture-timestamp');
             
             // Update label area dan timestamp
             areaLabel.textContent = currentArea;
@@ -884,15 +827,20 @@
             header.style.display = 'block';
             footer.style.display = 'block';
             
-            // Tunggu sebentar agar DOM update
+            // Scroll ke atas wrapper agar capture dimulai dari atas
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Tunggu sebentar agar scroll dan DOM update sempurna
             setTimeout(() => {
-                html2canvas(container, {
+                html2canvas(wrapper, {
                     backgroundColor: '#0f172a',
-                    scale: 2, // High resolution
+                    scale: 2, // High resolution (2x)
                     useCORS: true,
                     logging: false,
                     scrollX: 0,
-                    scrollY: -window.scrollY
+                    scrollY: 0,
+                    windowWidth: wrapper.scrollWidth,
+                    windowHeight: wrapper.scrollHeight // ✅ KUNCI: Memaksa capture seluruh tinggi konten, tidak peduli berapa banyak data
                 }).then(canvas => {
                     // Sembunyikan kembali header & footer
                     header.style.display = 'none';
@@ -912,7 +860,7 @@
                     footer.style.display = 'none';
                     showToast('❌ Gagal capture: ' + err.message, true);
                 });
-            }, 100);
+            }, 300);
         }
 
         async function copyCaptureToClipboard() {
