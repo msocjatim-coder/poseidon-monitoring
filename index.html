@@ -555,7 +555,6 @@
             } else {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.className = 'text-xs text-red-400/70 mt-2 font-mono flex items-center justify-end gap-2';
-                // ✅ DIPERBAIKI: Menambahkan emoji ⚠️ yang sebelumnya hilang
                 statusText.innerHTML = '<span>⚠️</span><span>Sistem Offline</span>';
             }
         }
@@ -840,7 +839,7 @@
                     scrollX: 0,
                     scrollY: 0,
                     windowWidth: wrapper.scrollWidth,
-                    windowHeight: wrapper.scrollHeight // ✅ KUNCI: Memaksa capture seluruh tinggi konten, tidak peduli berapa banyak data
+                    windowHeight: wrapper.scrollHeight // ✅ KUNCI: Memaksa capture seluruh tinggi konten
                 }).then(canvas => {
                     // Sembunyikan kembali header & footer
                     header.style.display = 'none';
