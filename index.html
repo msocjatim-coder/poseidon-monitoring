@@ -779,52 +779,38 @@
         }
 
         function renderTabelDown(data) {
-    if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
-    const columns = [
-        { title: "Layanan", data: "layanan", width: "80px" }, 
-        { title: "Sevr", data: "sevr", width: "80px" }, 
-        { title: "WZ", data: "wz", width: "50px" },
-        { title: "District", data: "district", width: "90px" }, 
-        { title: "Area", data: "area", width: "90px" }, 
-        { title: "No Tiket", data: "noTiket", width: "130px" },
-        { title: "Headline", data: "headline", className: "break-word" },
-        { title: "Status", data: "status", width: "100px" },
-        { title: "Update", data: "update", className: "break-word" }, 
-        { title: "Tglopen", data: "tglopen", width: "140px" },
-        { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
-    ];
-    tableDownInstance = $('#table-down').DataTable({
-        data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
-        autoWidth: false, scrollX: true,
-        dom: '<"flex justify-between items-center mb-2"lf>rtip',
-        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-        language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
-    });
-}
+            if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
+            const columns = [
+                { title: "Layanan", data: "layanan" }, { title: "Sevr", data: "sevr" }, { title: "WZ", data: "wz" },
+                { title: "District", data: "district" }, { title: "Area", data: "area" }, { title: "No Tiket", data: "noTiket" },
+                { title: "Headline", data: "headline", className: "break-word" }, { title: "Status", data: "status" },
+                { title: "Update", data: "update", className: "break-word" }, { title: "Tglopen", data: "tglopen" },
+                { title: "Ttr", data: "ttr", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+            ];
+            tableDownInstance = $('#table-down').DataTable({
+                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: true, scrollX: false,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
+            });
+        }
 
         function renderTabelNonDown(data) {
-    if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
-    const columns = [
-        { title: "Layanan", data: "layanan", width: "80px" }, 
-        { title: "Sevr", data: "sevr", width: "80px" }, 
-        { title: "WZ", data: "wz", width: "50px" },
-        { title: "District", data: "district", width: "90px" }, 
-        { title: "Area", data: "area", width: "90px" }, 
-        { title: "No Tiket", data: "noTiket", width: "130px" },
-        { title: "Headline", data: "headline", className: "break-word" },
-        { title: "Status", data: "status", width: "100px" },
-        { title: "Update", data: "update", className: "break-word" }, 
-        { title: "Tglopen", data: "tglopen", width: "140px" },
-        { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
-    ];
-    tableNonDownInstance = $('#table-nondown').DataTable({
-        data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
-        autoWidth: false, scrollX: true,
-        dom: '<"flex justify-between items-center mb-2"lf>rtip',
-        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-        language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
-    });
-}
+            if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
+            const columns = [
+                { title: "Layanan", data: "layanan" }, { title: "Sevr", data: "sevr" }, { title: "WZ", data: "wz" },
+                { title: "District", data: "district" }, { title: "Area", data: "area" }, { title: "No Tiket", data: "noTiket" },
+                { title: "Headline", data: "headline", className: "break-word" }, { title: "Status", data: "status" },
+                { title: "Update", data: "update", className: "break-word" }, { title: "Tglopen", data: "tglopen" },
+                { title: "Ttr", data: "ttr", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+            ];
+            tableNonDownInstance = $('#table-nondown').DataTable({
+                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: true, scrollX: false,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
+            });
+        }
 
         function showContent() {
             const loadingEl = document.getElementById('loading');
