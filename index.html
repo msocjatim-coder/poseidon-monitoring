@@ -22,11 +22,50 @@
             color: #e0f2fe;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        /* ✅ LAYER 2: POSEIDON BACKGROUND - Animasi Float & Transparan */
+        .poseidon-layer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vw;
+            max-width: 1200px;
+            height: 90vh;
+            max-height: 900px;
+            background-image: url('https://raw.githubusercontent.com/msocjatim-coder/poseidon-monitoring/main/poseidon.png'); /* ✅ GANTI DENGAN PATH GAMBAR ANDA */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.15; /* ✅ TRANSPARANSI 15% */
+            z-index: 1; /* ✅ DI TENGAH: Background (0) < Poseidon (1) < Content (10) */
+            pointer-events: none; /* ✅ TIDAK BISA DIKLIK */
+            animation: floatPoseidon 20s ease-in-out infinite; /* ✅ ANIMASI GERAK PERLAHAN */
+            filter: drop-shadow(0 0 50px rgba(34, 211, 238, 0.3));
+        }
+        
+        @keyframes floatPoseidon {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
+            }
+            25% {
+                transform: translate(-50%, -50%) translateY(-20px) rotate(1deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
+            }
+            75% {
+                transform: translate(-50%, -50%) translateY(20px) rotate(-1deg);
+            }
+        }
+        
         .glass {
             background: rgba(30, 58, 138, 0.25);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(56, 189, 248, 0.15);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 10; /* ✅ LAYER 3: KONTEN DI ATAS POSEIDON */
         }
         .glow-text { text-shadow: 0 0 15px rgba(34, 211, 238, 0.6); }
         .live-dot { animation: pulse-cyan 2s infinite; }
@@ -278,6 +317,9 @@
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
+
+    <!-- ✅ LAYER 2: POSEIDON - Background Animasi (Transparan 15%) -->
+    <div class="poseidon-layer"></div>
 
     <!-- ✅ OFFLINE OVERLAY - Hanya muncul jika benar-benar offline > 2 menit -->
     <div id="offline-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-md">
