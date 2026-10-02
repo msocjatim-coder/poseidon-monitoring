@@ -5,18 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poseidon Monitoring Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <!-- jQuery & DataTables JS -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    
-    <!-- ✅ TAMBAHAN BARU: html2canvas untuk screenshot -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
@@ -46,8 +42,6 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         .break-word { word-wrap: break-word; overflow-wrap: break-word; }
-        
-        /* Tab Styles */
         .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active {
             background: rgba(34, 211, 238, 0.2);
@@ -56,8 +50,6 @@
         }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        /* Sub-Tab Styles */
         .sub-tab-btn {
             transition: all 0.3s ease;
             font-size: 14px;
@@ -71,8 +63,6 @@
         }
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
-        
-        /* ✅ FULL WIDTH TABLE - TANPA SCROLL */
         .table-white-container {
             background: #ffffff !important;
             border-radius: 0 !important;
@@ -98,14 +88,8 @@
             color: #1e293b !important;
             padding: 10px !important;
         }
-        .table-white-container .dataTables_filter {
-            float: right !important;
-            margin-bottom: 10px !important;
-        }
-        .table-white-container .dataTables_length {
-            float: left !important;
-            margin-bottom: 10px !important;
-        }
+        .table-white-container .dataTables_filter { float: right !important; margin-bottom: 10px !important; }
+        .table-white-container .dataTables_length { float: left !important; margin-bottom: 10px !important; }
         .table-white-container .dataTables_paginate .paginate_button {
             color: #1e293b !important;
             background: #f1f5f9 !important;
@@ -136,7 +120,6 @@
             padding: 4px;
             margin: 0 4px;
         }
-        
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
             width: 100% !important;
@@ -164,26 +147,12 @@
             word-break: break-word;
             white-space: normal;
         }
-        .table-white-container table.dataTable tbody tr:hover td {
-            background: #f1f5f9 !important;
-        }
-        .table-white-container table.dataTable tbody tr:nth-child(even) td {
-            background: #f8fafc !important;
-        }
-        .table-white-container table.dataTable tbody tr:nth-child(even):hover td {
-            background: #f1f5f9 !important;
-        }
-        .table-white-container .dataTables_wrapper::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-        
-        /* Badge Styles */
+        .table-white-container table.dataTable tbody tr:hover td { background: #f1f5f9 !important; }
+        .table-white-container table.dataTable tbody tr:nth-child(even) td { background: #f8fafc !important; }
+        .table-white-container table.dataTable tbody tr:nth-child(even):hover td { background: #f1f5f9 !important; }
+        .table-white-container .dataTables_wrapper::after { content: ""; display: table; clear: both; }
         .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
         .ttr-high { background: #dc2626; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
-        
-        /* DataTables Buttons */
         .dt-button {
             background: rgba(30, 58, 138, 0.5) !important;
             color: #e0f2fe !important;
@@ -195,8 +164,6 @@
             cursor: pointer;
         }
         .dt-button:hover { background: rgba(34, 211, 238, 0.3) !important; }
-        
-        /* Search Box */
         .search-box {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(56, 189, 248, 0.3);
@@ -210,8 +177,6 @@
             border-color: rgba(34, 211, 238, 0.6);
             box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
         }
-        
-        /* ✅ CAPTURE MODAL STYLES */
         .capture-modal {
             display: none;
             position: fixed;
@@ -268,8 +233,6 @@
             border-radius: 8px;
             border: 1px solid rgba(34, 211, 238, 0.2);
         }
-        
-        /* ✅ TOAST NOTIFICATION */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -290,8 +253,6 @@
         }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.error { background: #ef4444; }
-        
-        /* ✅ CAPTURE ICON BUTTON */
         .capture-icon-btn {
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: #ffffff;
@@ -318,13 +279,16 @@
 </head>
 <body class="min-h-screen p-4 md:p-8">
 
-    <!-- ✅ OFFLINE OVERLAY (Layar Penuh Saat Diskonek) -->
+    <!-- ✅ OFFLINE OVERLAY -->
     <div id="offline-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-md">
         <div class="text-center p-8 glass rounded-2xl border-2 border-red-500/50 max-w-2xl mx-4 shadow-2xl shadow-red-900/50">
-            <div class="text-7xl mb-6 animate-bounce">⚠️</div>
-            <h2 class="text-3xl md:text-5xl font-bold text-red-400 glow-text mb-4 tracking-wider"> 404 Not Found</h2>
+            <div class="text-7xl mb-6 animate-bounce">️</div>
+            <h2 class="text-3xl md:text-5xl font-bold text-red-400 glow-text mb-4 tracking-wider">404 Not Found</h2>
             <p class="text-xl md:text-2xl text-red-200 mb-8 font-mono bg-red-900/30 p-4 rounded-lg border border-red-500/30">
                 [ 🚨 Sistem Tidak Terhubung ]
+            </p>
+            <p id="offline-reason" class="text-sm md:text-base text-yellow-200/70 mb-4 leading-relaxed font-mono">
+                Memeriksa koneksi...
             </p>
             <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">
                 Insera terlihat logout atau sinkronisasi terhenti lebih dari 1 menit.<br>
@@ -443,7 +407,7 @@
                 <div class="capture-modal-actions">
                     <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()">📋 Copy ke Clipboard</button>
                     <button class="modal-btn modal-btn-download" onclick="downloadCapture()">💾 Download PNG</button>
-                    <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()">✕ Tutup</button>
+                    <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()"> Tutup</button>
                 </div>
             </div>
             <img id="capture-preview" class="capture-preview-img" alt="Preview">
@@ -458,15 +422,15 @@
         let tableDownInstance = null;
         let tableNonDownInstance = null;
         let currentArea = "JATIM";
-        
-        // ✅ UBAH: Threshold 1 menit (sesuai rumus 1/1440 hari di sheet)
         const OFFLINE_THRESHOLD = 1 * 60 * 1000; 
-        let lastSyncTime = 0; // ✅ BARU: Menyimpan waktu sinkronisasi terakhir dari sel A8
+        let lastSyncTime = 0;
+        let lastSuccessfulFetch = 0;
         let lastCaptureImage = null;
+        let connectionError = null;
 
         window.onload = function() {
             updateClock();
-            setInterval(updateClock, 1000); // Cek status setiap 1 detik agar responsif
+            setInterval(updateClock, 1000);
             initTabs();
             fetchPoseidonData(true, 'metro');
             setInterval(() => {
@@ -483,10 +447,7 @@
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById('tab-' + tab).classList.add('active');
-                    
-                    if (tab === 'laporan' && !tableDownInstance) {
-                        fetchLaporanData();
-                    }
+                    if (tab === 'laporan' && !tableDownInstance) fetchLaporanData();
                 });
             });
 
@@ -497,7 +458,6 @@
                     document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById('subtab-' + subtab).classList.add('active');
-                    
                     if (subtab === 'metro') fetchPoseidonData(false, 'metro');
                     else if (subtab === 'radio') fetchPoseidonData(false, 'radio');
                 });
@@ -521,42 +481,44 @@
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
             document.getElementById('realtime-clock').innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
-            
-            // ✅ CEK REAL-TIME: Jika selisih waktu > 1 menit, otomatis anggap offline
             if (lastSyncTime > 0) {
-                setConnectionStatus(true, lastSyncTime);
+                checkConnectionStatus();
             }
         }
 
-        // ✅ FUNGSI STATUS KONEKSI YANG DIPERBARUI
-        function setConnectionStatus(isOnline, syncTime = null) {
+        function checkConnectionStatus() {
+            const now = Date.now();
+            const timeSinceLastSync = now - lastSyncTime;
+            
+            if (timeSinceLastSync > OFFLINE_THRESHOLD) {
+                setConnectionStatus(false, `Last sync: ${Math.floor(timeSinceLastSync / 1000)}s ago`);
+            } else {
+                setConnectionStatus(true, `Sync OK (${Math.floor(timeSinceLastSync / 1000)}s)`);
+            }
+        }
+
+        function setConnectionStatus(isOnline, debugInfo = '') {
             const dot = document.getElementById('connection-dot');
             const statusText = document.getElementById('connection-status');
             const mainContent = document.getElementById('main-content');
             const offlineOverlay = document.getElementById('offline-overlay');
+            const offlineReason = document.getElementById('offline-reason');
             
-            let isDisconnected = false;
-            
-            if (syncTime !== null && syncTime > 0) {
-                const timeDiff = Date.now() - syncTime;
-                if (timeDiff > OFFLINE_THRESHOLD) {
-                    isDisconnected = true;
-                }
-            } else if (!isOnline) {
-                isDisconnected = true;
-            }
-            
-            if (isDisconnected) {
+            if (!isOnline) {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.className = 'text-xs text-red-400/70 mt-2 font-mono flex items-center justify-end gap-2';
-                statusText.innerHTML = '<span>⚠️</span><span>Sistem Tidak Terhubung</span>';
+                statusText.innerHTML = '<span>️</span><span>Sistem Tidak Terhubung</span>';
+                
+                if (offlineReason) {
+                    offlineReason.innerHTML = `Debug: ${debugInfo}<br>Last successful: ${lastSuccessfulFetch > 0 ? new Date(lastSuccessfulFetch).toLocaleTimeString() : 'Never'}`;
+                }
                 
                 if (mainContent) mainContent.classList.add('hidden');
                 if (offlineOverlay) offlineOverlay.classList.remove('hidden');
             } else {
                 dot.className = 'w-3 h-3 bg-cyan-400 rounded-full live-dot';
                 statusText.className = 'text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2';
-                statusText.innerHTML = '<span>✅</span><span>System Online [ Real-Time! ]</span>';
+                statusText.innerHTML = '<span>✅</span><span>Sistem Online [ TERHUBUNG & REAL-TIME! ]</span>';
                 
                 if (mainContent) mainContent.classList.remove('hidden');
                 if (offlineOverlay) offlineOverlay.classList.add('hidden');
@@ -572,16 +534,32 @@
                 let url = API_URL + "?t=" + new Date().getTime();
                 if (type === 'radio') url = API_URL + "?view=radio&t=" + new Date().getTime();
                 else if (type === 'metro') url = API_URL + "?view=metro&t=" + new Date().getTime();
+                
+                console.log('Fetching from:', url);
                     
                 const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const data = await response.json();
+                console.log('Received data:', data);
                 
                 // ✅ SIMPAN WAKTU SINKRONISASI TERAKHIR DARI A8
                 if (data.lastSync) {
                     lastSyncTime = data.lastSync;
+                    console.log('Last sync time:', new Date(lastSyncTime));
+                } else {
+                    console.warn('No lastSync in response');
+                    // Gunakan waktu sekarang sebagai fallback
+                    lastSyncTime = Date.now();
                 }
                 
-                setConnectionStatus(true, lastSyncTime);
+                lastSuccessfulFetch = Date.now();
+                connectionError = null;
+                setConnectionStatus(true, 'Data received');
                 
                 if (type === 'radio') renderDashboard(data, 'radio');
                 else renderDashboard(data, 'metro');
@@ -593,10 +571,16 @@
                 
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                setConnectionStatus(false, 0); // Paksa offline jika fetch gagal total
+                connectionError = error.message;
+                setConnectionStatus(false, error.message);
+                
                 if (isFirstLoad) {
                     const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-                    document.getElementById(containerId).innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">Gagal mengambil data: ${error.message}</div>`;
+                    document.getElementById(containerId).innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">
+                        <h3 class="text-xl font-bold mb-2">❌ Gagal Mengambil Data</h3>
+                        <p class="mb-4">${error.message}</p>
+                        <button onclick="forceRefresh()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white">Coba Lagi</button>
+                    </div>`;
                     showContent();
                 }
             }
@@ -613,13 +597,11 @@
                     return;
                 }
                 
-                // ✅ SIMPAN WAKTU SINKRONISASI TERAKHIR DARI A8
                 if (data.lastSync) {
                     lastSyncTime = data.lastSync;
-                    setConnectionStatus(true, lastSyncTime);
+                    setConnectionStatus(true, 'Laporan loaded');
                 }
                 
-                // Jika setelah cek status ternyata offline, jangan render tabel
                 if (!document.getElementById('offline-overlay').classList.contains('hidden')) {
                     return; 
                 }
@@ -629,7 +611,7 @@
                 renderTabelNonDown(data.nonDown);
             } catch (error) {
                 console.error("Gagal mengambil data laporan:", error);
-                setConnectionStatus(false, 0);
+                setConnectionStatus(false, error.message);
                 alert("Gagal memuat data laporan: " + error.message);
             }
         }
@@ -750,12 +732,11 @@
 
         function showContent() {
             document.getElementById('loading').classList.add('hidden');
-            // Biarkan setConnectionStatus yang mengatur visibilitas main-content vs offline-overlay
         }
 
-        // ✅ FUNGSI BARU: Paksa refresh dari overlay
         function forceRefresh() {
             showToast("🔄 Memaksa penyegaran data...", false);
+            lastSyncTime = Date.now(); // Reset lastSync agar tidak langsung offline
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') {
                 fetchLaporanData();
@@ -765,9 +746,6 @@
             }
         }
         
-        // =============================================
-        // ✅ FUNGSI CAPTURE LAPORAN (TIDAK DIUBAH)
-        // =============================================
         function captureBothTables() {
             const wrapper = document.getElementById('capture-wrapper');
             const header = wrapper.querySelector('.capture-main-header');
@@ -821,7 +799,7 @@
         }
 
         function downloadCapture() {
-            if (!lastCaptureImage) { showToast('❌ Tidak ada gambar', true); return; }
+            if (!lastCaptureImage) { showToast(' Tidak ada gambar', true); return; }
             const link = document.createElement('a');
             link.download = `Laporan_CNOP_${currentArea}_${new Date().getTime()}.png`;
             link.href = lastCaptureImage;
