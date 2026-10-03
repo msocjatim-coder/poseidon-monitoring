@@ -23,7 +23,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* ✅ LAYER 2: POSEIDON BACKGROUND - Animasi Float & Transparan */
         .poseidon-layer {
             position: fixed;
             top: 50%;
@@ -95,7 +94,6 @@
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
         
-        /* ✅ TABLE CONTAINER - Diperlebar & Z-Index diperbaiki */
         .table-white-container {
             background: #ffffff !important;
             border-radius: 0 !important;
@@ -104,7 +102,7 @@
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
-            overflow-x: auto !important; /* ✅ Scroll horizontal jika diperlukan agar tabel tidak remuk */
+            overflow-x: auto !important;
             position: relative;
             z-index: 10;
         }
@@ -165,7 +163,7 @@
             border-bottom: 2px solid #334155 !important;
             font-size: 11px;
             padding: 10px 6px !important;
-            white-space: nowrap !important; /* ✅ Mencegah header terpotong */
+            white-space: nowrap !important;
             text-align: left;
             font-weight: 600;
         }
@@ -176,9 +174,8 @@
             font-size: 11px;
             padding: 8px 6px !important;
             vertical-align: top;
-            white-space: nowrap !important; /* ✅ Mencegah isi sel terpotong (LOW, JATIM, dll) */
+            white-space: nowrap !important;
         }
-        /* Pengecualian untuk kolom yang memang boleh wrap */
         .table-white-container table.dataTable tbody td.break-word {
             white-space: normal !important;
             word-break: break-word;
@@ -189,7 +186,9 @@
         .table-white-container table.dataTable tbody tr:nth-child(even):hover td { background: #f1f5f9 !important; }
         .table-white-container .dataTables_wrapper::after { content: ""; display: table; clear: both; }
         
-        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width40px;}
+        /* ✅ BADGE TTR: HIJAU, KUNING, MERAH */
+        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
+        .ttr-medium { background: #ca8a04; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;} /* ✅ BARU: Warna Kuning */
         .ttr-high { background: #dc2626; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
         
         .dt-button {
@@ -322,10 +321,8 @@
 </head>
 <body class="min-h-screen p-4 md:p-8">
 
-    <!-- ✅ LAYER 2: POSEIDON - Background Animasi (Transparan 15%) -->
     <div class="poseidon-layer"></div>
 
-    <!-- ✅ OFFLINE OVERLAY -->
     <div id="offline-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-md">
         <div class="text-center p-8 glass rounded-2xl border-2 border-red-500/50 max-w-2xl mx-4 shadow-2xl shadow-red-900/50">
             <div class="text-7xl mb-6 animate-bounce">⚠️</div>
@@ -343,12 +340,10 @@
         </div>
     </div>
 
-    <!-- Loading -->
     <div id="loading" class="flex justify-center items-center h-screen">
         <div class="text-cyan-400 text-xl animate-pulse">🌊 Menghubungkan ke Poseidon...</div>
     </div>
 
-    <!-- Main Content -->
     <div id="main-content" class="hidden">
         <header class="flex flex-col md:flex-row justify-between items-center mb-6 glass p-5 rounded-2xl">
             <div class="flex items-center gap-3 mb-4 md:mb-0">
@@ -366,19 +361,13 @@
             </div>
         </header>
 
-        <!-- MAIN TAB NAVIGATION -->
         <div class="max-w-7xl mx-auto mb-6">
             <div class="flex gap-2 glass p-2 rounded-xl">
-                <button class="tab-btn active flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300 border border-cyan-700/30" data-tab="monitoring">
-                     MONITORING
-                </button>
-                <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="laporan">
-                     LAPORAN CNOP
-                </button>
+                <button class="tab-btn active flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300 border border-cyan-700/30" data-tab="monitoring">MONITORING</button>
+                <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="laporan">LAPORAN CNOP</button>
             </div>
         </div>
 
-        <!-- TAB 1: MONITORING -->
         <div id="tab-monitoring" class="tab-content active">
             <div class="max-w-7xl mx-auto mb-4 flex gap-2">
                 <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-subtab="metro">METRO</button>
@@ -400,7 +389,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: LAPORAN CNOP -->
         <div id="tab-laporan" class="tab-content">
             <div class="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2">
                 <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">JATIM</button>
@@ -442,7 +430,6 @@
         </div>
     </div>
 
-    <!-- ✅ CAPTURE MODAL -->
     <div id="capture-modal" class="capture-modal">
         <div class="capture-modal-content">
             <div class="capture-modal-header">
@@ -457,7 +444,6 @@
         </div>
     </div>
 
-    <!-- ✅ TOAST NOTIFICATION -->
     <div id="toast" class="toast"></div>
 
     <script>
@@ -732,7 +718,45 @@
             });
         }
 
-        // ✅ FUNGSI RENDER TABEL DOWN (DISESUAIKAN: Lebar Kolom Diperjelas)
+        // ✅ FUNGSI BARU: Menentukan Warna TTR Berdasarkan Severity dan Waktu (Jam)
+        function getTtrClass(sevr, ttr) {
+            let t = parseFloat(ttr);
+            if (isNaN(t)) return 'ttr-low'; // Default hijau jika data error
+            let s = (sevr || "").toUpperCase().trim();
+
+            if (s === "PREMIUM") {
+                if (t <= 0.5) return 'ttr-low';      // 0-30 menit hijau
+                if (t <= 1) return 'ttr-medium';     // 30 menit - 1 jam kuning
+                return 'ttr-high';                   // > 1 jam merah
+            }
+            if (s === "CRITICAL") {
+                if (t <= 1) return 'ttr-low';        // 0-1 jam hijau
+                if (t <= 3) return 'ttr-medium';     // 1-3 jam kuning (mengisi gap 1-2 jam)
+                return 'ttr-high';                   // > 3 jam merah
+            }
+            if (s === "MAJOR") {
+                if (t <= 3) return 'ttr-low';        // 0-3 jam hijau
+                if (t <= 6) return 'ttr-medium';     // 3-6 jam kuning
+                return 'ttr-high';                   // > 6 jam merah
+            }
+            if (s === "MINOR") {
+                if (t <= 6) return 'ttr-low';        // 0-6 jam hijau
+                if (t <= 14) return 'ttr-medium';    // 6-14 jam kuning
+                return 'ttr-high';                   // > 14 jam merah
+            }
+            if (s === "LOW") {
+                if (t <= 12) return 'ttr-low';       // 0-12 jam hijau
+                if (t <= 22) return 'ttr-medium';    // 12-22 jam kuning
+                return 'ttr-high';                   // > 22 jam merah
+            }
+            
+            // Fallback default jika severity tidak dikenali
+            if (t <= 12) return 'ttr-low';
+            if (t <= 22) return 'ttr-medium';
+            return 'ttr-high';
+        }
+
+        // ✅ FUNGSI RENDER TABEL DOWN (DISESUAIKAN: Menggunakan getTtrClass)
         function renderTabelDown(data) {
             if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
             const columns = [
@@ -746,7 +770,15 @@
                 { title: "Status", data: "status", width: "100px" },
                 { title: "Update", data: "update", className: "break-word" }, 
                 { title: "Tglopen", data: "tglopen", width: "140px" },
-                { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+                { 
+                    title: "Ttr", 
+                    data: "ttr", 
+                    width: "70px", 
+                    render: function(data, type, row) { 
+                        const cls = getTtrClass(row.sevr, data); 
+                        return `<span class="${cls}">${data}</span>`; 
+                    } 
+                }
             ];
             tableDownInstance = $('#table-down').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
@@ -757,7 +789,7 @@
             });
         }
 
-        // ✅ FUNGSI RENDER TABEL NON-DOWN (DISESUAIKAN: Lebar Kolom Diperjelas)
+        // ✅ FUNGSI RENDER TABEL NON-DOWN (DISESUAIKAN: Menggunakan getTtrClass)
         function renderTabelNonDown(data) {
             if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
             const columns = [
@@ -771,7 +803,15 @@
                 { title: "Status", data: "status", width: "100px" },
                 { title: "Update", data: "update", className: "break-word" }, 
                 { title: "Tglopen", data: "tglopen", width: "140px" },
-                { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+                { 
+                    title: "Ttr", 
+                    data: "ttr", 
+                    width: "70px", 
+                    render: function(data, type, row) { 
+                        const cls = getTtrClass(row.sevr, data); 
+                        return `<span class="${cls}">${data}</span>`; 
+                    } 
+                }
             ];
             tableNonDownInstance = $('#table-nondown').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
