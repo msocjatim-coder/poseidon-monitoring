@@ -112,6 +112,8 @@
             padding: 0 !important;
             margin: 0 !important;
         }
+        
+        /* ✅ PERBAIKAN TOTAL: Centering Sempurna untuk DataTables Controls */
         .table-white-container .dataTables_length,
         .table-white-container .dataTables_filter,
         .table-white-container .dataTables_info,
@@ -120,56 +122,96 @@
             color: #1e293b !important;
             padding: 10px !important;
         }
-        .table-white-container .dataTables_filter { float: right !important; margin-bottom: 10px !important; }
-        .table-white-container .dataTables_length { float: left !important; margin-bottom: 10px !important; }
-        .table-white-container .dataTables_paginate .paginate_button {
-    color: #1e293b !important;
-    background: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
-    border-radius: 4px !important;
-    margin: 0 1px !important;
-    padding: 6px 12px !important; /* ✅ Padding seimbang */
-    height: 32px !important; /* ✅ Tinggi tetap */
-    line-height: 1.2 !important; /* ✅ Line-height konsisten */
-    vertical-align: middle !important; /* ✅ Vertikal center */
-    display: inline-flex !important; /* ✅ Pakai flexbox */
-    align-items: center !important; /* ✅ Vertikal center */
-    justify-content: center !important; /* ✅ Horizontal center */
-    box-sizing: border-box !important;
-}
+        
+        .table-white-container .dataTables_length { 
+            float: left !important; 
+            margin-bottom: 10px !important; 
+            display: flex !important;
+            align-items: center !important;
         }
+        .table-white-container .dataTables_filter { 
+            float: right !important; 
+            margin-bottom: 10px !important; 
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        .table-white-container .dataTables_length label,
+        .table-white-container .dataTables_filter label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            margin: 0 !important;
+            font-weight: normal !important;
+            line-height: 1 !important;
+        }
+
+        .table-white-container .dataTables_length select {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+            border-radius: 4px !important;
+            padding: 4px 8px !important;
+            margin: 0 !important;
+            height: 32px !important;
+            line-height: 1.2 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+            font-size: 13px !important;
+        }
+
+        .table-white-container .dataTables_filter input {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+            border-radius: 4px !important;
+            padding: 4px 10px !important;
+            margin: 0 !important;
+            height: 32px !important;
+            line-height: 1.2 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+            font-size: 13px !important;
+        }
+
+        .table-white-container .dataTables_paginate {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            gap: 2px !important;
+        }
+
+        .table-white-container .dataTables_paginate .paginate_button {
+            color: #1e293b !important;
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 4px !important;
+            margin: 0 1px !important;
+            padding: 0 12px !important;
+            height: 32px !important;
+            line-height: 1 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+            font-size: 13px !important;
+            cursor: pointer !important;
+        }
+
         .table-white-container .dataTables_paginate .paginate_button.current,
         .table-white-container .dataTables_paginate .paginate_button:hover {
             background: #3b82f6 !important;
             color: #ffffff !important;
             border-color: #3b82f6 !important;
         }
-        .table-white-container .dataTables_filter input {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #1e293b !important;
-    border-radius: 4px;
-    padding: 6px 10px !important; /* ✅ Padding seimbang */
-    margin-left: 8px;
-    height: 32px !important; /* ✅ Tinggi tetap */
-    line-height: 1.2 !important;
-    vertical-align: middle !important;
-    box-sizing: border-box !important;
-}
+
+        .table-white-container .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
         }
-       .table-white-container .dataTables_length select {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #1e293b !important;
-    border-radius: 4px;
-    padding: 6px 10px !important; /* ✅ Padding seimbang */
-    margin: 0 4px;
-    height: 32px !important; /* ✅ Tinggi tetap */
-    line-height: 1.2 !important; /* ✅ Line-height konsisten */
-    vertical-align: middle !important; /* ✅ Vertikal center */
-    display: inline-block !important;
-}
-        }
+
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
             width: 100% !important;
@@ -191,7 +233,8 @@
             border-bottom: 1px solid #e2e8f0 !important;
             font-size: 11px;
             padding: 8px 6px !important;
-            vertical-align: top;
+            vertical-align: middle !important; /* ✅ PERBAIKAN: Tengah secara vertikal */
+            text-align: left !important;
             white-space: nowrap !important;
         }
         .table-white-container table.dataTable tbody td.break-word {
@@ -204,55 +247,26 @@
         .table-white-container table.dataTable tbody tr:nth-child(even):hover td { background: #f1f5f9 !important; }
         .table-white-container .dataTables_wrapper::after { content: ""; display: table; clear: both; }
         
-        /* ✅ BADGE TTR: HIJAU, KUNING, MERAH */
-        .ttr-low { 
-    background: #16a34a; 
-    color: white; 
-    padding: 6px 12px !important; /* ✅ Padding seimbang */
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 11px; 
-    display: inline-flex !important; /* ✅ Pakai flexbox */
-    align-items: center !important; /* ✅ Vertikal center */
-    justify-content: center !important; /* ✅ Horizontal center */
-    text-align: center !important;
-    min-width: 50px !important; /* ✅ Lebar minimum */
-    height: 28px !important; /* ✅ Tinggi tetap */
-    line-height: 1 !important; /* ✅ Hilangkan line-height default */
-    box-sizing: border-box !important;
-}
-.ttr-medium { 
-    background: #ca8a04; 
-    color: white; 
-    padding: 6px 12px !important;
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 11px; 
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    min-width: 50px !important;
-    height: 28px !important;
-    line-height: 1 !important;
-    box-sizing: border-box !important;
-}
-.ttr-high { 
-    background: #dc2626; 
-    color: white; 
-    padding: 6px 12px !important;
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 11px; 
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    min-width: 50px !important;
-    height: 28px !important;
-    line-height: 1 !important;
-    box-sizing: border-box !important;
-}
+        /* ✅ BADGE TTR: HIJAU, KUNING, MERAH - TENGAH SEMPURNA */
+        .ttr-low, .ttr-medium, .ttr-high { 
+            color: white !important; 
+            padding: 0 10px !important;
+            border-radius: 6px !important; 
+            font-weight: bold !important; 
+            font-size: 11px !important; 
+            display: inline-flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            text-align: center !important;
+            min-width: 50px !important;
+            height: 26px !important;
+            line-height: 1 !important;
+            box-sizing: border-box !important;
+        }
+        .ttr-low { background: #16a34a !important; }
+        .ttr-medium { background: #ca8a04 !important; }
+        .ttr-high { background: #dc2626 !important; }
+        
         .dt-button {
             background: rgba(30, 58, 138, 0.5) !important;
             color: #e0f2fe !important;
@@ -780,45 +794,42 @@
             });
         }
 
-        // ✅ FUNGSI BARU: Menentukan Warna TTR Berdasarkan Severity dan Waktu (Jam)
         function getTtrClass(sevr, ttr) {
             let t = parseFloat(ttr);
-            if (isNaN(t)) return 'ttr-low'; // Default hijau jika data error
+            if (isNaN(t)) return 'ttr-low';
             let s = (sevr || "").toUpperCase().trim();
 
             if (s === "PREMIUM") {
-                if (t <= 0.5) return 'ttr-low';      // 0-30 menit hijau
-                if (t <= 1) return 'ttr-medium';     // 30 menit - 1 jam kuning
-                return 'ttr-high';                   // > 1 jam merah
+                if (t <= 0.5) return 'ttr-low';
+                if (t <= 1) return 'ttr-medium';
+                return 'ttr-high';
             }
             if (s === "CRITICAL") {
-                if (t <= 1) return 'ttr-low';        // 0-1 jam hijau
-                if (t <= 3) return 'ttr-medium';     // 1-3 jam kuning (mengisi gap 1-2 jam)
-                return 'ttr-high';                   // > 3 jam merah
+                if (t <= 1) return 'ttr-low';
+                if (t <= 3) return 'ttr-medium';
+                return 'ttr-high';
             }
             if (s === "MAJOR") {
-                if (t <= 3) return 'ttr-low';        // 0-3 jam hijau
-                if (t <= 6) return 'ttr-medium';     // 3-6 jam kuning
-                return 'ttr-high';                   // > 6 jam merah
+                if (t <= 3) return 'ttr-low';
+                if (t <= 6) return 'ttr-medium';
+                return 'ttr-high';
             }
             if (s === "MINOR") {
-                if (t <= 6) return 'ttr-low';        // 0-6 jam hijau
-                if (t <= 14) return 'ttr-medium';    // 6-14 jam kuning
-                return 'ttr-high';                   // > 14 jam merah
+                if (t <= 6) return 'ttr-low';
+                if (t <= 14) return 'ttr-medium';
+                return 'ttr-high';
             }
             if (s === "LOW") {
-                if (t <= 12) return 'ttr-low';       // 0-12 jam hijau
-                if (t <= 22) return 'ttr-medium';    // 12-22 jam kuning
-                return 'ttr-high';                   // > 22 jam merah
+                if (t <= 12) return 'ttr-low';
+                if (t <= 22) return 'ttr-medium';
+                return 'ttr-high';
             }
             
-            // Fallback default jika severity tidak dikenali
             if (t <= 12) return 'ttr-low';
             if (t <= 22) return 'ttr-medium';
             return 'ttr-high';
         }
 
-        // ✅ FUNGSI RENDER TABEL DOWN (DISESUAIKAN: Menggunakan getTtrClass)
         function renderTabelDown(data) {
             if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
             const columns = [
@@ -828,9 +839,9 @@
                 { title: "District", data: "district", width: "100px" }, 
                 { title: "Area", data: "area", width: "90px" }, 
                 { title: "No Tiket", data: "noTiket", width: "130px" },
-                { title: "Headline", data: "headline", className: "break-word" }, 
+                { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
                 { title: "Status", data: "status", width: "100px" },
-                { title: "Update", data: "update", className: "break-word" }, 
+                { title: "Update", data: "update", className: "break-word", width: "620px" }, 
                 { title: "Tglopen", data: "tglopen", width: "140px" },
                 { 
                     title: "Ttr", 
@@ -851,7 +862,6 @@
             });
         }
 
-        // ✅ FUNGSI RENDER TABEL NON-DOWN (DISESUAIKAN: Menggunakan getTtrClass)
         function renderTabelNonDown(data) {
             if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
             const columns = [
@@ -861,9 +871,9 @@
                 { title: "District", data: "district", width: "100px" }, 
                 { title: "Area", data: "area", width: "90px" }, 
                 { title: "No Tiket", data: "noTiket", width: "130px" },
-                { title: "Headline", data: "headline", className: "break-word" }, 
+                { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
                 { title: "Status", data: "status", width: "100px" },
-                { title: "Update", data: "update", className: "break-word" }, 
+                { title: "Update", data: "update", className: "break-word", width: "620px" }, 
                 { title: "Tglopen", data: "tglopen", width: "140px" },
                 { 
                     title: "Ttr", 
