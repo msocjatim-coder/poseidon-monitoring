@@ -33,30 +33,22 @@
             max-width: 1200px;
             height: 90vh;
             max-height: 900px;
-            background-image: url('https://raw.githubusercontent.com/msocjatim-coder/poseidon-monitoring/main/poseidon.png'); /* ✅ GANTI DENGAN PATH GAMBAR ANDA */
+            background-image: url('https://raw.githubusercontent.com/msocjatim-coder/poseidon-monitoring/main/poseidon.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.15; /* ✅ TRANSPARANSI 15% */
-            z-index: 1; /* ✅ DI TENGAH: Background (0) < Poseidon (1) < Content (10) */
-            pointer-events: none; /* ✅ TIDAK BISA DIKLIK */
-            animation: floatPoseidon 20s ease-in-out infinite; /* ✅ ANIMASI GERAK PERLAHAN */
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+            animation: floatPoseidon 20s ease-in-out infinite;
             filter: drop-shadow(0 0 50px rgba(34, 211, 238, 0.3));
         }
         
         @keyframes floatPoseidon {
-            0%, 100% {
-                transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
-            }
-            25% {
-                transform: translate(-50%, -50%) translateY(-20px) rotate(1deg);
-            }
-            50% {
-                transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
-            }
-            75% {
-                transform: translate(-50%, -50%) translateY(20px) rotate(-1deg);
-            }
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) translateY(-20px) rotate(1deg); }
+            50% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
+            75% { transform: translate(-50%, -50%) translateY(20px) rotate(-1deg); }
         }
         
         .glass {
@@ -65,7 +57,7 @@
             border: 1px solid rgba(56, 189, 248, 0.15);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             position: relative;
-            z-index: 10; /* ✅ LAYER 3: KONTEN DI ATAS POSEIDON */
+            z-index: 10;
         }
         .glow-text { text-shadow: 0 0 15px rgba(34, 211, 238, 0.6); }
         .live-dot { animation: pulse-cyan 2s infinite; }
@@ -80,7 +72,7 @@
             70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .break-word { word-wrap: break-word; overflow-wrap: break-word; }
+        .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
         .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active {
             background: rgba(34, 211, 238, 0.2);
@@ -102,6 +94,8 @@
         }
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
+        
+        /* ✅ TABLE CONTAINER - Diperlebar & Z-Index diperbaiki */
         .table-white-container {
             background: #ffffff !important;
             border-radius: 0 !important;
@@ -110,14 +104,15 @@
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
-            overflow-x: visible !important;
+            overflow-x: auto !important; /* ✅ Scroll horizontal jika diperlukan agar tabel tidak remuk */
+            position: relative;
+            z-index: 10;
         }
         .table-white-container .dataTables_wrapper {
             color: #1e293b !important;
             width: 100% !important;
             padding: 0 !important;
             margin: 0 !important;
-            overflow-x: visible !important;
         }
         .table-white-container .dataTables_length,
         .table-white-container .dataTables_filter,
@@ -162,9 +157,7 @@
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
             width: 100% !important;
-            max-width: 100% !important;
             margin: 0 !important;
-            table-layout: auto !important;
         }
         .table-white-container table.dataTable thead th {
             background: #1e293b !important;
@@ -172,7 +165,7 @@
             border-bottom: 2px solid #334155 !important;
             font-size: 11px;
             padding: 10px 6px !important;
-            white-space: nowrap;
+            white-space: nowrap !important; /* ✅ Mencegah header terpotong */
             text-align: left;
             font-weight: 600;
         }
@@ -183,15 +176,22 @@
             font-size: 11px;
             padding: 8px 6px !important;
             vertical-align: top;
+            white-space: nowrap !important; /* ✅ Mencegah isi sel terpotong (LOW, JATIM, dll) */
+        }
+        /* Pengecualian untuk kolom yang memang boleh wrap */
+        .table-white-container table.dataTable tbody td.break-word {
+            white-space: normal !important;
             word-break: break-word;
-            white-space: normal;
+            min-width: 200px;
         }
         .table-white-container table.dataTable tbody tr:hover td { background: #f1f5f9 !important; }
         .table-white-container table.dataTable tbody tr:nth-child(even) td { background: #f8fafc !important; }
         .table-white-container table.dataTable tbody tr:nth-child(even):hover td { background: #f1f5f9 !important; }
         .table-white-container .dataTables_wrapper::after { content: ""; display: table; clear: both; }
-        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
+        
+        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width40px;}
         .ttr-high { background: #dc2626; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
+        
         .dt-button {
             background: rgba(30, 58, 138, 0.5) !important;
             color: #e0f2fe !important;
@@ -203,6 +203,7 @@
             cursor: pointer;
         }
         .dt-button:hover { background: rgba(34, 211, 238, 0.3) !important; }
+        
         .search-box {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(56, 189, 248, 0.3);
@@ -216,6 +217,7 @@
             border-color: rgba(34, 211, 238, 0.6);
             box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
         }
+        
         .capture-modal {
             display: none;
             position: fixed;
@@ -272,6 +274,7 @@
             border-radius: 8px;
             border: 1px solid rgba(34, 211, 238, 0.2);
         }
+        
         .toast {
             position: fixed;
             bottom: 30px;
@@ -292,6 +295,7 @@
         }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.error { background: #ef4444; }
+        
         .capture-icon-btn {
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: #ffffff;
@@ -321,7 +325,7 @@
     <!-- ✅ LAYER 2: POSEIDON - Background Animasi (Transparan 15%) -->
     <div class="poseidon-layer"></div>
 
-    <!-- ✅ OFFLINE OVERLAY - Hanya muncul jika benar-benar offline > 2 menit -->
+    <!-- ✅ OFFLINE OVERLAY -->
     <div id="offline-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-md">
         <div class="text-center p-8 glass rounded-2xl border-2 border-red-500/50 max-w-2xl mx-4 shadow-2xl shadow-red-900/50">
             <div class="text-7xl mb-6 animate-bounce">⚠️</div>
@@ -406,7 +410,7 @@
                 <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="BALI">BALI</button>
             </div>
 
-               <main class="max-w-full mx-auto px-8 space-y-10" id="capture-wrapper">
+            <main class="max-w-full mx-auto px-8 space-y-10" id="capture-wrapper">
                 <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
                     <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div style="font-size: 14px; font-weight: normal; opacity: 0.9;" class="capture-timestamp-inline"></div>
@@ -462,13 +466,11 @@
         let tableNonDownInstance = null;
         let currentArea = "JATIM";
         
-        // ✅ UBAH: Threshold 2 menit (120 detik) untuk menghindari false positive
         const OFFLINE_THRESHOLD = 2 * 60 * 1000; 
         let lastSyncTime = 0;
         let lastSuccessfulFetch = 0;
         let lastCaptureImage = null;
         let isFirstLoadComplete = false;
-        let connectionCheckInterval = null;
 
         window.onload = function() {
             updateClock();
@@ -489,10 +491,7 @@
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById('tab-' + tab).classList.add('active');
-                    
-                    if (tab === 'laporan' && !tableDownInstance) {
-                        fetchLaporanData();
-                    }
+                    if (tab === 'laporan' && !tableDownInstance) fetchLaporanData();
                 });
             });
 
@@ -503,7 +502,6 @@
                     document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById('subtab-' + subtab).classList.add('active');
-                    
                     if (subtab === 'metro') fetchPoseidonData(false, 'metro');
                     else if (subtab === 'radio') fetchPoseidonData(false, 'radio');
                 });
@@ -530,11 +528,7 @@
             if (clockElement) {
                 clockElement.innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
             }
-            
-            // ✅ Hanya cek koneksi setelah load pertama selesai
-            if (isFirstLoadComplete && lastSyncTime > 0) {
-                checkConnectionStatus();
-            }
+            if (isFirstLoadComplete && lastSyncTime > 0) checkConnectionStatus();
         }
 
         function checkConnectionStatus() {
@@ -542,18 +536,10 @@
             const timeSinceLastSync = now - lastSyncTime;
             const offlineOverlay = document.getElementById('offline-overlay');
             
-            // ✅ Hanya tampilkan overlay offline jika benar-benar > 2 menit
             if (timeSinceLastSync > OFFLINE_THRESHOLD) {
-                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) {
-                    // Overlay sudah tampil, tidak perlu lakukan apa-apa
-                } else {
-                    setConnectionStatus(false);
-                }
+                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) {} else { setConnectionStatus(false); }
             } else {
-                // Masih dalam threshold, pastikan overlay tersembunyi
-                if (offlineOverlay) {
-                    offlineOverlay.classList.add('hidden');
-                }
+                if (offlineOverlay) offlineOverlay.classList.add('hidden');
                 setConnectionStatus(true);
             }
         }
@@ -564,21 +550,18 @@
             const mainContent = document.getElementById('main-content');
             const offlineOverlay = document.getElementById('offline-overlay');
             
-            if (!dot || !statusText) return; // Safety check
+            if (!dot || !statusText) return;
             
             if (!isOnline) {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.className = 'text-xs text-red-400/70 mt-2 font-mono flex items-center justify-end gap-2';
                 statusText.innerHTML = '<span>⚠️</span><span>Sistem Tidak Terhubung</span>';
-                
-                // ✅ Hanya sembunyikan main content jika benar-benar offline > 2 menit
                 if (mainContent) mainContent.classList.add('hidden');
                 if (offlineOverlay) offlineOverlay.classList.remove('hidden');
             } else {
                 dot.className = 'w-3 h-3 bg-cyan-400 rounded-full live-dot';
                 statusText.className = 'text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2';
                 statusText.innerHTML = '<span>✅</span><span>Sistem Online [ Real-Time! ]</span>';
-                
                 if (mainContent) mainContent.classList.remove('hidden');
                 if (offlineOverlay) offlineOverlay.classList.add('hidden');
             }
@@ -596,24 +579,14 @@
                 else if (type === 'metro') url = API_URL + "?view=metro&t=" + new Date().getTime();
                     
                 const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 
                 const data = await response.json();
                 
-                // ✅ Update lastSyncTime - gunakan waktu sekarang jika tidak ada
-                if (data.lastSync) {
-                    lastSyncTime = data.lastSync;
-                } else {
-                    // Fallback: gunakan waktu response
-                    lastSyncTime = Date.now();
-                }
+                if (data.lastSync) lastSyncTime = data.lastSync;
+                else lastSyncTime = Date.now();
                 
                 lastSuccessfulFetch = Date.now();
-                
-                // ✅ Set status online segera setelah data diterima
                 setConnectionStatus(true);
                 
                 if (type === 'radio') renderDashboard(data, 'radio');
@@ -621,21 +594,14 @@
                 
                 const now = new Date();
                 const lastUpdatedEl = document.getElementById('last-updated');
-                if (lastUpdatedEl) {
-                    lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
-                }
+                if (lastUpdatedEl) lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
                 
                 if (isFirstLoad) {
                     showContent();
                     isFirstLoadComplete = true;
                 }
-                
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                
-                // ✅ Jangan langsung tampilkan offline, tunggu sampai threshold terlewati
-                // Hanya tampilkan error di console
-                
                 if (isFirstLoad) {
                     const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
                     const container = document.getElementById(containerId);
@@ -658,28 +624,18 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data.error) {
-                    alert("Error: " + data.error);
-                    return;
-                }
+                if (data.error) { alert("Error: " + data.error); return; }
                 
-                if (data.lastSync) {
-                    lastSyncTime = data.lastSync;
-                } else {
-                    lastSyncTime = Date.now();
-                }
+                if (data.lastSync) lastSyncTime = data.lastSync;
+                else lastSyncTime = Date.now();
                 
                 setConnectionStatus(true);
                 
                 const offlineOverlay = document.getElementById('offline-overlay');
-                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) {
-                    return; 
-                }
+                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) return; 
                 
                 const labelEl = document.getElementById('label-area-down');
-                if (labelEl) {
-                    labelEl.innerText = `(${currentArea} DOWN)`;
-                }
+                if (labelEl) labelEl.innerText = `(${currentArea} DOWN)`;
                 
                 renderTabelDown(data.down);
                 renderTabelNonDown(data.nonDown);
@@ -693,9 +649,7 @@
             if (data.error) {
                 const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
                 const container = document.getElementById(containerId);
-                if (container) {
-                    container.innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">${data.error}</div>`;
-                }
+                if (container) container.innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">${data.error}</div>`;
                 showContent();
                 return;
             }
@@ -778,34 +732,50 @@
             });
         }
 
+        // ✅ FUNGSI RENDER TABEL DOWN (DISESUAIKAN: Lebar Kolom Diperjelas)
         function renderTabelDown(data) {
             if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
             const columns = [
-                { title: "Layanan", data: "layanan" }, { title: "Sevr", data: "sevr" }, { title: "WZ", data: "wz" },
-                { title: "District", data: "district" }, { title: "Area", data: "area" }, { title: "No Tiket", data: "noTiket" },
-                { title: "Headline", data: "headline", className: "break-word" }, { title: "Status", data: "status" },
-                { title: "Update", data: "update", className: "break-word" }, { title: "Tglopen", data: "tglopen" },
-                { title: "Ttr", data: "ttr", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+                { title: "Layanan", data: "layanan", width: "90px" }, 
+                { title: "Sevr", data: "sevr", width: "70px" }, 
+                { title: "WZ", data: "wz", width: "60px" },
+                { title: "District", data: "district", width: "100px" }, 
+                { title: "Area", data: "area", width: "90px" }, 
+                { title: "No Tiket", data: "noTiket", width: "130px" },
+                { title: "Headline", data: "headline", className: "break-word" }, 
+                { title: "Status", data: "status", width: "100px" },
+                { title: "Update", data: "update", className: "break-word" }, 
+                { title: "Tglopen", data: "tglopen", width: "140px" },
+                { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
             ];
             tableDownInstance = $('#table-down').DataTable({
-                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: true, scrollX: false,
+                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
+                autoWidth: false, scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
             });
         }
 
+        // ✅ FUNGSI RENDER TABEL NON-DOWN (DISESUAIKAN: Lebar Kolom Diperjelas)
         function renderTabelNonDown(data) {
             if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
             const columns = [
-                { title: "Layanan", data: "layanan" }, { title: "Sevr", data: "sevr" }, { title: "WZ", data: "wz" },
-                { title: "District", data: "district" }, { title: "Area", data: "area" }, { title: "No Tiket", data: "noTiket" },
-                { title: "Headline", data: "headline", className: "break-word" }, { title: "Status", data: "status" },
-                { title: "Update", data: "update", className: "break-word" }, { title: "Tglopen", data: "tglopen" },
-                { title: "Ttr", data: "ttr", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
+                { title: "Layanan", data: "layanan", width: "90px" }, 
+                { title: "Sevr", data: "sevr", width: "70px" }, 
+                { title: "WZ", data: "wz", width: "60px" },
+                { title: "District", data: "district", width: "100px" }, 
+                { title: "Area", data: "area", width: "90px" }, 
+                { title: "No Tiket", data: "noTiket", width: "130px" },
+                { title: "Headline", data: "headline", className: "break-word" }, 
+                { title: "Status", data: "status", width: "100px" },
+                { title: "Update", data: "update", className: "break-word" }, 
+                { title: "Tglopen", data: "tglopen", width: "140px" },
+                { title: "Ttr", data: "ttr", width: "70px", render: function(data) { const cls = data >= 8 ? 'ttr-high' : 'ttr-low'; return `<span class="${cls}">${data}</span>`; } }
             ];
             tableNonDownInstance = $('#table-nondown').DataTable({
-                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: true, scrollX: false,
+                data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], 
+                autoWidth: false, scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
@@ -815,7 +785,6 @@
         function showContent() {
             const loadingEl = document.getElementById('loading');
             const mainContentEl = document.getElementById('main-content');
-            
             if (loadingEl) loadingEl.classList.add('hidden');
             if (mainContentEl) mainContentEl.classList.remove('hidden');
         }
@@ -824,9 +793,8 @@
             showToast("🔄 Memaksa penyegaran data...", false);
             lastSyncTime = Date.now();
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-            if (activeTab === 'laporan') {
-                fetchLaporanData();
-            } else {
+            if (activeTab === 'laporan') fetchLaporanData();
+            else {
                 const activeSubTab = document.querySelector('.sub-tab-btn.active')?.dataset.subtab || 'metro';
                 fetchPoseidonData(true, activeSubTab);
             }
@@ -841,14 +809,7 @@
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             
-            const dayName = days[now.getDay()];
-            const date = now.getDate();
-            const monthName = months[now.getMonth()];
-            const year = now.getFullYear();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const finalDate = `${dayName}, ${date} ${monthName} ${year} pukul ${hours}.${minutes}.${seconds}`;
+            const finalDate = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} pukul ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
             
             if (timestampInline) timestampInline.textContent = finalDate;
             if (header) header.style.display = 'block';
