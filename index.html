@@ -123,12 +123,20 @@
         .table-white-container .dataTables_filter { float: right !important; margin-bottom: 10px !important; }
         .table-white-container .dataTables_length { float: left !important; margin-bottom: 10px !important; }
         .table-white-container .dataTables_paginate .paginate_button {
-            color: #1e293b !important;
-            background: #f1f5f9 !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 4px !important;
-            margin: 0 1px !important;
-            padding: 4px 10px !important;
+    color: #1e293b !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 4px !important;
+    margin: 0 1px !important;
+    padding: 6px 12px !important; /* ✅ Padding seimbang */
+    height: 32px !important; /* ✅ Tinggi tetap */
+    line-height: 1.2 !important; /* ✅ Line-height konsisten */
+    vertical-align: middle !important; /* ✅ Vertikal center */
+    display: inline-flex !important; /* ✅ Pakai flexbox */
+    align-items: center !important; /* ✅ Vertikal center */
+    justify-content: center !important; /* ✅ Horizontal center */
+    box-sizing: border-box !important;
+}
         }
         .table-white-container .dataTables_paginate .paginate_button.current,
         .table-white-container .dataTables_paginate .paginate_button:hover {
@@ -137,20 +145,30 @@
             border-color: #3b82f6 !important;
         }
         .table-white-container .dataTables_filter input {
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #1e293b !important;
-            border-radius: 4px;
-            padding: 4px 8px;
-            margin-left: 8px;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    border-radius: 4px;
+    padding: 6px 10px !important; /* ✅ Padding seimbang */
+    margin-left: 8px;
+    height: 32px !important; /* ✅ Tinggi tetap */
+    line-height: 1.2 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+}
         }
-        .table-white-container .dataTables_length select {
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #1e293b !important;
-            border-radius: 4px;
-            padding: 4px;
-            margin: 0 4px;
+       .table-white-container .dataTables_length select {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    border-radius: 4px;
+    padding: 6px 10px !important; /* ✅ Padding seimbang */
+    margin: 0 4px;
+    height: 32px !important; /* ✅ Tinggi tetap */
+    line-height: 1.2 !important; /* ✅ Line-height konsisten */
+    vertical-align: middle !important; /* ✅ Vertikal center */
+    display: inline-block !important;
+}
         }
         .table-white-container table.dataTable {
             border-collapse: collapse !important;
@@ -187,10 +205,54 @@
         .table-white-container .dataTables_wrapper::after { content: ""; display: table; clear: both; }
         
         /* ✅ BADGE TTR: HIJAU, KUNING, MERAH */
-        .ttr-low { background: #16a34a; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
-        .ttr-medium { background: #ca8a04; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;} /* ✅ BARU: Warna Kuning */
-        .ttr-high { background: #dc2626; color: white; padding: 3px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; display: inline-block; text-align: center; min-width: 40px;}
-        
+        .ttr-low { 
+    background: #16a34a; 
+    color: white; 
+    padding: 6px 12px !important; /* ✅ Padding seimbang */
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 11px; 
+    display: inline-flex !important; /* ✅ Pakai flexbox */
+    align-items: center !important; /* ✅ Vertikal center */
+    justify-content: center !important; /* ✅ Horizontal center */
+    text-align: center !important;
+    min-width: 50px !important; /* ✅ Lebar minimum */
+    height: 28px !important; /* ✅ Tinggi tetap */
+    line-height: 1 !important; /* ✅ Hilangkan line-height default */
+    box-sizing: border-box !important;
+}
+.ttr-medium { 
+    background: #ca8a04; 
+    color: white; 
+    padding: 6px 12px !important;
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 11px; 
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    min-width: 50px !important;
+    height: 28px !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+}
+.ttr-high { 
+    background: #dc2626; 
+    color: white; 
+    padding: 6px 12px !important;
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 11px; 
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    min-width: 50px !important;
+    height: 28px !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+}
         .dt-button {
             background: rgba(30, 58, 138, 0.5) !important;
             color: #e0f2fe !important;
