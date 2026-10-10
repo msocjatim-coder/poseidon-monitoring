@@ -28,6 +28,16 @@
         @keyframes blink-urgent { 0%, 100% { background-color: #dc2626; color: #ffffff; font-weight: bold; } 50% { background-color: #991b1b; color: #ffffff; font-weight: bold; } }
         .blink-urgent { animation: blink-urgent 1s infinite; border-radius: 6px; padding: 4px 10px; display: inline-block; }
         .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
+        
+        /* ✅ TAMBAHAN: Agar kolom INFO bisa multi-line seperti Headline */
+        .col-info { 
+            white-space: normal !important; 
+            word-wrap: break-word !important; 
+            overflow-wrap: break-word !important;
+            max-width: 400px !important;
+            line-height: 1.4 !important;
+        }
+
         .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.6); color: #22d3ee; }
         .tab-content { display: none; }
@@ -349,11 +359,32 @@
         function getLastUpdClass(menit) {
             if (menit < 20) return 'durasi-low';
             if (menit < 30) return 'durasi-medium';
-            return 'durasi-high blink-urgent';
+            return 'durasi-high blink-urgent'; // ✅ Ini akan memicu animasi kedip-kedip
         }
 
         function renderDashboard(data) {
             if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
+            
+            // ✅ 1. URUTAN LAYANAN CUSTOM
+            const layananOrder = {
+                'METRO': 1,
+                'TOPOLO': 2,
+                'ASTINET': 3,
+                'MET-CNQ': 4,
+                'SLD': 5,
+                'IPTRANSIT': 6,
+                'BACKHAUL': 7,
+                'RADIOIP': 8,
+                'RIP-CNQ': 9,
+                'LAINNYA': 10
+            };
+            
+            // ✅ 2. SORTING DATA BERDASARKAN LAYANAN SEBELUM DIRENDER
+            data.sort((a, b) => {
+                const orderA = layananOrder[a.layanan] || 99;
+                const orderB = layananOrder[b.layanan] || 99;
+                return orderA - orderB;
+            });
             
             const columns = [
                 { title: "Layanan", data: "layanan", width: "90px" },
@@ -369,7 +400,16 @@
                     return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/bb INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
                   }
                 },
-                { title: "INFO", data: "info", className: "col-update", width: "300px", render: function(data) { return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; } },
+                { 
+                  // ✅ 3. KOLOM INFO DIUBAH MENJADI MULTI-LINE (break-word)
+                  title: "INFO", 
+                  data: "info", 
+                  className: "break-word", 
+                  width: "400px", 
+                  render: function(data) { 
+                    return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
+                  } 
+                },
                 { 
                   title: "Last Upd", 
                   data: "lastUpdMenit", 
@@ -387,12 +427,20 @@
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: data, 
                 columns: columns, 
-                pageLength: 25, 
-                order: [[7, 'desc']],
+                // ✅ 4. TAMPILKAN SEMUA DATA & HILANGKAN DROPDOWN
+                pageLength: -1,        
+                lengthMenu: [],        
+                ordering: false,       // Sorting sudah dilakukan manual di atas
                 autoWidth: false, 
-                scrollX: true,
-                dom: '<"flex justify-between items-center mb-2"lf>rtip',
-                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } },
+                scrollX: false,        
+                dom: '<"flex justify-between items-center mb-2"f>rtip',  // 'l' (length) dihilangkan
+                language: { 
+                  search: "Cari:", 
+                  info: "Menampilkan _TOTAL_ data", 
+                  paginate: { previous: "Sebelumnya", next: "Selanjutnya" },
+                  infoFiltered: "",
+                  infoEmpty: "Tidak ada data"
+                },
                 drawCallback: function() {
                   $('.smart-send-btn').off('click').on('click', function() {
                     const noTiket = $(this).data('notiket');
@@ -413,26 +461,18 @@
             });
         }
 
-        // ✅ DIPERBAIKI: Gunakan GET (bukan POST) untuk bypass CORS Apps Script
         function sendSmartFieldUpdate(noTiket, value, inputElement) {
           inputElement.prop('disabled', true);
           inputElement.siblings('button').prop('disabled', true);
           
-          // ✅ Gunakan GET dengan parameter di URL (bypass CORS)
           const url = API_URL + "?action=updateSmartField&noTiket=" + encodeURIComponent(noTiket) + "&value=" + encodeURIComponent(value) + "&t=" + new Date().getTime();
-          
-          console.log("Sending GET to:", url);
           
           fetch(url, {
             method: 'GET',
             mode: 'cors'
           })
-          .then(response => {
-            console.log("Response status:", response.status);
-            return response.json();
-          })
+          .then(response => response.json())
           .then(data => {
-            console.log("Response data:", data);
             if (data.status === 'success') {
               showToast(data.message, false);
               inputElement.val('');
@@ -441,7 +481,6 @@
             }
           })
           .catch(error => { 
-            console.error("Error:", error);
             showToast('⚠️ Gagal koneksi: ' + error.message, true); 
           })
           .finally(() => {
