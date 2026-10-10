@@ -25,8 +25,8 @@
         .offline-dot { animation: pulse-red 2s infinite; }
         @keyframes pulse-cyan { 0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); } }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        @keyframes blink-urgent { 0%, 100% { background-color: #fee2e2; color: #dc2626; font-weight: bold; } 50% { background-color: #dc2626; color: #ffffff; font-weight: bold; } }
-        .blink-urgent { animation: blink-urgent 1.2s infinite; border-radius: 4px; padding: 2px 6px; display: inline-block; }
+        @keyframes blink-urgent { 0%, 100% { background-color: #dc2626; color: #ffffff; font-weight: bold; } 50% { background-color: #991b1b; color: #ffffff; font-weight: bold; } }
+        .blink-urgent { animation: blink-urgent 1s infinite; border-radius: 6px; padding: 4px 10px; display: inline-block; }
         .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
         .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.6); color: #22d3ee; }
@@ -61,6 +61,19 @@
         .ttr-low { background: #16a34a !important; }
         .ttr-medium { background: #ca8a04 !important; }
         .ttr-high { background: #dc2626 !important; }
+        
+        /* ✅ BADGE LAST UPD UNTUK DASHBOARD */
+        .durasi-low { background: #16a34a !important; color: #000000 !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
+        .durasi-medium { background: #eab308 !important; color: #000000 !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
+        .durasi-high { background: #dc2626 !important; color: #ffffff !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
+        
+        /* ✅ SMART INPUT FIELD */
+        .smart-input { width: 140px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; }
+        .smart-input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+        .smart-send-btn { padding: 4px 8px; background: #06b6d4; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; margin-left: 4px; }
+        .smart-send-btn:hover { background: #0891b2; }
+        .smart-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
         .dt-button { background: rgba(30, 58, 138, 0.5) !important; color: #e0f2fe !important; border: 1px solid rgba(56, 189, 248, 0.4) !important; border-radius: 6px !important; padding: 6px 12px !important; font-size: 12px !important; margin-left: 4px !important; cursor: pointer; }
         .dt-button:hover { background: rgba(34, 211, 238, 0.3) !important; }
         .search-box { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); color: #e0f2fe; border-radius: 6px; padding: 8px 16px; width: 300px; }
@@ -117,10 +130,11 @@
         <div class="max-w-7xl mx-auto mb-6">
             <div class="flex gap-2 glass p-2 rounded-xl">
                 <button class="tab-btn active flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300 border border-cyan-700/30" data-tab="laporan">LAPORAN CNOP</button>
-                <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="sheet">SHEET</button>
+                <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="dashboard">DASHBOARD</button>
             </div>
         </div>
         
+        <!-- TAB LAPORAN CNOP (TIDAK DIUBAH SAMA SEKALI) -->
         <div id="tab-laporan" class="tab-content active">
             <div class="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2">
                 <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">JATIM</button>
@@ -145,14 +159,11 @@
             <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button></div>
         </div>
 
-        <div id="tab-sheet" class="tab-content">
+        <!-- ✅ TAB DASHBOARD (BARU) - Hanya Tiket Aktif dengan Smart Input -->
+        <div id="tab-dashboard" class="tab-content">
             <section class="mb-12">
-                <h2 class="text-2xl font-bold text-red-400 uppercase tracking-widest mb-4 text-center glow-text">🔴 DAFTAR TIKET AKTIF</h2>
-                <div class="table-white-container"><table id="table-sheet-active" class="w-full" style="width:100%"></table></div>
-            </section>
-            <section>
-                <h2 class="text-2xl font-bold text-green-400 uppercase tracking-widest mb-4 text-center">✅ DAFTAR TIKET CLEAR</h2>
-                <div class="table-white-container"><table id="table-sheet-clear" class="w-full" style="width:100%"></table></div>
+                <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text">📊 DASHBOARD TIKET AKTIF</h2>
+                <div class="table-white-container"><table id="table-dashboard" class="w-full" style="width:100%"></table></div>
             </section>
         </div>
     </div>
@@ -173,9 +184,9 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzn_OqbuXPAIRT-brJDIgbMiZ1H6t6fLU9udn0It7icfABYm6rl8ShzqkOe_iQEaEs/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzGoA1XgjDPxwH_5ChJ0lBz8orjXKzpRA5FaI9aavR8kphsITXSc8JwIkqETHaT35OC/exec";
         
-        let tableDownInstance = null, tableNonDownInstance = null, tableSheetActiveInstance = null, tableSheetClearInstance = null;
+        let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
         let isCurrentlyOffline = false;
 
@@ -187,7 +198,7 @@
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
                 if (activeTab === 'laporan') fetchLaporanData(false);
-                else if (activeTab === 'sheet') fetchSheetData(false);
+                else if (activeTab === 'dashboard') fetchDashboardData(false);
             }, 30000);
         };
 
@@ -200,7 +211,7 @@
                     btn.classList.add('active');
                     document.getElementById('tab-' + tab).classList.add('active');
                     if (tab === 'laporan' && !tableDownInstance) fetchLaporanData(true);
-                    if (tab === 'sheet' && !tableSheetActiveInstance) fetchSheetData(true);
+                    if (tab === 'dashboard' && !tableDashboardInstance) fetchDashboardData(true);
                 });
             });
             document.querySelectorAll('.sub-tab-btn[data-area]').forEach(btn => {
@@ -229,7 +240,6 @@
             const loading = document.getElementById('loading');
             
             if (!dot || !statusText) return;
-
             const isTerputus = connectionStatus && connectionStatus.includes("TERPUTUS");
             
             if (isTerputus) {
@@ -255,20 +265,14 @@
                     const loadingEl = document.getElementById('loading');
                     if (loadingEl) loadingEl.classList.remove('hidden');
                 }
-                
                 const url = API_URL + "?view=laporan&area=" + currentArea + "&t=" + new Date().getTime();
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                
-                if (data.status === 'error') {
-                    console.error("Server error:", data.message);
-                    return;
-                }
+                if (data.status === 'error') { console.error("Server error:", data.message); return; }
                 
                 updateConnectionStatus(data.connectionStatus);
                 if (isCurrentlyOffline) return;
-                
                 if (data.lastSync) lastSyncTime = data.lastSync;
                 
                 const labelEl = document.getElementById('label-area-down');
@@ -294,34 +298,23 @@
             }
         }
 
-        async function fetchSheetData(isFirstLoad = false) {
+        async function fetchDashboardData(isFirstLoad = false) {
             try {
                 if (isFirstLoad && !isFirstLoadComplete) {
                     const loadingEl = document.getElementById('loading');
                     if (loadingEl) loadingEl.classList.remove('hidden');
                 }
-                
-                const url = API_URL + "?t=" + new Date().getTime();
+                const url = API_URL + "?view=dashboard&t=" + new Date().getTime();
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                
-                if (data.status === 'error') {
-                    console.error("Server error:", data.message);
-                    return;
-                }
+                if (data.status === 'error') { console.error("Server error:", data.message); return; }
 
                 updateConnectionStatus(data.connectionStatus);
                 if (isCurrentlyOffline) return;
-
                 if (data.lastSync) lastSyncTime = data.lastSync;
                 
-                const allData = data.data || [];
-                const activeData = allData.filter(d => !['SALAMSIM', 'FINALCHECK', 'CLOSED', 'CLEAR', 'RESOLVED'].includes(String(d.STATUS).toUpperCase()));
-                const clearData = allData.filter(d => ['SALAMSIM', 'FINALCHECK', 'CLOSED', 'CLEAR', 'RESOLVED'].includes(String(d.STATUS).toUpperCase()));
-
-                renderSheetActive(activeData);
-                renderSheetClear(clearData);
+                renderDashboard(data.data || []);
                 
                 const now = new Date();
                 const lastUpdatedEl = document.getElementById('last-updated');
@@ -335,12 +328,119 @@
                     if (mainContentEl) mainContentEl.classList.remove('hidden');
                 }
             } catch (error) {
-                console.error("Gagal mengambil data sheet:", error);
+                console.error("Gagal mengambil data dashboard:", error);
                 showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
-        // ✅ FUNGSI DIPERBAIKI: Mengonversi "2:05:28" ke desimal HANYA untuk logika pewarnaan
+        // ✅ FUNGSI FORMAT LAST UPD (Waktu Sekarang - LAST UPDATE WORKLOG)
+        function formatLastUpd(menit) {
+            if (menit < 1) return "Baru saja";
+            if (menit < 60) return menit + " Menit lalu";
+            if (menit < 1440) {
+                const jam = Math.floor(menit / 60);
+                const sisaMenit = menit % 60;
+                return sisaMenit > 0 ? jam + " Jam " + sisaMenit + " Menit lalu" : jam + " Jam lalu";
+            }
+            const hari = Math.floor(menit / 1440);
+            const sisaJam = Math.floor((menit % 1440) / 60);
+            return sisaJam > 0 ? hari + " Hari " + sisaJam + " Jam lalu" : hari + " Hari lalu";
+        }
+
+        // ✅ FUNGSI WARNA LAST UPD
+        function getLastUpdClass(menit) {
+            if (menit < 20) return 'durasi-low';
+            if (menit < 30) return 'durasi-medium';
+            return 'durasi-high blink-urgent';
+        }
+
+        function renderDashboard(data) {
+            if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
+            
+            const columns = [
+                { title: "Layanan", data: "layanan", width: "90px" },
+                { title: "District", data: "district", width: "100px" },
+                { title: "Site ID", data: "siteId", width: "100px" },
+                { title: "No Tiket", data: "noTiket", width: "130px" },
+                { title: "Headline", data: "headline", className: "break-word", width: "300px" },
+                { 
+                  title: "KET", 
+                  data: "noTiket", 
+                  width: "220px",
+                  render: function(data, type, row) {
+                    return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/bb INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
+                  }
+                },
+                { title: "INFO", data: "info", className: "col-update", width: "300px", render: function(data) { return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; } },
+                { 
+                  title: "Last Upd", 
+                  data: "lastUpdMenit", 
+                  width: "140px",
+                  render: function(data, type, row) {
+                    const menit = parseInt(data) || 0;
+                    const text = formatLastUpd(menit);
+                    const cls = getLastUpdClass(menit);
+                    const prefix = menit >= 30 ? '🚨 ' : '';
+                    return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
+                  }
+                },
+                { title: "TTR", data: "ttr", width: "90px" }
+            ];
+            
+            tableDashboardInstance = $('#table-dashboard').DataTable({
+                data: data, 
+                columns: columns, 
+                pageLength: 25, 
+                order: [[7, 'desc']], // Sort by Last Upd descending
+                autoWidth: false, 
+                scrollX: true,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } },
+                drawCallback: function() {
+                  $('.smart-send-btn').off('click').on('click', function() {
+                    const noTiket = $(this).data('notiket');
+                    const input = $(this).siblings('.smart-input');
+                    const value = input.val().trim();
+                    if (!value) { showToast('⚠️ Input kosong', true); return; }
+                    sendSmartFieldUpdate(noTiket, value, input);
+                  });
+                  $('.smart-input').off('keypress').on('keypress', function(e) {
+                    if (e.which === 13) {
+                      const noTiket = $(this).data('notiket');
+                      const value = $(this).val().trim();
+                      if (!value) { showToast('⚠️ Input kosong', true); return; }
+                      sendSmartFieldUpdate(noTiket, value, $(this));
+                    }
+                  });
+                }
+            });
+        }
+
+        function sendSmartFieldUpdate(noTiket, value, inputElement) {
+          inputElement.prop('disabled', true);
+          inputElement.siblings('button').prop('disabled', true);
+          
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'updateSmartField', noTiket: noTiket, value: value })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              showToast(data.message, false);
+              inputElement.val('');
+            } else {
+              showToast(data.message, true);
+            }
+          })
+          .catch(error => { showToast('⚠️ Gagal koneksi', true); })
+          .finally(() => {
+            inputElement.prop('disabled', false);
+            inputElement.siblings('button').prop('disabled', false);
+          });
+        }
+
         function getTtrClass(sevr, ttr) {
             let t = 0;
             if (ttr) {
@@ -353,7 +453,6 @@
                     if (isNaN(t)) t = 0;
                 }
             }
-            
             let s = (sevr || "").toUpperCase().trim();
             if (s === "PREMIUM") { if (t <= 0.5) return 'ttr-low'; if (t <= 1) return 'ttr-medium'; return 'ttr-high'; }
             if (s === "CRITICAL") { if (t <= 1) return 'ttr-low'; if (t <= 3) return 'ttr-medium'; return 'ttr-high'; }
@@ -363,22 +462,6 @@
             if (t <= 12) return 'ttr-low'; if (t <= 22) return 'ttr-medium'; return 'ttr-high';
         }
 
-        function formatLastUpdBlink(dateStr) {
-            if (!dateStr || dateStr === 'N/A' || dateStr === '-') return '-';
-            try {
-                const parts = dateStr.split(' ');
-                const dateParts = parts[0].split('/');
-                const timeParts = parts[1].split(':');
-                const parsedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
-                const now = new Date();
-                const diffMinutes = (now - parsedDate) / (1000 * 60);
-                if (diffMinutes > 30) {
-                    return `<span class="blink-urgent" title="Sudah ${Math.floor(diffMinutes)} menit tanpa update!">${dateStr}</span>`;
-                }
-                return dateStr;
-            } catch (e) { return dateStr; }
-        }
-
         function renderTabelDown(data) {
             if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
             const columns = [
@@ -386,7 +469,6 @@
                 { title: "District", data: "district", width: "100px" }, { title: "Area", data: "area", width: "90px" }, { title: "No Tiket", data: "noTiket", width: "130px" },
                 { title: "Headline", data: "headline", className: "break-word", width: "450px" }, { title: "Status", data: "status", width: "100px" },
                 { title: "Update", data: "update", className: "break-word", width: "620px" }, { title: "Tglopen", data: "tglopen", width: "140px" },
-                // ✅ 'data' di sini sekarang berisi string asli "2:05:28", getTtrClass hanya用它来计算颜色
                 { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { const cls = getTtrClass(row.sevr, data); return `<span class="${cls}">${data}</span>`; } }
             ];
             tableDownInstance = $('#table-down').DataTable({
@@ -414,64 +496,12 @@
             });
         }
 
-        function renderSheetActive(data) {
-            if (tableSheetActiveInstance) { tableSheetActiveInstance.destroy(); $('#table-sheet-active').empty(); }
-            const layananOrder = { 'METRO': 1, 'OLO': 2, 'METRO-CNQ': 3, 'RADIOIP': 4, 'RADIO-CNQ': 5, 'RADIOLH': 6 };
-            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
-            data.sort((a, b) => {
-                let lA = layananOrder[a.LAYANAN?.toUpperCase()] || 99;
-                let lB = layananOrder[b.LAYANAN?.toUpperCase()] || 99;
-                if (lA !== lB) return lA - lB;
-                let sA = sevrOrder[a.SEVR?.toUpperCase()] || 99;
-                let sB = sevrOrder[b.SEVR?.toUpperCase()] || 99;
-                if (a.SUMMARY && a.SUMMARY.toUpperCase().includes('PREVENTIVE')) sA = 1;
-                if (b.SUMMARY && b.SUMMARY.toUpperCase().includes('PREVENTIVE')) sB = 1;
-                if (sA !== sB) return sA - sB;
-                return 0;
-            });
-            const columns = [
-                { title: "UPDATE", data: "WORKLOG SUMMARY", className: "col-update", width: "400px", render: function(data) { return data ? `<span title="${data}">${data}</span>` : '-'; } },
-                { title: "Last Upd", data: "STATUS DATE", width: "140px", render: function(data) { return formatLastUpdBlink(data); } },
-                { title: "SITE ID", data: "SITE ID", width: "100px" },
-                { title: "NO TIKET", data: "INCIDENT", width: "130px" },
-                { title: "HEADLINE", data: "SUMMARY", className: "break-word", width: "400px" },
-                { title: "SEVR", data: "SEVR", width: "80px" },
-                { title: "LAYANAN", data: "LAYANAN", width: "90px" },
-                { title: "DISTRICT", data: "DISTRICT", width: "100px" },
-                { title: "STATUS", data: "STATUS", width: "100px" },
-                { title: "TTR", data: "TTR CUSTOMER", width: "70px", render: function(data, type, row) { const cls = getTtrClass(row.SEVR, data); return `<span class="${cls}">${data}</span>`; } }
-            ];
-            tableSheetActiveInstance = $('#table-sheet-active').DataTable({
-                data: data, columns: columns, pageLength: 25, order: [], autoWidth: false, scrollX: true,
-                dom: '<"flex justify-between items-center mb-2"lf>rtip',
-                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
-            });
-        }
-
-        function renderSheetClear(data) {
-            if (tableSheetClearInstance) { tableSheetClearInstance.destroy(); $('#table-sheet-clear').empty(); }
-            const columns = [
-                { title: "NO TIKET", data: "INCIDENT", width: "130px" },
-                { title: "SITE ID", data: "SITE ID", width: "100px" },
-                { title: "HEADLINE", data: "SUMMARY", className: "break-word", width: "400px" },
-                { title: "SEVR", data: "SEVR", width: "80px" },
-                { title: "LAYANAN", data: "LAYANAN", width: "90px" },
-                { title: "DISTRICT", data: "DISTRICT", width: "100px" },
-                { title: "STATUS", data: "STATUS", width: "100px" },
-                { title: "TTR", data: "TTR CUSTOMER", width: "70px", render: function(data) { return `<span class="ttr-low">${data}</span>`; } },
-                { title: "Last Upd", data: "STATUS DATE", width: "140px" }
-            ];
-            tableSheetClearInstance = $('#table-sheet-clear').DataTable({
-                data: data, columns: columns, pageLength: 20, order: [[8, 'desc']], autoWidth: false, scrollX: true,
-                dom: '<"flex justify-between items-center mb-2"lf>rtip',
-                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
-            });
-        }
-
         function forceRefresh() {
             showToast("⏳ Menyegarkan data...", false);
             isCurrentlyOffline = false;
-            fetchLaporanData(true);
+            const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+            if (activeTab === 'laporan') fetchLaporanData(true);
+            else if (activeTab === 'dashboard') fetchDashboardData(true);
         }
         
         function captureBothTables() {
