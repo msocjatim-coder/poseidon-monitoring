@@ -113,26 +113,13 @@
         </header>
         <div class="max-w-7xl mx-auto mb-6">
             <div class="flex gap-2 glass p-2 rounded-xl">
-                <button class="tab-btn active flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300 border border-cyan-700/30" data-tab="monitoring">MONITORING</button>
-                <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="laporan">LAPORAN CNOP</button>
+                <button class="tab-btn active flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300 border border-cyan-700/30" data-tab="laporan">LAPORAN CNOP</button>
                 <button class="tab-btn flex-1 py-3 px-6 rounded-lg font-bold text-cyan-300/60 border border-cyan-700/30" data-tab="sheet">SHEET</button>
             </div>
         </div>
-        <div id="tab-monitoring" class="tab-content active">
-            <div class="max-w-7xl mx-auto mb-4 flex gap-2">
-                <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-subtab="metro">METRO</button>
-                <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-subtab="radio">RADIO</button>
-            </div>
-            <div id="subtab-metro" class="sub-tab-content active">
-                <div class="max-w-7xl mx-auto mb-4 flex justify-between items-center"><input type="text" id="search-metro" class="search-box" placeholder="🔍 Cari Site ID atau No Tiket..."></div>
-                <main class="max-w-6xl mx-auto space-y-10" id="ticket-container-metro"></main>
-            </div>
-            <div id="subtab-radio" class="sub-tab-content">
-                <div class="max-w-7xl mx-auto mb-4 flex justify-between items-center"><input type="text" id="search-radio" class="search-box" placeholder="🔍 Cari Site ID atau No Tiket Radio..."></div>
-                <main class="max-w-6xl mx-auto space-y-10" id="ticket-container-radio"></main>
-            </div>
-        </div>
-        <div id="tab-laporan" class="tab-content">
+        
+        <!-- TAB LAPORAN CNOP -->
+        <div id="tab-laporan" class="tab-content active">
             <div class="max-w-7xl mx-auto mb-4 flex flex-wrap gap-2">
                 <button class="sub-tab-btn active bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300" data-area="JATIM">JATIM</button>
                 <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="MATARAM">MATARAM</button>
@@ -155,6 +142,8 @@
             </main>
             <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button></div>
         </div>
+
+        <!-- TAB SHEET -->
         <div id="tab-sheet" class="tab-content">
             <section class="mb-12">
                 <h2 class="text-2xl font-bold text-red-400 uppercase tracking-widest mb-4 text-center glow-text">🔴 DAFTAR TIKET AKTIF</h2>
@@ -166,6 +155,8 @@
             </section>
         </div>
     </div>
+    
+    <!-- MODAL & TOAST -->
     <div id="capture-modal" class="capture-modal">
         <div class="capture-modal-content">
             <div class="capture-modal-header">
@@ -180,8 +171,11 @@
         </div>
     </div>
     <div id="toast" class="toast"></div>
+
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbx0g6MKyb4hz6ux50ExCg32jrXGUvvSdNo9jMqhCWD7cMABNxm2wdo4ffPK7yzgDffLAQ/exec";
+        // ⚠️ PENTING: GANTI URL INI DENGAN URL WEB APP BARU DARI SPREADSHEET DATABASE MSO
+        const API_URL = "https://script.google.com/macros/s/AKfycbz8WCOTG3RhOWMS3RTv3rh-_PugDFW83QToIRYyP5qrL16NU0xWg879Ki9AeoYarrnS/exec";
+        
         let tableDownInstance = null, tableNonDownInstance = null, tableSheetActiveInstance = null, tableSheetClearInstance = null;
         let currentArea = "JATIM", OFFLINE_THRESHOLD = 2 * 60 * 1000, lastSyncTime = 0, lastSuccessfulFetch = 0, lastCaptureImage = null, isFirstLoadComplete = false;
 
@@ -189,15 +183,11 @@
             updateClock();
             setInterval(updateClock, 1000);
             initTabs();
-            fetchPoseidonData(true, 'metro');
+            fetchLaporanData(true); // Load laporan CNOP sebagai default
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-                if (activeTab === 'monitoring') {
-                    const activeSubTab = document.querySelector('.sub-tab-btn.active')?.dataset.subtab || 'metro';
-                    fetchPoseidonData(false, activeSubTab);
-                } else if (activeTab === 'sheet') {
-                    fetchSheetData(false);
-                }
+                if (activeTab === 'laporan') fetchLaporanData(false);
+                else if (activeTab === 'sheet') fetchSheetData(false);
             }, 30000);
         };
 
@@ -209,19 +199,8 @@
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     btn.classList.add('active');
                     document.getElementById('tab-' + tab).classList.add('active');
-                    if (tab === 'laporan' && !tableDownInstance) fetchLaporanData();
+                    if (tab === 'laporan' && !tableDownInstance) fetchLaporanData(true);
                     if (tab === 'sheet' && !tableSheetActiveInstance) fetchSheetData(true);
-                });
-            });
-            document.querySelectorAll('.sub-tab-btn[data-subtab]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const subtab = btn.dataset.subtab;
-                    document.querySelectorAll('.sub-tab-btn[data-subtab]').forEach(b => b.classList.remove('active'));
-                    document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
-                    btn.classList.add('active');
-                    document.getElementById('subtab-' + subtab).classList.add('active');
-                    if (subtab === 'metro') fetchPoseidonData(false, 'metro');
-                    else if (subtab === 'radio') fetchPoseidonData(false, 'radio');
                 });
             });
             document.querySelectorAll('.sub-tab-btn[data-area]').forEach(btn => {
@@ -230,11 +209,9 @@
                     document.querySelectorAll('.sub-tab-btn[data-area]').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentArea = area;
-                    fetchLaporanData();
+                    fetchLaporanData(true);
                 });
             });
-            document.getElementById('search-metro').addEventListener('input', (e) => filterTickets('metro', e.target.value));
-            document.getElementById('search-radio').addEventListener('input', (e) => filterTickets('radio', e.target.value));
         }
 
         function updateClock() {
@@ -278,77 +255,61 @@
             }
         }
 
-        async function fetchPoseidonData(isFirstLoad = false, type = 'metro') {
+        async function fetchLaporanData(isFirstLoad = false) {
             try {
                 if (isFirstLoad) { const loadingEl = document.getElementById('loading'); if (loadingEl) loadingEl.classList.remove('hidden'); }
-                let url = API_URL + "?t=" + new Date().getTime();
-                if (type === 'radio') url = API_URL + "?view=radio&t=" + new Date().getTime();
-                else if (type === 'metro') url = API_URL + "?view=metro&t=" + new Date().getTime();
+                const url = API_URL + "?view=laporan&area=" + currentArea + "&t=" + new Date().getTime();
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 const data = await response.json();
                 
-                // ✅ URGENT FIX: Jika backend mendeteksi disconnected, langsung tampilkan overlay
-                if (data.disconnected) { setConnectionStatus(false); return; }
-
+                if (data.status === 'error' || data.disconnected) { setConnectionStatus(false); return; }
+                
                 if (data.lastSync) lastSyncTime = data.lastSync; else lastSyncTime = Date.now();
                 lastSuccessfulFetch = Date.now();
                 setConnectionStatus(true);
-                if (type === 'radio') renderDashboard(data, 'radio'); else renderDashboard(data, 'metro');
-                const now = new Date();
-                const lastUpdatedEl = document.getElementById('last-updated');
-                if (lastUpdatedEl) lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
-                if (isFirstLoad) { showContent(); isFirstLoadComplete = true; }
-            } catch (error) {
-                console.error("Gagal mengambil data:", error);
-                if (isFirstLoad) {
-                    const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-                    const container = document.getElementById(containerId);
-                    if (container) {
-                        container.innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl"><h3 class="text-xl font-bold mb-2">❌ Gagal Mengambil Data</h3><p class="mb-4">${error.message}</p><button onclick="forceRefresh()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white">Coba Lagi</button></div>`;
-                    }
-                    showContent(); isFirstLoadComplete = true;
-                }
-            }
-        }
-
-        async function fetchLaporanData() {
-            try {
-                const url = API_URL + "?view=laporan&area=" + currentArea + "&t=" + new Date().getTime();
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.error) { alert("Error: " + data.error); return; }
-                if (data.disconnected) { setConnectionStatus(false); return; } // ✅ URGENT FIX
                 
-                if (data.lastSync) lastSyncTime = data.lastSync; else lastSyncTime = Date.now();
-                setConnectionStatus(true);
                 const offlineOverlay = document.getElementById('offline-overlay');
                 if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) return; 
+                
                 const labelEl = document.getElementById('label-area-down');
                 if (labelEl) labelEl.innerText = `(${currentArea} DOWN)`;
-                renderTabelDown(data.down);
-                renderTabelNonDown(data.nonDown);
+                
+                renderTabelDown(data.down || []);
+                renderTabelNonDown(data.nonDown || []);
+                
+                if (isFirstLoad) { showContent(); isFirstLoadComplete = true; }
             } catch (error) {
                 console.error("Gagal mengambil data laporan:", error);
-                alert("Gagal memuat data laporan: " + error.message);
+                if (isFirstLoad) {
+                    document.getElementById('table-down').parentNode.innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl"><h3 class="text-xl font-bold mb-2">❌ Gagal Mengambil Data</h3><p class="mb-4">${error.message}</p><button onclick="forceRefresh()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white">Coba Lagi</button></div>`;
+                    showContent(); isFirstLoadComplete = true;
+                }
             }
         }
 
         async function fetchSheetData(isFirstLoad = false) {
             try {
                 if (isFirstLoad) { const loadingEl = document.getElementById('loading'); if (loadingEl) loadingEl.classList.remove('hidden'); }
-                const url = API_URL + "?view=sheet&t=" + new Date().getTime();
+                const url = API_URL + "?t=" + new Date().getTime();
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 const data = await response.json();
                 
-                if (data.disconnected) { setConnectionStatus(false); return; } // ✅ URGENT FIX
+                if (data.status === 'error' || data.disconnected) { setConnectionStatus(false); return; }
 
                 if (data.lastSync) lastSyncTime = data.lastSync; else lastSyncTime = Date.now();
                 lastSuccessfulFetch = Date.now();
                 setConnectionStatus(true);
-                renderSheetActive(data.active || []);
-                renderSheetClear(data.clear || []);
+                
+                // Filter data untuk tab sheet (aktif vs clear)
+                const allData = data.data || [];
+                const activeData = allData.filter(d => !['SALAMSIM', 'FINALCHECK', 'CLOSED', 'CLEAR', 'RESOLVED'].includes(String(d.STATUS).toUpperCase()));
+                const clearData = allData.filter(d => ['SALAMSIM', 'FINALCHECK', 'CLOSED', 'CLEAR', 'RESOLVED'].includes(String(d.STATUS).toUpperCase()));
+
+                renderSheetActive(activeData);
+                renderSheetClear(clearData);
+                
                 const now = new Date();
                 const lastUpdatedEl = document.getElementById('last-updated');
                 if (lastUpdatedEl) lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
@@ -360,64 +321,6 @@
                     showContent(); isFirstLoadComplete = true;
                 }
             }
-        }
-
-        function renderDashboard(data, type) {
-            if (data.error) {
-                const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-                const container = document.getElementById(containerId);
-                if (container) container.innerHTML = `<div class="text-red-400 text-center p-10 glass rounded-xl">${data.error}</div>`;
-                showContent(); return;
-            }
-            const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            let hasAnyTickets = false;
-            container.innerHTML = '';
-            if (data.priorities && Array.isArray(data.priorities)) {
-                data.priorities.forEach(category => {
-                    const tickets = data.tickets[category];
-                    if (tickets && tickets.length > 0) {
-                        hasAnyTickets = true;
-                        let borderClass = "border-l-cyan-500";
-                        if (category === 'PREMIUM' || category === 'CRITICAL') borderClass = "border-l-red-500";
-                        else if (category === 'MAJOR') borderClass = "border-l-orange-500";
-                        let html = `<section><div class="flex items-center gap-3 mb-4 border-b border-cyan-700/40 pb-2"><h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest">${category}</h2><span class="bg-cyan-900/50 text-cyan-300 text-xs px-3 py-1 rounded-full border border-cyan-700/50">${tickets.length} Tiket Aktif</span></div><div class="grid gap-4">`;
-                        tickets.forEach((ticket, index) => {
-                            html += `<div class="glass rounded-xl p-5 hover:bg-blue-900/30 transition-all duration-300 border-l-4 ${borderClass}" data-site="${ticket.siteId}" data-ticket="${ticket.noTiket}">
-                                <div class="flex items-center gap-3 mb-3"><span class="text-cyan-500 font-bold text-lg">${index + 1}.</span><span class="bg-slate-900/80 text-cyan-300 text-sm font-mono px-3 py-1 rounded-md border border-cyan-800/50">${ticket.siteId}</span></div>
-                                <h3 class="text-lg font-semibold text-white mb-2 break-word">${ticket.noTiket}</h3>
-                                <p class="text-cyan-100/80 text-sm mb-4 leading-relaxed break-word">${ticket.headline}</p>
-                                <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-cyan-200/70 font-mono mb-4 pb-4 border-b border-cyan-700/30"><span>📅 ${ticket.tglOpen}</span><span class="text-cyan-400 font-bold">⏱️ TTR: ${ticket.ttr}</span></div>
-                                <div class="bg-slate-900/40 rounded-lg p-4 border border-cyan-900/30">
-                                    <p class="text-xs text-cyan-400 uppercase font-bold mb-2 tracking-wider">Update Terakhir:</p>
-                                    <p class="text-sm text-cyan-100 italic mb-2 leading-relaxed break-word">"${ticket.update}"</p>
-                                    <p class="text-xs text-cyan-300/60 flex items-center gap-2"><span>Tiket Sudah Diupdate Pada :</span><strong class="text-cyan-200">${ticket.lastUpd}</strong></p>
-                                </div></div>`;
-                        });
-                        html += `</div></section>`;
-                        container.innerHTML += html;
-                    }
-                });
-            }
-            if (!hasAnyTickets) {
-                container.innerHTML = `<div class="text-center py-20 glass rounded-2xl border border-cyan-800/30"><h2 class="text-2xl font-bold text-cyan-300 mb-2">Semua Tiket Sudah Clear! 🌊</h2><p class="text-cyan-200/60">Tidak ada tiket ${type === 'radio' ? 'Radio' : 'Metro'} yang memerlukan penanganan saat ini.</p></div>`;
-            }
-            showContent();
-        }
-
-        function filterTickets(type, searchTerm) {
-            const containerId = type === 'radio' ? 'ticket-container-radio' : 'ticket-container-metro';
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const tickets = container.querySelectorAll('[data-site]');
-            const term = searchTerm.toLowerCase();
-            tickets.forEach(ticket => {
-                const siteId = ticket.getAttribute('data-site').toLowerCase();
-                const noTiket = ticket.getAttribute('data-ticket').toLowerCase();
-                if (siteId.includes(term) || noTiket.includes(term)) ticket.style.display = 'block';
-                else ticket.style.display = 'none';
-            });
         }
 
         function getTtrClass(sevr, ttr) {
@@ -435,7 +338,7 @@
             if (!dateStr || dateStr === 'N/A' || dateStr === '-') return '-';
             try {
                 const parts = dateStr.split(' ');
-                const dateParts = parts[0].split('/');
+                const dateParts = parts[0].split('/'); // Format dd/mm/yyyy
                 const timeParts = parts[1].split(':');
                 const parsedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
                 const now = new Date();
@@ -445,60 +348,6 @@
                 }
                 return dateStr;
             } catch (e) { return dateStr; }
-        }
-
-        function renderSheetActive(data) {
-            if (tableSheetActiveInstance) { tableSheetActiveInstance.destroy(); $('#table-sheet-active').empty(); }
-            const layananOrder = { 'METRO': 1, 'OLO': 2, 'METRO-CNQ': 3, 'RADIOIP': 4, 'RADIO-CNQ': 5, 'RADIOLH': 6 };
-            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
-            data.sort((a, b) => {
-                let lA = layananOrder[a.layanan?.toUpperCase()] || 99;
-                let lB = layananOrder[b.layanan?.toUpperCase()] || 99;
-                if (lA !== lB) return lA - lB;
-                let sA = sevrOrder[a.sevr?.toUpperCase()] || 99;
-                let sB = sevrOrder[b.sevr?.toUpperCase()] || 99;
-                if (a.headline && a.headline.toUpperCase().includes('PREVENTIVE')) sA = 1;
-                if (b.headline && b.headline.toUpperCase().includes('PREVENTIVE')) sB = 1;
-                if (sA !== sB) return sA - sB;
-                return 0;
-            });
-            const columns = [
-                { title: "UPDATE", data: "update", className: "col-update", width: "400px", render: function(data) { return data ? `<span title="${data}">${data}</span>` : '-'; } },
-                { title: "Last Upd", data: "lastUpd", width: "140px", render: function(data) { return formatLastUpdBlink(data); } },
-                { title: "SITE ID", data: "siteId", width: "100px" },
-                { title: "NO TIKET", data: "noTiket", width: "130px" },
-                { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
-                { title: "SEVR", data: "sevr", width: "80px" },
-                { title: "LAYANAN", data: "layanan", width: "90px" },
-                { title: "DISTRICT", data: "district", width: "100px" },
-                { title: "STATUS", data: "status", width: "100px" },
-                { title: "TTR", data: "ttr", width: "70px", render: function(data, type, row) { const cls = getTtrClass(row.sevr, data); return `<span class="${cls}">${data}</span>`; } }
-            ];
-            tableSheetActiveInstance = $('#table-sheet-active').DataTable({
-                data: data, columns: columns, pageLength: 25, order: [], autoWidth: false, scrollX: true,
-                dom: '<"flex justify-between items-center mb-2"lf>rtip',
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
-            });
-        }
-
-        function renderSheetClear(data) {
-            if (tableSheetClearInstance) { tableSheetClearInstance.destroy(); $('#table-sheet-clear').empty(); }
-            const columns = [
-                { title: "NO TIKET", data: "noTiket", width: "130px" },
-                { title: "SITE ID", data: "siteId", width: "100px" },
-                { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
-                { title: "SEVR", data: "sevr", width: "80px" },
-                { title: "LAYANAN", data: "layanan", width: "90px" },
-                { title: "DISTRICT", data: "district", width: "100px" },
-                { title: "STATUS", data: "status", width: "100px" },
-                { title: "TTR", data: "ttr", width: "70px", render: function(data) { return `<span class="ttr-low">${data}</span>`; } },
-                { title: "Last Upd", data: "lastUpd", width: "140px" }
-            ];
-            tableSheetClearInstance = $('#table-sheet-clear').DataTable({
-                data: data, columns: columns, pageLength: 20, order: [[8, 'desc']], autoWidth: false, scrollX: true,
-                dom: '<"flex justify-between items-center mb-2"lf>rtip',
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
-            });
         }
 
         function renderTabelDown(data) {
@@ -514,7 +363,7 @@
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
             });
         }
 
@@ -531,7 +380,61 @@
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-                language: { search: "Search:", lengthMenu: "Show _MENU_ entries", info: "Showing _START_ to _END_ of _TOTAL_ entries", paginate: { previous: "Previous", next: "Next" } }
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+            });
+        }
+
+        function renderSheetActive(data) {
+            if (tableSheetActiveInstance) { tableSheetActiveInstance.destroy(); $('#table-sheet-active').empty(); }
+            const layananOrder = { 'METRO': 1, 'OLO': 2, 'METRO-CNQ': 3, 'RADIOIP': 4, 'RADIO-CNQ': 5, 'RADIOLH': 6 };
+            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
+            data.sort((a, b) => {
+                let lA = layananOrder[a.LAYANAN?.toUpperCase()] || 99;
+                let lB = layananOrder[b.LAYANAN?.toUpperCase()] || 99;
+                if (lA !== lB) return lA - lB;
+                let sA = sevrOrder[a.SEVR?.toUpperCase()] || 99;
+                let sB = sevrOrder[b.SEVR?.toUpperCase()] || 99;
+                if (a.SUMMARY && a.SUMMARY.toUpperCase().includes('PREVENTIVE')) sA = 1;
+                if (b.SUMMARY && b.SUMMARY.toUpperCase().includes('PREVENTIVE')) sB = 1;
+                if (sA !== sB) return sA - sB;
+                return 0;
+            });
+            const columns = [
+                { title: "UPDATE", data: "WORKLOG SUMMARY", className: "col-update", width: "400px", render: function(data) { return data ? `<span title="${data}">${data}</span>` : '-'; } },
+                { title: "Last Upd", data: "STATUS DATE", width: "140px", render: function(data) { return formatLastUpdBlink(data); } },
+                { title: "SITE ID", data: "SITE ID", width: "100px" },
+                { title: "NO TIKET", data: "INCIDENT", width: "130px" },
+                { title: "HEADLINE", data: "SUMMARY", className: "break-word", width: "400px" },
+                { title: "SEVR", data: "SEVR", width: "80px" },
+                { title: "LAYANAN", data: "LAYANAN", width: "90px" },
+                { title: "DISTRICT", data: "DISTRICT", width: "100px" },
+                { title: "STATUS", data: "STATUS", width: "100px" },
+                { title: "TTR", data: "TTR CUSTOMER", width: "70px", render: function(data, type, row) { const cls = getTtrClass(row.SEVR, data); return `<span class="${cls}">${data}</span>`; } }
+            ];
+            tableSheetActiveInstance = $('#table-sheet-active').DataTable({
+                data: data, columns: columns, pageLength: 25, order: [], autoWidth: false, scrollX: true,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+            });
+        }
+
+        function renderSheetClear(data) {
+            if (tableSheetClearInstance) { tableSheetClearInstance.destroy(); $('#table-sheet-clear').empty(); }
+            const columns = [
+                { title: "NO TIKET", data: "INCIDENT", width: "130px" },
+                { title: "SITE ID", data: "SITE ID", width: "100px" },
+                { title: "HEADLINE", data: "SUMMARY", className: "break-word", width: "400px" },
+                { title: "SEVR", data: "SEVR", width: "80px" },
+                { title: "LAYANAN", data: "LAYANAN", width: "90px" },
+                { title: "DISTRICT", data: "DISTRICT", width: "100px" },
+                { title: "STATUS", data: "STATUS", width: "100px" },
+                { title: "TTR", data: "TTR CUSTOMER", width: "70px", render: function(data) { return `<span class="ttr-low">${data}</span>`; } },
+                { title: "Last Upd", data: "STATUS DATE", width: "140px" }
+            ];
+            tableSheetClearInstance = $('#table-sheet-clear').DataTable({
+                data: data, columns: columns, pageLength: 20, order: [[8, 'desc']], autoWidth: false, scrollX: true,
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
             });
         }
 
@@ -546,12 +449,8 @@
             showToast("🔄 Memaksa penyegaran data...", false);
             lastSyncTime = Date.now();
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-            if (activeTab === 'laporan') fetchLaporanData();
+            if (activeTab === 'laporan') fetchLaporanData(true);
             else if (activeTab === 'sheet') fetchSheetData(true);
-            else {
-                const activeSubTab = document.querySelector('.sub-tab-btn.active')?.dataset.subtab || 'metro';
-                fetchPoseidonData(true, activeSubTab);
-            }
         }
         
         function captureBothTables() {
