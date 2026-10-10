@@ -174,10 +174,10 @@
 
     <script>
         // ⚠️ PENTING: GANTI URL INI DENGAN URL WEB APP BARU DARI SPREADSHEET DATABASE MSO
-        const API_URL = "https://script.google.com/macros/s/AKfycbz8WCOTG3RhOWMS3RTv3rh-_PugDFW83QToIRYyP5qrL16NU0xWg879Ki9AeoYarrnS/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycby9MOvDfh1UNTu-A1T2X2ndi_PtPQqU7RtQq2OhtKk9z8_o2bXVPAm14Wt8WgumEz_m/exec";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableSheetActiveInstance = null, tableSheetClearInstance = null;
-        let currentArea = "JATIM", OFFLINE_THRESHOLD = 2 * 60 * 1000, lastSyncTime = 0, lastSuccessfulFetch = 0, lastCaptureImage = null, isFirstLoadComplete = false;
+        let currentArea = "JATIM", lastSyncTime = 0, lastSuccessfulFetch = 0, lastCaptureImage = null, isFirstLoadComplete = false;
 
         window.onload = function() {
             updateClock();
@@ -219,39 +219,34 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Jakarta' };
             const clockElement = document.getElementById('realtime-clock');
             if (clockElement) clockElement.innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
-            if (isFirstLoadComplete && lastSyncTime > 0) checkConnectionStatus();
         }
 
-        function checkConnectionStatus() {
-            const now = Date.now();
-            const timeSinceLastSync = now - lastSyncTime;
-            const offlineOverlay = document.getElementById('offline-overlay');
-            if (timeSinceLastSync > OFFLINE_THRESHOLD) {
-                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) {} else { setConnectionStatus(false); }
-            } else {
-                if (offlineOverlay) offlineOverlay.classList.add('hidden');
-                setConnectionStatus(true);
-            }
-        }
-
-        function setConnectionStatus(isOnline) {
+        // ✅ FUNGSI BARU: CEK STATUS DARI Y2
+        function checkConnectionFromY2(connectionStatus) {
             const dot = document.getElementById('connection-dot');
             const statusText = document.getElementById('connection-status');
             const mainContent = document.getElementById('main-content');
             const offlineOverlay = document.getElementById('offline-overlay');
+            
             if (!dot || !statusText) return;
-            if (!isOnline) {
+
+            // Jika Y2 berisi "TERPUTUS"
+            if (connectionStatus && connectionStatus.includes("TERPUTUS")) {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.className = 'text-xs text-red-400/70 mt-2 font-mono flex items-center justify-end gap-2';
                 statusText.innerHTML = '<span>⚠️</span><span>Sistem Tidak Terhubung</span>';
                 if (mainContent) mainContent.classList.add('hidden');
                 if (offlineOverlay) offlineOverlay.classList.remove('hidden');
-            } else {
+                return false; // Offline
+            } 
+            // Jika Y2 berisi "TERHUBUNG"
+            else {
                 dot.className = 'w-3 h-3 bg-cyan-400 rounded-full live-dot';
                 statusText.className = 'text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2';
                 statusText.innerHTML = '<span>✅</span><span>Sistem Online [Real-Time!]</span>';
                 if (mainContent) mainContent.classList.remove('hidden');
                 if (offlineOverlay) offlineOverlay.classList.add('hidden');
+                return true; // Online
             }
         }
 
@@ -263,20 +258,27 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 const data = await response.json();
                 
-                if (data.status === 'error' || data.disconnected) { setConnectionStatus(false); return; }
+                if (data.status === 'error') { 
+                    alert("Error: " + data.message); 
+                    return; 
+                }
+                
+                // ✅ CEK STATUS DARI Y2
+                const isOnline = checkConnectionFromY2(data.connectionStatus);
+                if (!isOnline) return; // Stop rendering jika TERPUTUS
                 
                 if (data.lastSync) lastSyncTime = data.lastSync; else lastSyncTime = Date.now();
                 lastSuccessfulFetch = Date.now();
-                setConnectionStatus(true);
-                
-                const offlineOverlay = document.getElementById('offline-overlay');
-                if (offlineOverlay && !offlineOverlay.classList.contains('hidden')) return; 
                 
                 const labelEl = document.getElementById('label-area-down');
                 if (labelEl) labelEl.innerText = `(${currentArea} DOWN)`;
                 
                 renderTabelDown(data.down || []);
                 renderTabelNonDown(data.nonDown || []);
+                
+                const now = new Date();
+                const lastUpdatedEl = document.getElementById('last-updated');
+                if (lastUpdatedEl) lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
                 
                 if (isFirstLoad) { showContent(); isFirstLoadComplete = true; }
             } catch (error) {
@@ -296,11 +298,17 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 const data = await response.json();
                 
-                if (data.status === 'error' || data.disconnected) { setConnectionStatus(false); return; }
+                if (data.status === 'error') {
+                    console.error(data.message);
+                    return;
+                }
+
+                // ✅ CEK STATUS DARI Y2
+                const isOnline = checkConnectionFromY2(data.connectionStatus);
+                if (!isOnline) return; // Stop rendering jika TERPUTUS
 
                 if (data.lastSync) lastSyncTime = data.lastSync; else lastSyncTime = Date.now();
                 lastSuccessfulFetch = Date.now();
-                setConnectionStatus(true);
                 
                 // Filter data untuk tab sheet (aktif vs clear)
                 const allData = data.data || [];
@@ -313,6 +321,7 @@
                 const now = new Date();
                 const lastUpdatedEl = document.getElementById('last-updated');
                 if (lastUpdatedEl) lastUpdatedEl.innerText = now.toLocaleTimeString('id-ID');
+                
                 if (isFirstLoad) { showContent(); isFirstLoadComplete = true; }
             } catch (error) {
                 console.error("Gagal mengambil data sheet:", error);
@@ -338,7 +347,7 @@
             if (!dateStr || dateStr === 'N/A' || dateStr === '-') return '-';
             try {
                 const parts = dateStr.split(' ');
-                const dateParts = parts[0].split('/'); // Format dd/mm/yyyy
+                const dateParts = parts[0].split('/');
                 const timeParts = parts[1].split(':');
                 const parsedDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
                 const now = new Date();
