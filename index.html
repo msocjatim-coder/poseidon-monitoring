@@ -365,7 +365,7 @@
         function renderDashboard(data) {
             if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
             
-            // ✅ 1. URUTAN LAYANAN CUSTOM
+            // ✅ 1. URUTAN LAYANAN CUSTOM (DIPERBARUI SESUAI PERMINTAAN TERBARU)
             const layananOrder = {
                 'METRO': 1,
                 'TOPOLO': 2,
@@ -373,10 +373,12 @@
                 'MET-CNQ': 4,
                 'SLD': 5,
                 'IPTRANSIT': 6,
-                'BACKHAUL': 7,
-                'RADIOIP': 8,
-                'RIP-CNQ': 9,
-                'LAINNYA': 10
+                'CNOP': 7,
+                'BACKHAUL': 8,
+                'RADIOIP': 9,
+                'RIP-CNQ': 10,
+                'RADIOLH': 11,
+                'LAINNYA': 12
             };
             
             // ✅ 2. SORTING DATA BERDASARKAN LAYANAN SEBELUM DIRENDER
