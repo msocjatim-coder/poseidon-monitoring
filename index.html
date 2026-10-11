@@ -213,7 +213,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxBdMWOHFx9gfQSdxpf_dNNZu8g9q6wdJcGQOPj7u9J98q76GwCZVF7mvKMKo1Nli-a/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzQfznBcqgUDCFpneHsKKFNqblLSnAEtUqC9qVFYRmifgIkD89TJXbwcN4viLflh2U/exec";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
@@ -384,24 +384,47 @@
         function renderDashboard(data) {
             if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
             
+            // ✅ 1. URUTAN LAYANAN CUSTOM (DIPERBARUI)
             const layananOrder = {
-                'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'MET-CNQ': 4, 'SLD': 5, 'IPTRANSIT': 6,
-                'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'RIP-CNQ': 10, 'RADIOLH': 11, 'LAINNYA': 12
+                'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
+                'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
             };
             
+            // ✅ 2. URUTAN SEVR (KHUSUSNYA UNTUK METRO)
+            const sevrOrder = {
+                'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5
+            };
+            
+            // ✅ 3. SORTING: Pertama berdasarkan LAYANAN, lalu berdasarkan SEVR
             data.sort((a, b) => {
-                const orderA = layananOrder[a.layanan] || 99;
-                const orderB = layananOrder[b.layanan] || 99;
-                return orderA - orderB;
+                const orderA_layanan = layananOrder[a.layanan] || 99;
+                const orderB_layanan = layananOrder[b.layanan] || 99;
+                
+                if (orderA_layanan !== orderB_layanan) {
+                    return orderA_layanan - orderB_layanan;
+                }
+                
+                // Jika layanan sama, urutkan berdasarkan SEVR
+                const orderA_sevr = sevrOrder[a.sevr] || 99;
+                const orderB_sevr = sevrOrder[b.sevr] || 99;
+                return orderA_sevr - orderB_sevr;
             });
             
+            // ✅ 4. TAMBAHKAN NOMOR URUT
+            const dataWithIndex = data.map((item, index) => ({
+                no: index + 1,
+                ...item
+            }));
+            
             const columns = [
-                { title: "Layanan", data: "layanan", width: "90px" },
-                { title: "District", data: "district", width: "100px" },
-                { title: "Site ID", data: "siteId", width: "100px" },
-                { title: "No Tiket", data: "noTiket", width: "130px" },
-                { title: "Headline", data: "headline", className: "break-word", width: "300px" },
-                { title: "KET", data: "noTiket", width: "220px", render: function(data, type, row) {
+                { title: "No", data: "no", width: "50px", className: "text-center" },
+                { title: "LAYANAN", data: "layanan", width: "90px" },
+                { title: "SEVR", data: "sevr", width: "70px" },
+                { title: "DISTRICT", data: "district", width: "100px" },
+                { title: "SITE ID", data: "siteId", width: "100px" },
+                { title: "NO TIKET", data: "noTiket", width: "130px" },
+                { title: "HEADLINE", data: "headline", className: "break-word", width: "300px" },
+                { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
                     return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/bb INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
                   }
                 },
@@ -409,7 +432,7 @@
                     return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
                   } 
                 },
-                { title: "Last Upd", data: "lastUpdMenit", width: "140px", render: function(data, type, row) {
+                { title: "LAST UPD", data: "lastUpdMenit", width: "140px", render: function(data, type, row) {
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
@@ -420,9 +443,23 @@
             ];
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
-                data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                dom: '<"flex justify-between items-center mb-2"f>rtip',
-                language: { search: "Cari:", info: "Menampilkan _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data" },
+                data: dataWithIndex, 
+                columns: columns, 
+                pageLength: -1,        
+                lengthMenu: [],        
+                ordering: false,
+                autoWidth: false, 
+                scrollX: false,        
+                // ✅ 5. PINDAHKAN PENCARIAN (f) KE KANAN
+                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end"f>tip',
+                language: { 
+                  search: "", 
+                  searchPlaceholder: "Cari:",
+                  info: "Menampilkan _TOTAL_ data", 
+                  paginate: { previous: "Sebelumnya", next: "Selanjutnya" },
+                  infoFiltered: "",
+                  infoEmpty: "Tidak ada data"
+                },
                 drawCallback: function() {
                   $('.smart-send-btn').off('click').on('click', function() {
                     const noTiket = $(this).data('notiket');
