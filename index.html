@@ -270,17 +270,6 @@
             color: #94a3b8;
             cursor: not-allowed;
         }
-        .preview-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(34, 211, 238, 0.3);
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 12px;
-            color: #e0f2fe;
-            font-size: 13px;
-            line-height: 1.6;
-            min-height: 80px;
-        }
         .preview-label {
             color: #22d3ee;
             font-weight: bold;
@@ -475,9 +464,9 @@
     <div id="capture-modal" class="capture-modal">
         <div class="capture-modal-content">
             <div class="capture-modal-header">
-                <div class="capture-modal-title"> Preview Capture</div>
+                <div class="capture-modal-title">📸 Preview Capture</div>
                 <div class="capture-modal-actions">
-                    <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()"> Copy ke Clipboard</button>
+                    <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()">📋 Copy ke Clipboard</button>
                     <button class="modal-btn modal-btn-download" onclick="downloadCapture()">💾 Download PNG</button>
                     <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()">Tutup</button>
                 </div>
@@ -486,12 +475,12 @@
         </div>
     </div>
 
-    <!-- ✅ MODAL TEMPLATE WORKLOG -->
+    <!-- ✅ MODAL TEMPLATE WORKLOG (BARU) -->
     <div id="worklog-modal" class="generator-modal">
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span></span>
+                    <span>📋</span>
                     <span>Template Worklog</span>
                 </div>
                 <button class="generator-close" onclick="closeWorklogModal()">Tutup ✕</button>
@@ -511,12 +500,12 @@
         </div>
     </div>
 
-    <!-- ✅ MODAL TEMPLATE CLOSE -->
+    <!-- ✅ MODAL TEMPLATE CLOSE (BARU) -->
     <div id="generator-modal" class="generator-modal">
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span>📝</span>
+                    <span></span>
                     <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
@@ -544,7 +533,7 @@
             <div class="form-group">
                 <div class="preview-label">Hasil Gabungan:</div>
                 <div class="hasil-gabungan-container">
-                    <div id="preview-hasil" class="form-input-disabled"></div>
+                    <div id="preview-hasil" class="form-input-disabled">Pilih Actual Solution dan Incident Domain terlebih dahulu...</div>
                     <button class="hasil-copy-btn" onclick="copyHasilGabungan()" title="Copy ke Clipboard">📋</button>
                 </div>
             </div>
@@ -558,10 +547,10 @@
         <div class="sidebar-indicator">◀</div>
         <div class="sidebar-content">
             <button class="sidebar-btn" onclick="forceRefresh()" title="Muat Ulang Data">
-                <span class="icon"></span> Refresh
+                <span class="icon">🔄</span> Refresh
             </button>
             <button class="sidebar-btn" onclick="captureBothTables()" title="Ambil Gambar Laporan">
-                <span class="icon">📸</span> Capture
+                <span class="icon"></span> Capture
             </button>
             <button class="sidebar-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Kembali ke Bagian Atas">
                 <span class="icon">⬆️</span> Ke Atas
@@ -571,7 +560,7 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbw-lSFTifUXXdfbyGSfR1BHkIbXVJqM7BTiiYh9L0FJRlVRUTyBy7F8lJb9vY_ThgY4/exec";
-        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/1hR6Tt0m773Gz9tOrPDbzFwrWqHZApM0O-qCjaScrfBM/gviz/tq?tqx=out:json&sheet=DATA";
+        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/1hR6Tt0m773gG29tOrPObzFwrQwHZApM0O-qCjaScrBM/gviz/tq?tqx=out:json&sheet=DATA";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
@@ -642,7 +631,7 @@
             });
 
             if (newCount > 0) {
-                showSubtleNotification(` Ada ${newCount} tiket baru saat ini`, 'info');
+                showSubtleNotification(`📨 Ada ${newCount} tiket baru saat ini`, 'info');
             }
             if (clearedCount > 0) {
                 showSubtleNotification(`📤 ${clearedCount} tiket saat ini sudah clear`, 'success');
@@ -814,7 +803,7 @@
 
         function copyHasilGabungan() {
             if (!generatedText) {
-                showToast('⚠️ Generate text terlebih dahulu', true);
+                showToast('⚠️ Pilih Actual Solution dan Incident Domain terlebih dahulu', true);
                 return;
             }
             copyToClipboard(generatedText);
@@ -929,7 +918,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('⚠️ Gagal koneksi, coba lagi...', true);
+                showToast('️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -965,7 +954,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data dashboard:", error);
-                showToast('️ Gagal koneksi, coba lagi...', true);
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -1039,7 +1028,7 @@
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
                 buttons: [
                     {
-                        text: ' TEMPLATE WORKLOG',
+                        text: '📋 TEMPLATE WORKLOG',
                         className: 'template-btn-inline',
                         action: function() { openWorklogModal(); }
                     },
@@ -1146,7 +1135,7 @@
         }
 
         function forceRefresh() {
-            showToast("⏳ Menyegarkan data...", false);
+            showToast(" Menyegarkan data...", false);
             isCurrentlyOffline = false;
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') fetchLaporanData(true);
@@ -1176,7 +1165,7 @@
                     copyCaptureToClipboard();
                 }).catch(err => {
                     if (header) header.style.display = 'none';
-                    showToast('❌ Gagal capture: ' + err.message, true);
+                    showToast(' Gagal capture: ' + err.message, true);
                 });
             }, 300);
         }
@@ -1189,7 +1178,7 @@
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V) di WhatsApp', false);
             } catch (err) {
-                showToast('️ Copy gagal, silakan download manual', true);
+                showToast('⚠️ Copy gagal, silakan download manual', true);
                 downloadCapture();
             }
         }
