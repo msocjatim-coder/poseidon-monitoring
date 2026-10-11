@@ -150,6 +150,194 @@
         .sidebar-btn { background: rgba(34, 211, 238, 0.1); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; width: 160px; justify-content: flex-start; }
         .sidebar-btn:hover { background: rgba(34, 211, 238, 0.3); transform: translateX(4px); box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2); }
         .sidebar-btn span.icon { font-size: 16px; }
+
+        /* ✅ FLOATING ACTION BUTTON (FAB) */
+        .fab-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        .fab-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fabPulse 2s infinite;
+        }
+        .fab-button:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.7);
+        }
+        @keyframes fabPulse {
+            0%, 100% { box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
+            50% { box-shadow: 0 6px 30px rgba(6, 182, 212, 0.8); }
+        }
+        .fab-label {
+            background: rgba(15, 23, 42, 0.9);
+            color: #22d3ee;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        /* ✅ MODAL GENERATOR */
+        .generator-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .generator-modal.active {
+            display: flex;
+        }
+        .generator-content {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid rgba(34, 211, 238, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        }
+        .generator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(34, 211, 238, 0.2);
+        }
+        .generator-title {
+            color: #22d3ee;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .generator-close {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .generator-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            color: #22d3ee;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+        .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            color: #e0f2fe;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .preview-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 12px;
+            color: #e0f2fe;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+        .preview-label {
+            color: #22d3ee;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .generator-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(34, 211, 238, 0.2);
+        }
+        .btn-generator {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-generate {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+        }
+        .btn-copy {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -165,7 +353,7 @@
         </div>
     </div>
     
-    <div id="loading" class="flex justify-center items-center h-screen"><div class="text-cyan-400 text-xl animate-pulse">🌊 Menghubungkan ke Poseidon...</div></div>
+    <div id="loading" class="flex justify-center items-center h-screen"><div class="text-cyan-400 text-xl animate-pulse"> Menghubungkan ke Poseidon...</div></div>
     
     <div id="main-content" class="hidden">
         <header class="flex flex-col md:flex-row justify-between items-center mb-6 glass p-5 rounded-2xl">
@@ -235,6 +423,63 @@
             <img id="capture-preview" class="capture-preview-img" alt="Preview">
         </div>
     </div>
+
+    <!-- ✅ FLOATING ACTION BUTTON (FAB) -->
+    <div class="fab-container">
+        <div class="fab-label">📝 Generator Tiket</div>
+        <button class="fab-button" onclick="openGeneratorModal()" title="Buka Generator Tiket">
+            ✏️
+        </button>
+    </div>
+
+    <!-- ✅ GENERATOR MODAL -->
+    <div id="generator-modal" class="generator-modal">
+        <div class="generator-content">
+            <div class="generator-header">
+                <div class="generator-title">
+                    <span>📝</span>
+                    <span>Generator Keterangan Tiket</span>
+                </div>
+                <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Actual Solution (F6)</label>
+                <select id="actual-solution" class="form-select">
+                    <option value="">-- Pilih Actual Solution --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Incident Domain (F7)</label>
+                <select id="incident-domain" class="form-select">
+                    <option value="">-- Pilih Incident Domain --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Keterangan Tambahan (G8) <span style="color: #eab308; font-size: 11px;">(Opsional - akan otomatis UPPERCASE)</span></label>
+                <textarea id="keterangan-tambahan" class="form-textarea" placeholder="Contoh: GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH"></textarea>
+            </div>
+
+            <div class="form-group">
+                <div class="preview-label">Hasil Gabungan (G9):</div>
+                <div id="preview-hasil" class="preview-box">
+                    <span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>
+                </div>
+            </div>
+
+            <div class="generator-actions">
+                <button class="btn-generator btn-generate" onclick="generateText()">
+                    <span>⚡</span> Generate Text
+                </button>
+                <button class="btn-generator btn-copy" onclick="copyGeneratedText()">
+                    <span></span> Copy ke Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <div class="sidebar-trigger-area"></div>
@@ -255,10 +500,13 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbw-lSFTifUXXdfbyGSfR1BHkIbXVJqM7BTiiYh9L0FJRlVRUTyBy7F8lJb9vY_ThgY4/exec";
+        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/1hR6Tt0m773Gz9tOrPDbzFwrWqHZApM0O-qCjaScrfBM/gviz/tq?tqx=out:json&sheet=DATA";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
         let isCurrentlyOffline = false;
+        let sheetData = { actualSolutions: [], incidentDomains: [] };
+        let generatedText = "";
 
         window.onload = function() {
             updateClock();
@@ -266,6 +514,7 @@
             checkRunningText();
             setInterval(checkRunningText, 60000);
             initTabs();
+            fetchSheetData(); // ✅ FETCH DATA DARI SHEET DATA
             fetchLaporanData(true);
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
@@ -273,6 +522,104 @@
                 else if (activeTab === 'dashboard') fetchDashboardData(false);
             }, 30000);
         };
+
+        // ✅ FETCH DATA DARI SHEET DATA
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(SHEET_DATA_URL);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47).slice(0, -2));
+                
+                const rows = json.table.rows;
+                sheetData.actualSolutions = [];
+                sheetData.incidentDomains = [];
+                
+                rows.forEach(row => {
+                    if (row.c && row.c[3] && row.c[3].v) {
+                        sheetData.actualSolutions.push(row.c[3].v);
+                    }
+                    if (row.c && row.c[4] && row.c[4].v) {
+                        sheetData.incidentDomains.push(row.c[4].v);
+                    }
+                });
+                
+                populateDropdowns();
+            } catch (error) {
+                console.error("Gagal mengambil data sheet:", error);
+            }
+        }
+
+        // ✅ POPULATE DROPDOWNS
+        function populateDropdowns() {
+            const actualSelect = document.getElementById('actual-solution');
+            const domainSelect = document.getElementById('incident-domain');
+            
+            actualSelect.innerHTML = '<option value="">-- Pilih Actual Solution --</option>';
+            domainSelect.innerHTML = '<option value="">-- Pilih Incident Domain --</option>';
+            
+            sheetData.actualSolutions.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                actualSelect.appendChild(option);
+            });
+            
+            sheetData.incidentDomains.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item;
+                option.textContent = item;
+                domainSelect.appendChild(option);
+            });
+        }
+
+        // ✅ MODAL FUNCTIONS
+        function openGeneratorModal() {
+            document.getElementById('generator-modal').classList.add('active');
+        }
+
+        function closeGeneratorModal() {
+            document.getElementById('generator-modal').classList.remove('active');
+        }
+
+        // ✅ GENERATE TEXT
+        function generateText() {
+            const actualSolution = document.getElementById('actual-solution').value;
+            const incidentDomain = document.getElementById('incident-domain').value;
+            const keterangan = document.getElementById('keterangan-tambahan').value;
+            
+            if (!actualSolution || !incidentDomain) {
+                showToast('⚠️ Pilih Actual Solution dan Incident Domain terlebih dahulu', true);
+                return;
+            }
+            
+            // Format keterangan to UPPERCASE
+            const keteranganUpper = keterangan.trim().toUpperCase();
+            
+            // Generate text
+            if (keteranganUpper) {
+                generatedText = `RFO : Disolusikan Dengan ${actualSolution}, Disebabkan Oleh ${incidentDomain} [ KET : ${keteranganUpper} ]`;
+            } else {
+                generatedText = `RFO : Disolusikan Dengan ${actualSolution}, Disebabkan Oleh ${incidentDomain}`;
+            }
+            
+            // Show preview
+            document.getElementById('preview-hasil').textContent = generatedText;
+            showToast('✅ Text berhasil di-generate', false);
+        }
+
+        // ✅ COPY TO CLIPBOARD
+        function copyGeneratedText() {
+            if (!generatedText) {
+                showToast('⚠️ Generate text terlebih dahulu', true);
+                return;
+            }
+            
+            navigator.clipboard.writeText(generatedText).then(() => {
+                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V)', false);
+            }).catch(err => {
+                showToast(' Gagal copy: ' + err, true);
+            });
+        }
 
         function checkRunningText() {
             const now = new Date();
@@ -384,7 +731,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('⚠️ Gagal koneksi, coba lagi...', true);
+                showToast('️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -472,10 +819,9 @@
                 ...item
             }));
             
-            // ✅ PERBAIKAN: 'data: "sevr"' (huruf kecil) agar cocok dengan Code.gs
             const columns = [
                 { title: "No", data: "no", width: "50px", className: "text-center" },
-                { title: "LAYANAN", data: "layanan", width: "100px" },
+                { title: "LAYANAN", data: "layanan", width: "90px" },
                 { title: "SEVR", data: "sevr", width: "70px" },
                 { title: "DISTRICT", data: "district", width: "100px" },
                 { title: "SITE ID", data: "siteId", width: "100px" },
@@ -493,7 +839,7 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? '🚨 ' : '';
+                    const prefix = menit >= 30 ? ' ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
@@ -528,7 +874,7 @@
                     if (e.which === 13) {
                       const noTiket = $(this).data('notiket');
                       const value = $(this).val().trim();
-                      if (!value) { showToast('⚠️ Input kosong', true); return; }
+                      if (!value) { showToast('️ Input kosong', true); return; }
                       sendSmartFieldUpdate(noTiket, value, $(this));
                     }
                   });
@@ -652,7 +998,7 @@
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V) di WhatsApp');
             } catch (err) {
-                showToast('⚠️ Copy gagal, silakan download manual', true);
+                showToast('️ Copy gagal, silakan download manual', true);
                 downloadCapture();
             }
         }
@@ -683,7 +1029,10 @@
         if (captureModalEl) {
             captureModalEl.addEventListener('click', (e) => { if (e.target.id === 'capture-modal') closeCaptureModal(); });
         }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCaptureModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') {
+            closeCaptureModal();
+            closeGeneratorModal();
+        }});
     </script>
 </body>
 </html>
