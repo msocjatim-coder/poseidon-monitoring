@@ -26,7 +26,6 @@
         @keyframes pulse-cyan { 0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); } }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
         
-        /* ✅ UPDATE: Hanya font yang kedap-kedip (mati-hidup), background tetap solid */
         @keyframes blink-urgent { 
             0%, 100% { color: #ffffff; } 
             50% { color: rgba(255, 255, 255, 0.1); } 
@@ -38,6 +37,37 @@
             display: inline-block; 
         }
         
+        .running-text-container {
+            background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            display: none;
+            border: 2px solid #fca5a5;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+        .running-text-container.active {
+            display: block;
+            animation: slideDown 0.5s ease;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .running-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollText 20s linear infinite;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
         .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
         .col-info { white-space: normal !important; word-wrap: break-word !important; overflow-wrap: break-word !important; max-width: 550px !important; line-height: 1.4 !important; }
 
@@ -75,7 +105,6 @@
         .ttr-medium { background: #ca8a04 !important; }
         .ttr-high { background: #dc2626 !important; }
         
-        /* ✅ UPDATE: Warna hijau sekarang font putih */
         .durasi-low { background: #16a34a !important; color: #ffffff !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
         .durasi-medium { background: #eab308 !important; color: #000000 !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
         .durasi-high { background: #dc2626 !important; color: #ffffff !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
@@ -112,9 +141,6 @@
         .capture-icon-btn:active { transform: translateY(0) scale(0.95); }
         .capture-main-header { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-        /* ========================================== */
-        /* ✅ AUTO-HIDE SIDEBAR (SAMPING KIRI) */
-        /* ========================================== */
         .sidebar-trigger-area { position: fixed; left: 0; top: 0; width: 30px; height: 100vh; z-index: 999; }
         .poseidon-sidebar { position: fixed; left: -180px; top: 50%; transform: translateY(-50%); z-index: 1000; transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
         .sidebar-trigger-area:hover ~ .poseidon-sidebar, .poseidon-sidebar:hover { left: 20px; }
@@ -186,6 +212,11 @@
         <div id="tab-dashboard" class="tab-content">
             <section class="mb-12">
                 <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text">📊 DASHBOARD TIKET AKTIF</h2>
+                
+                <div id="running-text-container" class="running-text-container">
+                    <div class="running-text" id="running-text-content"></div>
+                </div>
+                
                 <div class="table-white-container"><table id="table-dashboard" class="w-full" style="width:100%"></table></div>
             </section>
         </div>
@@ -206,7 +237,6 @@
     </div>
     <div id="toast" class="toast"></div>
 
-    <!-- ✅ AUTO-HIDE SIDEBAR (SAMPING KIRI) -->
     <div class="sidebar-trigger-area"></div>
     <div class="poseidon-sidebar">
         <div class="sidebar-indicator">◀</div>
@@ -233,6 +263,8 @@
         window.onload = function() {
             updateClock();
             setInterval(updateClock, 1000);
+            checkRunningText();
+            setInterval(checkRunningText, 60000);
             initTabs();
             fetchLaporanData(true);
             setInterval(() => {
@@ -241,6 +273,24 @@
                 else if (activeTab === 'dashboard') fetchDashboardData(false);
             }, 30000);
         };
+
+        function checkRunningText() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minutes = now.getMinutes();
+            const targetHours = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23];
+            const container = document.getElementById('running-text-container');
+            const content = document.getElementById('running-text-content');
+            
+            if (targetHours.includes(hour) && minutes < 5) {
+                const formattedHour = String(hour).padStart(2, '0');
+                const message = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = message;
+                container.classList.add('active');
+            } else {
+                container.classList.remove('active');
+            }
+        }
 
         function initTabs() {
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -422,7 +472,7 @@
                 ...item
             }));
             
-            // ✅ UPDATE: Kolom disesuaikan dengan permintaan (Width & ClassName)
+            // ✅ PERBAIKAN: 'data: "sevr"' (huruf kecil) agar cocok dengan Code.gs
             const columns = [
                 { title: "No", data: "no", width: "50px", className: "text-center" },
                 { title: "LAYANAN", data: "layanan", width: "100px" },
