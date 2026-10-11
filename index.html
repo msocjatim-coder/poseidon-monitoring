@@ -88,7 +88,6 @@
         .table-white-container .dataTables_length select { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 8px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         .table-white-container .dataTables_filter input { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 10px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         
-        /* ✅ TOMBOL TEMPLATE KHUSUS DASHBOARD */
         .template-btn-inline {
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white !important;
@@ -246,7 +245,7 @@
             display: block;
             font-size: 14px;
         }
-        .form-select, .form-textarea {
+        .form-select, .form-textarea, .form-input-disabled {
             width: 100%;
             padding: 12px;
             background: rgba(15, 23, 42, 0.6);
@@ -255,6 +254,7 @@
             color: #e0f2fe;
             font-size: 14px;
             font-family: inherit;
+            box-sizing: border-box;
         }
         .form-select:focus, .form-textarea:focus {
             outline: none;
@@ -264,6 +264,11 @@
         .form-textarea {
             min-height: 100px;
             resize: vertical;
+        }
+        .form-input-disabled {
+            background: rgba(30, 41, 59, 0.8);
+            color: #94a3b8;
+            cursor: not-allowed;
         }
         .preview-box {
             background: rgba(15, 23, 42, 0.6);
@@ -320,6 +325,81 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
+
+        /* ✅ WORKLOG LIST ITEMS */
+        .worklog-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .worklog-item {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+        .worklog-item .form-input-disabled {
+            flex: 1;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        .worklog-copy-btn {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+        }
+        .worklog-copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        .worklog-empty {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* ✅ HASIL GABUNGAN CLOSE */
+        .hasil-gabungan-container {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            margin-top: 12px;
+        }
+        .hasil-gabungan-container .form-input-disabled {
+            flex: 1;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+        }
+        .hasil-copy-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+        }
+        .hasil-copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -345,7 +425,7 @@
             </div>
             <div class="text-right">
                 <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">Memuat Waktu...</div>
-                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span> Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
+                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span>🔄 Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
             </div>
         </header>
         <div class="max-w-7xl mx-auto mb-6">
@@ -376,10 +456,7 @@
                     <div class="table-white-container"><table id="table-nondown" class="w-full" style="width:100%"></table></div>
                 </section>
             </main>
-            <!-- ✅ TOMBOL CAPTURE DI TAB LAPORAN -->
-            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end">
-                <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button>
-            </div>
+            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button></div>
         </div>
 
         <div id="tab-dashboard" class="tab-content">
@@ -398,9 +475,9 @@
     <div id="capture-modal" class="capture-modal">
         <div class="capture-modal-content">
             <div class="capture-modal-header">
-                <div class="capture-modal-title">📸 Preview Capture</div>
+                <div class="capture-modal-title"> Preview Capture</div>
                 <div class="capture-modal-actions">
-                    <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()">📋 Copy ke Clipboard</button>
+                    <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()"> Copy ke Clipboard</button>
                     <button class="modal-btn modal-btn-download" onclick="downloadCapture()">💾 Download PNG</button>
                     <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()">Tutup</button>
                 </div>
@@ -414,7 +491,7 @@
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span>📋</span>
+                    <span></span>
                     <span>Template Worklog</span>
                 </div>
                 <button class="generator-close" onclick="closeWorklogModal()">Tutup ✕</button>
@@ -427,30 +504,9 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Keterangan (Otomatis terisi, bisa diedit)</label>
-                <textarea id="worklog-keterangan" class="form-textarea" placeholder="Keterangan akan muncul di sini..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Ket + (Keterangan Tambahan - Opsional)</label>
-                <textarea id="worklog-ket-tambahan" class="form-textarea" placeholder="Tambahkan keterangan jika perlu..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <div class="preview-label">Hasil Akhir:</div>
-                <div id="worklog-preview" class="preview-box">
-                    <span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>
-                </div>
-            </div>
-
-            <div class="generator-actions">
-                <button class="btn-generator btn-generate" onclick="generateWorklog()">
-                    <span>⚡</span> Generate Text
-                </button>
-                <button class="btn-generator btn-copy" onclick="copyWorklogText()">
-                    <span>📋</span> Copy ke Clipboard
-                </button>
+            <!-- ✅ CONTAINER UNTUK LIST DATA WORKLOG -->
+            <div id="worklog-list-container" class="worklog-list-container">
+                <div class="worklog-empty">Pilih template untuk menampilkan data...</div>
             </div>
         </div>
     </div>
@@ -467,38 +523,30 @@
             </div>
             
             <div class="form-group">
-                <label class="form-label">Actual Solution (F6)</label>
-                <select id="actual-solution" class="form-select">
+                <label class="form-label">Actual Solution</label>
+                <select id="actual-solution" class="form-select" onchange="updateHasilGabungan()">
                     <option value="">-- Pilih Actual Solution --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Incident Domain (F7)</label>
-                <select id="incident-domain" class="form-select">
+                <label class="form-label">Incident Domain</label>
+                <select id="incident-domain" class="form-select" onchange="updateHasilGabungan()">
                     <option value="">-- Pilih Incident Domain --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Keterangan Tambahan (G8) <span style="color: #eab308; font-size: 11px;">(Opsional - akan otomatis UPPERCASE)</span></label>
-                <textarea id="keterangan-tambahan" class="form-textarea" placeholder="Contoh: GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH"></textarea>
+                <label class="form-label">Keterangan Tambahan</label>
+                <textarea id="keterangan-tambahan" class="form-textarea" placeholder="Contoh: GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH" oninput="updateHasilGabungan()"></textarea>
             </div>
 
             <div class="form-group">
-                <div class="preview-label">Hasil Gabungan (G9):</div>
-                <div id="preview-hasil" class="preview-box">
-                    <span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>
+                <div class="preview-label">Hasil Gabungan:</div>
+                <div class="hasil-gabungan-container">
+                    <div id="preview-hasil" class="form-input-disabled"></div>
+                    <button class="hasil-copy-btn" onclick="copyHasilGabungan()" title="Copy ke Clipboard">📋</button>
                 </div>
-            </div>
-
-            <div class="generator-actions">
-                <button class="btn-generator btn-generate" onclick="generateText()">
-                    <span></span> Generate Text
-                </button>
-                <button class="btn-generator btn-copy" onclick="copyGeneratedText()">
-                    <span>📋</span> Copy ke Clipboard
-                </button>
             </div>
         </div>
     </div>
@@ -510,7 +558,7 @@
         <div class="sidebar-indicator">◀</div>
         <div class="sidebar-content">
             <button class="sidebar-btn" onclick="forceRefresh()" title="Muat Ulang Data">
-                <span class="icon">🔄</span> Refresh
+                <span class="icon"></span> Refresh
             </button>
             <button class="sidebar-btn" onclick="captureBothTables()" title="Ambil Gambar Laporan">
                 <span class="icon">📸</span> Capture
@@ -529,24 +577,9 @@
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
         let isCurrentlyOffline = false;
         let sheetData = { actualSolutions: [], incidentDomains: [] };
+        let worklogData = {}; // { headerName: [data1, data2, ...] }
         let generatedText = "";
-        let worklogText = "";
         let previousTicketIds = new Set();
-
-        const worklogTemplates = {
-            "TANYA INFO": "[TANYA INFO] Sedang dilakukan konfirmasi ke Tim mengenai proses penanganan gangguan terkini.",
-            "TANYA PROGRES": "[TANYA PROGRES] Mohon update progres penanganan gangguan dari Tim lapangan.",
-            "KOORD TT": "[KOORD TT] Koordinasi mengenai penanganan gangguan telah dilakukan ke Tim terkait.",
-            "KOORD KEMBALI": "[KOORD KEMBALI] Penanganan tiket gangguan saat ini sedang di eskalasikan ke Tim terkait.",
-            "NEED QE": "[NEED QE] kebutuhan material DC 10 roll untuk mengamankan KU sepanjang 12 km.",
-            "SKKL IMPACT": "[SKKL IMPACT] menunggu realisasi rencana untuk TS & Upg Cappacity Ruas Larantuka - Lewoleba",
-            "OTW": "[OTW] Tim sedang dalam perjalanan menuju lokasi, estimasi perjalanan ± 30 menit",
-            "N/A": "[N/A] Upaya konfirmasi telah dilakukan, hingga saat ini belum ada informasi mengenai proses penanganan terbaru dari tim.",
-            "SEBEL BALMON": "[SEBEL BALMON] Link di Segel Balmon karena ISR tidak ada, menunggu rilis ISR.",
-            "KONFIRM N/A": "[KONFIRM N/A] Sudah di eskaliskan ke customer mengenai status power saat ini, namun belum diperoleh pembaruan informasi.",
-            "CO CORE FO": "RFO : Disolusikan Dengan CO CORE FO, Disebabkan Oleh TSEL - TELKOM - DEGRADASI FO [ KET : CHANGE CORE UPLINK MINI OLT ]",
-            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO BENDING [ KET : GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH ]"
-        };
 
         window.onload = function() {
             updateClock();
@@ -555,7 +588,6 @@
             setInterval(checkRunningText, 60000);
             initTabs();
             fetchSheetData();
-            populateWorklogDropdown();
             fetchLaporanData(true);
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
@@ -610,13 +642,39 @@
             });
 
             if (newCount > 0) {
-                showSubtleNotification(`📨 Ada ${newCount} tiket baru saat ini`, 'info');
+                showSubtleNotification(` Ada ${newCount} tiket baru saat ini`, 'info');
             }
             if (clearedCount > 0) {
                 showSubtleNotification(`📤 ${clearedCount} tiket saat ini sudah clear`, 'success');
             }
 
             previousTicketIds = currentIds;
+        }
+
+        // ✅ FUNGSI COPY KE CLIPBOARD (REUSABLE)
+        function copyToClipboard(text) {
+            if (!text) {
+                showToast('⚠️ Tidak ada teks untuk di-copy', true);
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ Berhasil di-copy ke clipboard!', false);
+            }).catch(err => {
+                // Fallback untuk browser lama
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('✅ Berhasil di-copy ke clipboard!', false);
+                } catch (e) {
+                    showToast('❌ Gagal copy: ' + err, true);
+                }
+                document.body.removeChild(textarea);
+            });
         }
 
         async function fetchSheetData() {
@@ -627,12 +685,39 @@
                 const rows = json.table.rows;
                 sheetData.actualSolutions = [];
                 sheetData.incidentDomains = [];
+                worklogData = {};
                 
-                rows.forEach(row => {
-                    if (row.c && row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v);
-                    if (row.c && row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v);
-                });
+                // Ambil header dari baris pertama (row 0)
+                // Kolom D = index 3, E = index 4, F-AB = index 5-27
+                if (rows.length > 0 && rows[0].c) {
+                    // Ambil data Actual Solution (kolom D, index 3) dan Incident Domain (kolom E, index 4)
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (row.c) {
+                            if (row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v);
+                            if (row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v);
+                        }
+                    }
+                    
+                    // Ambil data worklog dari kolom F (index 5) sampai AB (index 27)
+                    // rows[0] = header, rows[1] = data baris 1, rows[2] = data baris 2
+                    for (let colIdx = 5; colIdx <= 27; colIdx++) {
+                        const header = rows[0].c[colIdx] ? rows[0].c[colIdx].v : null;
+                        if (header) {
+                            const dataList = [];
+                            // Ambil data dari baris 2 dan 3 (index 1 dan 2)
+                            for (let rowIdx = 1; rowIdx <= 2; rowIdx++) {
+                                if (rows[rowIdx] && rows[rowIdx].c && rows[rowIdx].c[colIdx] && rows[rowIdx].c[colIdx].v) {
+                                    dataList.push(rows[rowIdx].c[colIdx].v);
+                                }
+                            }
+                            worklogData[header] = dataList;
+                        }
+                    }
+                }
+                
                 populateDropdowns();
+                populateWorklogDropdown();
             } catch (error) {
                 console.error("Gagal mengambil data sheet:", error);
             }
@@ -644,12 +729,16 @@
             actualSelect.innerHTML = '<option value="">-- Pilih Actual Solution --</option>';
             domainSelect.innerHTML = '<option value="">-- Pilih Incident Domain --</option>';
             
-            sheetData.actualSolutions.forEach(item => {
+            // Hapus duplikat
+            const uniqueActual = [...new Set(sheetData.actualSolutions)];
+            const uniqueDomain = [...new Set(sheetData.incidentDomains)];
+            
+            uniqueActual.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item; option.textContent = item;
                 actualSelect.appendChild(option);
             });
-            sheetData.incidentDomains.forEach(item => {
+            uniqueDomain.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item; option.textContent = item;
                 domainSelect.appendChild(option);
@@ -660,89 +749,56 @@
             const worklogSelect = document.getElementById('worklog-template');
             worklogSelect.innerHTML = '<option value="">-- Pilih Template --</option>';
             
-            Object.keys(worklogTemplates).forEach(template => {
+            Object.keys(worklogData).forEach(header => {
                 const option = document.createElement('option');
-                option.value = template;
-                option.textContent = template;
+                option.value = header;
+                option.textContent = header;
                 worklogSelect.appendChild(option);
             });
         }
 
         function updateWorklogText() {
             const selectedTemplate = document.getElementById('worklog-template').value;
-            const keteranganTextarea = document.getElementById('worklog-keterangan');
+            const container = document.getElementById('worklog-list-container');
             
-            if (selectedTemplate && worklogTemplates[selectedTemplate]) {
-                keteranganTextarea.value = worklogTemplates[selectedTemplate];
+            if (selectedTemplate && worklogData[selectedTemplate] && worklogData[selectedTemplate].length > 0) {
+                container.innerHTML = '';
+                worklogData[selectedTemplate].forEach((text, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'worklog-item';
+                    itemDiv.innerHTML = `
+                        <input type="text" class="form-input-disabled" value="${text.replace(/"/g, '&quot;')}" readonly>
+                        <button class="worklog-copy-btn" onclick="copyToClipboard(\`${text.replace(/`/g, '\\`').replace(/\\/g, '\\\\')}\`)" title="Copy ke Clipboard">📋</button>
+                    `;
+                    container.appendChild(itemDiv);
+                });
             } else {
-                keteranganTextarea.value = '';
-            }
-            
-            generateWorklogPreview();
-        }
-
-        function generateWorklogPreview() {
-            const keterangan = document.getElementById('worklog-keterangan').value;
-            const ketTambahan = document.getElementById('worklog-ket-tambahan').value;
-            const previewBox = document.getElementById('worklog-preview');
-            
-            if (keterangan) {
-                let finalText = keterangan;
-                if (ketTambahan.trim()) {
-                    finalText += ` [ KET : ${ketTambahan.trim().toUpperCase()} ]`;
-                }
-                previewBox.textContent = finalText;
-            } else {
-                previewBox.innerHTML = '<span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>';
+                container.innerHTML = '<div class="worklog-empty">Pilih template untuk menampilkan data...</div>';
             }
         }
 
         function openWorklogModal() { 
             document.getElementById('worklog-modal').classList.add('active');
-            generateWorklogPreview();
         }
-        function closeWorklogModal() { document.getElementById('worklog-modal').classList.remove('active'); }
+        function closeWorklogModal() { 
+            document.getElementById('worklog-modal').classList.remove('active');
+            document.getElementById('worklog-template').value = '';
+            document.getElementById('worklog-list-container').innerHTML = '<div class="worklog-empty">Pilih template untuk menampilkan data...</div>';
+        }
 
         function openGeneratorModal() { document.getElementById('generator-modal').classList.add('active'); }
         function closeGeneratorModal() { document.getElementById('generator-modal').classList.remove('active'); }
 
-        function generateWorklog() {
-            const keterangan = document.getElementById('worklog-keterangan').value;
-            const ketTambahan = document.getElementById('worklog-ket-tambahan').value;
-            
-            if (!keterangan) {
-                showToast('️ Pilih template atau isi keterangan terlebih dahulu', true);
-                return;
-            }
-            
-            worklogText = keterangan;
-            if (ketTambahan.trim()) {
-                worklogText += ` [ KET : ${ketTambahan.trim().toUpperCase()} ]`;
-            }
-            
-            document.getElementById('worklog-preview').textContent = worklogText;
-            showToast('✅ Text berhasil di-generate', false);
-        }
-
-        function copyWorklogText() {
-            if (!worklogText) {
-                showToast('⚠️ Generate text terlebih dahulu', true);
-                return;
-            }
-            navigator.clipboard.writeText(worklogText).then(() => {
-                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V)', false);
-            }).catch(err => {
-                showToast('❌ Gagal copy: ' + err, true);
-            });
-        }
-
-        function generateText() {
+        // ✅ UPDATE HASIL GABUNGAN OTOMATIS
+        function updateHasilGabungan() {
             const actualSolution = document.getElementById('actual-solution').value;
             const incidentDomain = document.getElementById('incident-domain').value;
             const keterangan = document.getElementById('keterangan-tambahan').value;
+            const previewBox = document.getElementById('preview-hasil');
             
             if (!actualSolution || !incidentDomain) {
-                showToast('⚠️ Pilih Actual Solution dan Incident Domain terlebih dahulu', true);
+                previewBox.textContent = 'Pilih Actual Solution dan Incident Domain terlebih dahulu...';
+                generatedText = '';
                 return;
             }
             
@@ -753,20 +809,15 @@
                 generatedText = `RFO : Disolusikan Dengan ${actualSolution}, Disebabkan Oleh ${incidentDomain}`;
             }
             
-            document.getElementById('preview-hasil').textContent = generatedText;
-            showToast('✅ Text berhasil di-generate', false);
+            previewBox.textContent = generatedText;
         }
 
-        function copyGeneratedText() {
+        function copyHasilGabungan() {
             if (!generatedText) {
                 showToast('⚠️ Generate text terlebih dahulu', true);
                 return;
             }
-            navigator.clipboard.writeText(generatedText).then(() => {
-                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V)', false);
-            }).catch(err => {
-                showToast('❌ Gagal copy: ' + err, true);
-            });
+            copyToClipboard(generatedText);
         }
 
         function checkRunningText() {
@@ -779,7 +830,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = `️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -914,7 +965,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data dashboard:", error);
-                showToast('⚠️ Gagal koneksi, coba lagi...', true);
+                showToast('️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -988,7 +1039,7 @@
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
                 buttons: [
                     {
-                        text: '📋 TEMPLATE WORKLOG',
+                        text: ' TEMPLATE WORKLOG',
                         className: 'template-btn-inline',
                         action: function() { openWorklogModal(); }
                     },
@@ -1018,7 +1069,7 @@
                     if (e.which === 13) {
                       const noTiket = $(this).data('notiket');
                       const value = $(this).val().trim();
-                      if (!value) { showToast('️ Input kosong', true); return; }
+                      if (!value) { showToast('⚠️ Input kosong', true); return; }
                       sendSmartFieldUpdate(noTiket, value, $(this));
                     }
                   });
@@ -1138,7 +1189,7 @@
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V) di WhatsApp', false);
             } catch (err) {
-                showToast('⚠️ Copy gagal, silakan download manual', true);
+                showToast('️ Copy gagal, silakan download manual', true);
                 downloadCapture();
             }
         }
@@ -1170,13 +1221,6 @@
             captureModalEl.addEventListener('click', (e) => { if (e.target.id === 'capture-modal') closeCaptureModal(); });
         }
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCaptureModal(); closeGeneratorModal(); closeWorklogModal(); }});
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const worklogKeterangan = document.getElementById('worklog-keterangan');
-            const worklogKetTambahan = document.getElementById('worklog-ket-tambahan');
-            if (worklogKeterangan) worklogKeterangan.addEventListener('input', generateWorklogPreview);
-            if (worklogKetTambahan) worklogKetTambahan.addEventListener('input', generateWorklogPreview);
-        });
     </script>
 </body>
 </html>
