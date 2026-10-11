@@ -1026,23 +1026,19 @@
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
                 // ✅ DUA TOMBOL: TEMPLATE WORKLOG & TEMPLATE CLOSE
-                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"fBB>tip',
-                buttons: [
-                    {
-                        text: '📋 TEMPLATE WORKLOG',
-                        className: 'template-btn-inline',
-                        action: function() {
-                            openWorklogModal();
-                        }
-                    },
-                    {
-                        text: ' TEMPLATE CLOSE',
-                        className: 'template-btn-inline template-btn-close',
-                        action: function() {
-                            openGeneratorModal();
-                        }
-                    }
-                ],
+                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
+buttons: [
+    {
+        text: ' TEMPLATE WORKLOG',
+        className: 'template-btn-inline',
+        action: function() { openWorklogModal(); }
+    },
+    {
+        text: '📝 TEMPLATE CLOSE',
+        className: 'template-btn-inline template-btn-close',
+        action: function() { openGeneratorModal(); }
+    }
+],
                 language: { 
                     search: "", 
                     searchPlaceholder: "Cari:",
