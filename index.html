@@ -330,7 +330,7 @@
             <div class="text-7xl mb-6 animate-bounce">⚠️</div>
             <h2 class="text-3xl md:text-5xl font-bold text-red-400 glow-text mb-4 tracking-wider">404 Not Found</h2>
             <p class="text-xl md:text-2xl text-red-200 mb-8 font-mono bg-red-900/30 p-4 rounded-lg border border-red-500/30">[Sistem Tidak Terhubung]</p>
-            <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">Peringatan!<br>Sinkronisasi Gagal .</p>
+            <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">Peringatan!<br>Sinkronisasi Gagal ❌.</p>
             <button onclick="forceRefresh()" class="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-lg flex items-center gap-3 mx-auto text-lg"><span>🔄</span> Coba Hubungkan Kembali</button>
         </div>
     </div>
@@ -345,7 +345,7 @@
             </div>
             <div class="text-right">
                 <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">Memuat Waktu...</div>
-                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span>🔄 Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
+                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span> Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
             </div>
         </header>
         <div class="max-w-7xl mx-auto mb-6">
@@ -376,12 +376,15 @@
                     <div class="table-white-container"><table id="table-nondown" class="w-full" style="width:100%"></table></div>
                 </section>
             </main>
-            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan"></button></div>
+            <!-- ✅ TOMBOL CAPTURE DI TAB LAPORAN -->
+            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end">
+                <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button>
+            </div>
         </div>
 
         <div id="tab-dashboard" class="tab-content">
             <section class="mb-12">
-                <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text"> DASHBOARD TIKET AKTIF</h2>
+                <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text">📊 DASHBOARD TIKET AKTIF</h2>
                 
                 <div id="running-text-container" class="running-text-container">
                     <div class="running-text" id="running-text-content"></div>
@@ -457,7 +460,7 @@
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span></span>
+                    <span>📝</span>
                     <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
@@ -491,7 +494,7 @@
 
             <div class="generator-actions">
                 <button class="btn-generator btn-generate" onclick="generateText()">
-                    <span>⚡</span> Generate Text
+                    <span></span> Generate Text
                 </button>
                 <button class="btn-generator btn-copy" onclick="copyGeneratedText()">
                     <span>📋</span> Copy ke Clipboard
@@ -530,7 +533,6 @@
         let worklogText = "";
         let previousTicketIds = new Set();
 
-        // ✅ DATA TEMPLATE WORKLOG
         const worklogTemplates = {
             "TANYA INFO": "[TANYA INFO] Sedang dilakukan konfirmasi ke Tim mengenai proses penanganan gangguan terkini.",
             "TANYA PROGRES": "[TANYA PROGRES] Mohon update progres penanganan gangguan dari Tim lapangan.",
@@ -540,52 +542,10 @@
             "SKKL IMPACT": "[SKKL IMPACT] menunggu realisasi rencana untuk TS & Upg Cappacity Ruas Larantuka - Lewoleba",
             "OTW": "[OTW] Tim sedang dalam perjalanan menuju lokasi, estimasi perjalanan ± 30 menit",
             "N/A": "[N/A] Upaya konfirmasi telah dilakukan, hingga saat ini belum ada informasi mengenai proses penanganan terbaru dari tim.",
+            "SEBEL BALMON": "[SEBEL BALMON] Link di Segel Balmon karena ISR tidak ada, menunggu rilis ISR.",
+            "KONFIRM N/A": "[KONFIRM N/A] Sudah di eskaliskan ke customer mengenai status power saat ini, namun belum diperoleh pembaruan informasi.",
             "CO CORE FO": "RFO : Disolusikan Dengan CO CORE FO, Disebabkan Oleh TSEL - TELKOM - DEGRADASI FO [ KET : CHANGE CORE UPLINK MINI OLT ]",
-            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO BENDING [ KET : GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH ]",
-            "RESTART/RESET": "RFO : Disolusikan Dengan RESTART/RESET MODUL ONT AKSES, Disebabkan Oleh TSEL - TELKOM - PERANGKAT HANG",
-            "PENGGANTIAN CONNECTOR": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ODC, Disebabkan Oleh TSEL - TELKOM - CONNECTOR RUSAK",
-            "PENGGANTIAN SFP": "RFO : Disolusikan Dengan PENGGANTIAN SFP IDU, Disebabkan Oleh TSEL - TELKOM - SFP RUSAK",
-            "REKONFIGURASI": "RFO : Disolusikan Dengan REKONFIGURASI, Disebabkan Oleh TSEL - TELKOM - MISSED CONFIG",
-            "PENGGANTIAN MODUL TRANSPORT": "RFO : Disolusikan Dengan PENGGANTIAN MODUL TRANSPORT, Disebabkan Oleh TSEL - TELKOM - CME RECTIFIER",
-            "PENGGANTIAN KABEL ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN KABEL ETHERNET, Disebabkan Oleh TSEL - TELKOM - CONNECTOR RUSAK",
-            "PENGGANTIAN PATCHCORE": "RFO : Disolusikan Dengan PENGGANTIAN PATCHCORE, Disebabkan Oleh TSEL - TELKOM - CRA ACTIVITY",
-            "REVISI CONNECTOR PATCHCORE": "RFO : Disolusikan Dengan REVISI CONNECTOR PATCHCORE, Disebabkan Oleh TSEL - TELKOM - DEGRADASI FO",
-            "PENGGANTIAN MODUL OLT AKSES": "RFO : Disolusikan Dengan PENGGANTIAN MODUL OLT AKSES, Disebabkan Oleh TSEL - TELKOM - FAN RUSAK/KOTOR",
-            "PENGGANTIAN SPLITER OTB": "RFO : Disolusikan Dengan PENGGANTIAN SPLITER OTB, Disebabkan Oleh TSEL - TELKOM - FO BENDING",
-            "PENGGANTIAN KABEL FO DISTRIBUSI": "RFO : Disolusikan Dengan PENGGANTIAN KABEL FO DISTRIBUSI, Disebabkan Oleh TSEL - TELKOM - FO CUT PRB",
-            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebahkan Oleh TSEL - TELKOM - FO CUT PRT",
-            "PENYAMBUNGAN DROPCORE": "RFO : Disolusikan Dengan PENYAMBUNGAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO CUT PRTENG",
-            "CHANGE FREQUENCY NON TELKOM": "RFO : Disolusikan Dengan CHANGE FREQUENCY NON TELKOM, Disebabkan Oleh TSEL - TELKOM - GANGGUAN HEWAN",
-            "TSA": "RFO : Disolusikan Dengan TSA, Disebabkan Oleh TSEL - TELKOM - IMPACT BACKBONE",
-            "BACKUP": "RFO : Disolusikan Dengan BACKUP, Disebabkan Oleh TSEL - TELKOM - INTERFERENCE",
-            "REVISI CORE BENDING": "RFO : Disolusikan Dengan REVISI CORE BENDING, Disebabkan Oleh TSEL - TELKOM - MISSED CONFIG",
-            "REVISI CONNECTOR ETHERNET": "RFO : Disolusikan Dengan REVISI CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOM - MODEM FAULTY",
-            "PENGGANTIAN MODUL METRO": "RFO : Disolusikan Dengan PENGGANTIAN MODUL METRO, Disebabkan Oleh TSEL - TELKOM - MODUL FAULTY",
-            "RESTART MODUL GPON": "RFO : Disolusikan Dengan RESTART MODUL GPON, Disebabkan Oleh TSEL - TELKOM - NO CRA ACTIVITY",
-            "PENGGANTIAN SPLITTER ODP": "RFO : Disolusikan Dengan PENGGANTIAN SPLITTER ODP, Disebabkan Oleh TSEL - TELKOM - NO INFO",
-            "PENYAMBUNGAN KABEL FO DISTRIBUSI": "RFO : Disolusikan Dengan PENYAMBUNGAN KABEL FO DISTRIBUSI, Disebabkan Oleh TSEL - TELKOM - ODC TERTABRAK KENDARAAN",
-            "PENGGANTIAN CONNECTOR COAX": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR COAX, Disebabkan Oleh TSEL - TELKOM - ORDER PSB/MODIFY",
-            "PENGGANTIAN KABEL GROUNDING": "RFO : Disolusikan Dengan PENGGANTIAN KABEL GROUNDING, Disebabkan Oleh TSEL - TELKOM - PEKERJAAN PIHAK KE-3",
-            "NORMALISASI SUHU PEMBERSIHAN SUHU": "RFO : Disolusikan Dengan NORMALISASI SUHU PEMBERSIHAN SUHU, Disebabkan Oleh TSEL - TELKOM - PERANGKAT HANG",
-            "MODUL POWER RECTIFIER": "RFO : Disolusikan Dengan MODUL POWER RECTIFIER, Disebabkan Oleh TSEL - TELKOM - PERANGKAT IDU FAULTY",
-            "PENGGANTIAN CONNECTOR ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOM - PERANGKAT ODU FAULTY",
-            "RESTART/RESET MODUL OLT AKSES": "RFO : Disolusikan Dengan RESTART/RESET MODUL OLT AKSES, Disebabkan Oleh TSEL - TELKOM - PETIR",
-            "PENGGANTIAN PERANGKAT ONT": "RFO : Disolusikan Dengan PENGGANTIAN PERANGKAT ONT, Disebabkan Oleh TSEL - TELKOM - PORT RUSAK",
-            "REVISI ODP": "RFO : Disolusikan Dengan REVISI ODP, Disebabkan Oleh TSEL - TELKOM - POWER",
-            "PENGGANTIAN KABEL DROPWIRE": "RFO : Disolusikan Dengan PENGGANTIAN KABEL DROPWIRE, Disebabkan Oleh TSEL - TELKOM - QUALITY",
-            "MENGHILANGKAN OBSTACLE": "RFO : Disolusikan Dengan MENGHILANGKAN OBSTACLE, Disebabkan Oleh TSEL - TELKOM - SARANG SEMUT DI ODC",
-            "PENGGANTIAN KABEL FO FEEDER": "RFO : Disolusikan Dengan PENGGANTIAN KABEL FO FEEDER, Disebabkan Oleh TSEL - TELKOM - SFP RUSAK",
-            "PENYAMBUNGAN KABEL FO FEEDER": "RFO : Disolusikan Dengan PENYAMBUNGAN KABEL FO FEEDER, Disebabkan Oleh TSEL - TELKOM - SOFTWARE",
-            "REVISI KABEL DROPWIRE": "RFO : Disolusikan Dengan REVISI KABEL DROPWIRE, Disebabkan Oleh TSEL - TELKOM - UNDERSPEC",
-            "PENGGANTIAN PERANGKAT IDU": "RFO : Disolusikan Dengan PENGGANTIAN PERANGKAT IDU, Disebabkan Oleh TSEL - TELKOM - VANDALISME",
-            "PENGGANTIAN MODUL IDU RADIO": "RFO : Disolusikan Dengan PENGGANTIAN MODUL IDU RADIO, Disebabkan Oleh TSEL - FORCE MAJEUR - GEMPA BUMI",
-            "FIMO": "RFO : Disolusikan Dengan FIMO, Disebabkan Oleh TSEL - FORCE MAJEUR - KEBAKARAN",
-            "PENYAMBUNGAN TRANSPORT SKKL": "RFO : Disolusikan Dengan PENYAMBUNGAN TRANSPORT SKKL, Disebabkan Oleh TSEL - FORCE MAJEUR - HUJAN BADAI",
-            "PENYAMBUNGAN TRANSPORT DWDM": "RFO : Disolusikan Dengan PENYAMBUNGAN TRANSPORT DWDM, Disebabkan Oleh TSEL - FORCE MAJEUR - LONGSOR",
-            "PENGGANTIAN CONNECTOR ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOMSEL - ISP TSEL",
-            "PENGGANTIAN MODUL CONTROLLER": "RFO : Disolusikan Dengan PENGGANTIAN MODUL CONTROLLER, Disebabkan Oleh Telkom - ISP - CME - CATUAN - MCB",
-            "REVISI SPLICING CORE": "RFO : Disolusikan Dengan REVISI SPLICING CORE, Disebabkan Oleh TSEL - FORCE MAJEUR - LONGSOR",
-            "REENGINEERING": "RFO : Disolusikan Dengan REENGINEERING (PENGGANTIAN ANTENA, KONEKTOR, dll), Disebabkan Oleh TSEL - TELKOM - CRA ACTIVITY"
+            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO BENDING [ KET : GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH ]"
         };
 
         window.onload = function() {
@@ -751,7 +711,7 @@
             const ketTambahan = document.getElementById('worklog-ket-tambahan').value;
             
             if (!keterangan) {
-                showToast('⚠️ Pilih template atau isi keterangan terlebih dahulu', true);
+                showToast('️ Pilih template atau isi keterangan terlebih dahulu', true);
                 return;
             }
             
@@ -1017,7 +977,7 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? ' ' : '';
+                    const prefix = menit >= 30 ? '🚨 ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
@@ -1025,20 +985,19 @@
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                // ✅ DUA TOMBOL: TEMPLATE WORKLOG & TEMPLATE CLOSE
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
-buttons: [
-    {
-        text: ' TEMPLATE WORKLOG',
-        className: 'template-btn-inline',
-        action: function() { openWorklogModal(); }
-    },
-    {
-        text: '📝 TEMPLATE CLOSE',
-        className: 'template-btn-inline template-btn-close',
-        action: function() { openGeneratorModal(); }
-    }
-],
+                buttons: [
+                    {
+                        text: '📋 TEMPLATE WORKLOG',
+                        className: 'template-btn-inline',
+                        action: function() { openWorklogModal(); }
+                    },
+                    {
+                        text: '📝 TEMPLATE CLOSE',
+                        className: 'template-btn-inline template-btn-close',
+                        action: function() { openGeneratorModal(); }
+                    }
+                ],
                 language: { 
                     search: "", 
                     searchPlaceholder: "Cari:",
@@ -1059,7 +1018,7 @@ buttons: [
                     if (e.which === 13) {
                       const noTiket = $(this).data('notiket');
                       const value = $(this).val().trim();
-                      if (!value) { showToast('⚠️ Input kosong', true); return; }
+                      if (!value) { showToast('️ Input kosong', true); return; }
                       sendSmartFieldUpdate(noTiket, value, $(this));
                     }
                   });
@@ -1212,7 +1171,6 @@ buttons: [
         }
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCaptureModal(); closeGeneratorModal(); closeWorklogModal(); }});
         
-        // Auto-update preview saat user mengetik di textarea
         document.addEventListener('DOMContentLoaded', function() {
             const worklogKeterangan = document.getElementById('worklog-keterangan');
             const worklogKetTambahan = document.getElementById('worklog-ket-tambahan');
