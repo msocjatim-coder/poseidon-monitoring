@@ -88,7 +88,7 @@
         .table-white-container .dataTables_length select { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 8px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         .table-white-container .dataTables_filter input { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 10px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         
-        /* ✅ TOMBOL GENERATOR DI DALAM SEARCH CONTAINER */
+        /* ✅ TOMBOL GENERATOR KHUSUS DASHBOARD */
         .generator-btn-inline {
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white !important;
@@ -630,7 +630,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = `️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -729,7 +729,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('️ Gagal koneksi, coba lagi...', true);
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -828,7 +828,7 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? ' ' : '';
+                    const prefix = menit >= 30 ? '🚨 ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
@@ -836,7 +836,7 @@
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                // ✅ TAMBAHKAN TOMBOL GENERATOR DI DALAM DOM
+                // ✅ TOMBOL GENERATOR HANYA DI SINI (Dashboard)
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"fB>tip',
                 buttons: [{
                     text: '✏️ Generator Tiket',
@@ -883,7 +883,7 @@
             if (data.status === 'success') { showToast(data.message, false); inputElement.val(''); } 
             else { showToast(data.message || 'Gagal update', true); }
           })
-          .catch(error => { showToast('️ Gagal koneksi: ' + error.message, true); })
+          .catch(error => { showToast('⚠️ Gagal koneksi: ' + error.message, true); })
           .finally(() => {
             inputElement.prop('disabled', false);
             inputElement.siblings('button').prop('disabled', false);
@@ -918,6 +918,7 @@
             ];
             tableDownInstance = $('#table-down').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
+                // ✅ TIDAK ADA TOMBOL GENERATOR DI SINI
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
@@ -935,6 +936,7 @@
             ];
             tableNonDownInstance = $('#table-nondown').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
+                // ✅ TIDAK ADA TOMBOL GENERATOR DI SINI
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
