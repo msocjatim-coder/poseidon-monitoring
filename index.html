@@ -25,11 +25,21 @@
         .offline-dot { animation: pulse-red 2s infinite; }
         @keyframes pulse-cyan { 0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); } }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-        @keyframes blink-urgent { 0%, 100% { background-color: #dc2626; color: #ffffff; font-weight: bold; } 50% { background-color: #991b1b; color: #ffffff; font-weight: bold; } }
-        .blink-urgent { animation: blink-urgent 1s infinite; border-radius: 6px; padding: 4px 10px; display: inline-block; }
-        .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
         
-        .col-info { white-space: normal !important; word-wrap: break-word !important; overflow-wrap: break-word !important; max-width: 400px !important; line-height: 1.4 !important; }
+        /* ✅ UPDATE: Hanya font yang kedap-kedip (mati-hidup), background tetap solid */
+        @keyframes blink-urgent { 
+            0%, 100% { color: #ffffff; } 
+            50% { color: rgba(255, 255, 255, 0.1); } 
+        }
+        .blink-urgent { 
+            animation: blink-urgent 1s infinite; 
+            border-radius: 6px; 
+            padding: 4px 10px; 
+            display: inline-block; 
+        }
+        
+        .break-word { word-wrap: break-word; overflow-wrap: break-word; white-space: normal !important; }
+        .col-info { white-space: normal !important; word-wrap: break-word !important; overflow-wrap: break-word !important; max-width: 550px !important; line-height: 1.4 !important; }
 
         .tab-btn { transition: all 0.3s ease; }
         .tab-btn.active { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.6); color: #22d3ee; }
@@ -65,7 +75,8 @@
         .ttr-medium { background: #ca8a04 !important; }
         .ttr-high { background: #dc2626 !important; }
         
-        .durasi-low { background: #16a34a !important; color: #000000 !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
+        /* ✅ UPDATE: Warna hijau sekarang font putih */
+        .durasi-low { background: #16a34a !important; color: #ffffff !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
         .durasi-medium { background: #eab308 !important; color: #000000 !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
         .durasi-high { background: #dc2626 !important; color: #ffffff !important; padding: 4px 10px !important; border-radius: 6px !important; font-weight: bold !important; font-size: 11px !important; display: inline-block !important; text-align: center !important; min-width: 110px !important; }
         
@@ -213,7 +224,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzQfznBcqgUDCFpneHsKKFNqblLSnAEtUqC9qVFYRmifgIkD89TJXbwcN4viLflh2U/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxBdMWOHFx9gfQSdxpf_dNNZu8g9q6wdJcGQOPj7u9J98q76GwCZVF7mvKMKo1Nli-a/exec";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
@@ -384,18 +395,15 @@
         function renderDashboard(data) {
             if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
             
-            // ✅ 1. URUTAN LAYANAN CUSTOM (DIPERBARUI)
             const layananOrder = {
                 'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
                 'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
             };
             
-            // ✅ 2. URUTAN SEVR (KHUSUSNYA UNTUK METRO)
             const sevrOrder = {
                 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5
             };
             
-            // ✅ 3. SORTING: Pertama berdasarkan LAYANAN, lalu berdasarkan SEVR
             data.sort((a, b) => {
                 const orderA_layanan = layananOrder[a.layanan] || 99;
                 const orderB_layanan = layananOrder[b.layanan] || 99;
@@ -404,35 +412,34 @@
                     return orderA_layanan - orderB_layanan;
                 }
                 
-                // Jika layanan sama, urutkan berdasarkan SEVR
                 const orderA_sevr = sevrOrder[a.sevr] || 99;
                 const orderB_sevr = sevrOrder[b.sevr] || 99;
                 return orderA_sevr - orderB_sevr;
             });
             
-            // ✅ 4. TAMBAHKAN NOMOR URUT
             const dataWithIndex = data.map((item, index) => ({
                 no: index + 1,
                 ...item
             }));
             
+            // ✅ UPDATE: Kolom disesuaikan dengan permintaan (Width & ClassName)
             const columns = [
                 { title: "No", data: "no", width: "50px", className: "text-center" },
-                { title: "LAYANAN", data: "layanan", width: "90px" },
+                { title: "LAYANAN", data: "layanan", width: "100px" },
                 { title: "SEVR", data: "sevr", width: "70px" },
                 { title: "DISTRICT", data: "district", width: "100px" },
                 { title: "SITE ID", data: "siteId", width: "100px" },
                 { title: "NO TIKET", data: "noTiket", width: "130px" },
-                { title: "HEADLINE", data: "headline", className: "break-word", width: "300px" },
+                { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
                 { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
-                    return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/bb INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
+                    return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/BB INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
                   }
                 },
-                { title: "INFO", data: "info", className: "break-word", width: "400px", render: function(data) { 
+                { title: "INFO", data: "info", className: "break-word", width: "550px", render: function(data) { 
                     return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
                   } 
                 },
-                { title: "LAST UPD", data: "lastUpdMenit", width: "140px", render: function(data, type, row) {
+                { title: "LAST UPD", data: "lastUpdMenit", width: "120px", render: function(data, type, row) {
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
@@ -450,7 +457,6 @@
                 ordering: false,
                 autoWidth: false, 
                 scrollX: false,        
-                // ✅ 5. PINDAHKAN PENCARIAN (f) KE KANAN
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end"f>tip',
                 language: { 
                   search: "", 
