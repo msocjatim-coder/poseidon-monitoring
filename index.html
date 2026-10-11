@@ -83,10 +83,32 @@
         .table-white-container .dataTables_wrapper { color: #1e293b !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
         .table-white-container .dataTables_length, .table-white-container .dataTables_filter, .table-white-container .dataTables_info, .table-white-container .dataTables_processing, .table-white-container .dataTables_paginate { color: #1e293b !important; padding: 10px !important; }
         .table-white-container .dataTables_length { float: left !important; margin-bottom: 10px !important; display: flex !important; align-items: center !important; }
-        .table-white-container .dataTables_filter { float: right !important; margin-bottom: 10px !important; display: flex !important; align-items: center !important; }
+        .table-white-container .dataTables_filter { float: right !important; margin-bottom: 10px !important; display: flex !important; align-items: center !important; gap: 10px !important; }
         .table-white-container .dataTables_length label, .table-white-container .dataTables_filter label { display: flex !important; align-items: center !important; gap: 6px !important; margin: 0 !important; font-weight: normal !important; line-height: 1 !important; }
         .table-white-container .dataTables_length select { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 8px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         .table-white-container .dataTables_filter input { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 10px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
+        
+        /* ✅ TOMBOL GENERATOR DI DALAM SEARCH CONTAINER */
+        .generator-btn-inline {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white !important;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .generator-btn-inline:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        
         .table-white-container .dataTables_paginate { display: flex !important; align-items: center !important; justify-content: flex-end !important; gap: 2px !important; }
         .table-white-container .dataTables_paginate .paginate_button { color: #1e293b !important; background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; border-radius: 4px !important; margin: 0 1px !important; padding: 0 12px !important; height: 32px !important; line-height: 1 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; box-sizing: border-box !important; font-size: 13px !important; cursor: pointer !important; }
         .table-white-container .dataTables_paginate .paginate_button.current, .table-white-container .dataTables_paginate .paginate_button:hover { background: #3b82f6 !important; color: #ffffff !important; border-color: #3b82f6 !important; }
@@ -150,41 +172,6 @@
         .sidebar-btn { background: rgba(34, 211, 238, 0.1); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s ease; width: 160px; justify-content: flex-start; }
         .sidebar-btn:hover { background: rgba(34, 211, 238, 0.3); transform: translateX(4px); box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2); }
         .sidebar-btn span.icon { font-size: 16px; }
-
-        /* ✅ FLOATING ACTION BUTTON (FAB) - DIPINDAH KE ATAS DEKAT SEARCH */
-        .fab-container {
-            position: fixed;
-            top: 170px; /* Posisi pas di atas field pencarian */
-            right: 40px;
-            z-index: 1001;
-            display: flex;
-            flex-direction: row;
-            gap: 12px;
-            align-items: center;
-            justify-content: flex-end;
-        }
-        .fab-button {
-            width: auto;
-            height: 42px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            color: #ffffff;
-            border: none;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.5);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
-            padding: 0 16px;
-        }
-        .fab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.7);
-        }
 
         /* ✅ MODAL GENERATOR */
         .generator-modal {
@@ -413,14 +400,6 @@
         </div>
     </div>
 
-    <!-- ✅ FLOATING ACTION BUTTON (FAB) - POSISI BENAR DI BODY -->
-    <div class="fab-container">
-        <button class="fab-button" onclick="openGeneratorModal()" title="Buka Generator Tiket">
-            <span style="margin-right: 6px;">✏️</span>
-            <span>Generator</span>
-        </button>
-    </div>
-
     <!-- ✅ GENERATOR MODAL -->
     <div id="generator-modal" class="generator-modal">
         <div class="generator-content">
@@ -496,8 +475,6 @@
         let isCurrentlyOffline = false;
         let sheetData = { actualSolutions: [], incidentDomains: [] };
         let generatedText = "";
-        
-        // ✅ VARIABEL UNTUK CEK PERUBAHAN TIKET
         let previousTicketIds = new Set();
 
         window.onload = function() {
@@ -515,7 +492,6 @@
             }, 30000);
         };
 
-        // ✅ FUNGSI NOTIFIKASI HALUS (TIDAK MENGGANGGU)
         function showSubtleNotification(message, type) {
             const notif = document.createElement('div');
             const bgColor = type === 'info' ? 'rgba(6, 182, 212, 0.95)' : 'rgba(16, 185, 129, 0.95)';
@@ -546,7 +522,6 @@
             }, 4000);
         }
 
-        // ✅ CEK PERUBAHAN TIKET (BARU / CLEAR)
         function checkTicketChanges(currentData) {
             if (!currentData || currentData.length === 0) return;
             
@@ -655,7 +630,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = `️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -754,7 +729,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('⚠️ Gagal koneksi, coba lagi...', true);
+                showToast('️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -774,9 +749,7 @@
                 if (isCurrentlyOffline) return;
                 if (data.lastSync) lastSyncTime = data.lastSync;
                 
-                // ✅ CEK PERUBAHAN TIKET SEBELUM RENDER
                 checkTicketChanges(data.data || []);
-                
                 renderDashboard(data.data || []);
                 
                 const now = new Date();
@@ -855,7 +828,7 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? '🚨 ' : '';
+                    const prefix = menit >= 30 ? ' ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
@@ -863,8 +836,23 @@
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end"f>tip',
-                language: { search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data" },
+                // ✅ TAMBAHKAN TOMBOL GENERATOR DI DALAM DOM
+                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"fB>tip',
+                buttons: [{
+                    text: '✏️ Generator Tiket',
+                    className: 'generator-btn-inline',
+                    action: function() {
+                        openGeneratorModal();
+                    }
+                }],
+                language: { 
+                    search: "", 
+                    searchPlaceholder: "Cari:",
+                    info: "Menampilkan _TOTAL_ data", 
+                    paginate: { previous: "Sebelumnya", next: "Selanjutnya" },
+                    infoFiltered: "",
+                    infoEmpty: "Tidak ada data"
+                },
                 drawCallback: function() {
                   $('.smart-send-btn').off('click').on('click', function() {
                     const noTiket = $(this).data('notiket');
@@ -895,7 +883,7 @@
             if (data.status === 'success') { showToast(data.message, false); inputElement.val(''); } 
             else { showToast(data.message || 'Gagal update', true); }
           })
-          .catch(error => { showToast('⚠️ Gagal koneksi: ' + error.message, true); })
+          .catch(error => { showToast('️ Gagal koneksi: ' + error.message, true); })
           .finally(() => {
             inputElement.prop('disabled', false);
             inputElement.siblings('button').prop('disabled', false);
