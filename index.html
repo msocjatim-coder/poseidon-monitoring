@@ -157,7 +157,7 @@
     
     <div id="offline-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-md">
         <div class="text-center p-8 glass rounded-2xl border-2 border-red-500/50 max-w-2xl mx-4 shadow-2xl shadow-red-900/50">
-            <div class="text-7xl mb-6 animate-bounce">️</div>
+            <div class="text-7xl mb-6 animate-bounce">⚠️</div>
             <h2 class="text-3xl md:text-5xl font-bold text-red-400 glow-text mb-4 tracking-wider">404 Not Found</h2>
             <p class="text-xl md:text-2xl text-red-200 mb-8 font-mono bg-red-900/30 p-4 rounded-lg border border-red-500/30">[Sistem Tidak Terhubung]</p>
             <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">Peringatan!<br>Sinkronisasi Gagal ❌.</p>
@@ -175,7 +175,7 @@
             </div>
             <div class="text-right">
                 <div id="realtime-clock" class="text-lg md:text-xl font-mono font-semibold text-cyan-100 bg-slate-900/60 px-5 py-2 rounded-xl border border-cyan-800/50">Memuat Waktu...</div>
-                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span> Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
+                <div id="connection-status" class="text-xs text-cyan-400/70 mt-2 font-mono flex items-center justify-end gap-2"><span>🔄 Terakhir diperbarui:</span><span id="last-updated">Memuat...</span></div>
             </div>
         </header>
         <div class="max-w-7xl mx-auto mb-6">
@@ -239,7 +239,7 @@
 
     <div class="sidebar-trigger-area"></div>
     <div class="poseidon-sidebar">
-        <div class="sidebar-indicator"></div>
+        <div class="sidebar-indicator">◀</div>
         <div class="sidebar-content">
             <button class="sidebar-btn" onclick="forceRefresh()" title="Muat Ulang Data">
                 <span class="icon">🔄</span> Refresh
@@ -248,18 +248,17 @@
                 <span class="icon">📸</span> Capture
             </button>
             <button class="sidebar-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Kembali ke Bagian Atas">
-                <span class="icon">️</span> Ke Atas
+                <span class="icon">⬆️</span> Ke Atas
             </button>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxBdMWOHFx9gfQSdxpf_dNNZu8g9q6wdJcGQOPj7u9J98q76GwCZVF7mvKMKo1Nli-a/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzQfznBcqgUDCFpneHsKKFNqblLSnAEtUqC9qVFYRmifgIkD89TJXbwcN4viLflh2U/exec";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
         let isCurrentlyOffline = false;
-        let connectionRetryCount = 0; // ✅ COUNTER UNTUK RETRY
 
         window.onload = function() {
             updateClock();
@@ -383,14 +382,9 @@
                     const mainContentEl = document.getElementById('main-content');
                     if (mainContentEl) mainContentEl.classList.remove('hidden');
                 }
-                connectionRetryCount = 0; // ✅ RESET COUNTER SAAT SUKSES
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                // ✅ LEBIH SABAR: Tidak langsung tampilkan error, tunggu beberapa retry
-                connectionRetryCount++;
-                if (connectionRetryCount >= 3) {
-                    showToast('⚠️ Koneksi masih bermasalah, silakan refresh halaman', true);
-                }
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -423,14 +417,9 @@
                     const mainContentEl = document.getElementById('main-content');
                     if (mainContentEl) mainContentEl.classList.remove('hidden');
                 }
-                connectionRetryCount = 0; // ✅ RESET COUNTER SAAT SUKSES
             } catch (error) {
                 console.error("Gagal mengambil data dashboard:", error);
-                // ✅ LEBIH SABAR: Tidak langsung tampilkan error
-                connectionRetryCount++;
-                if (connectionRetryCount >= 3) {
-                    showToast('⚠️ Koneksi masih bermasalah, silakan refresh halaman', true);
-                }
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -483,12 +472,12 @@
                 ...item
             }));
             
-            // ✅ PERBAIKAN: Ukuran kolom SEVR disesuaikan dan data mapping yang benar
+            // ✅ PERBAIKAN: 'data: "sevr"' (huruf kecil) agar cocok dengan Code.gs
             const columns = [
                 { title: "No", data: "no", width: "50px", className: "text-center" },
                 { title: "LAYANAN", data: "layanan", width: "100px" },
-                { title: "SEVR", data: "sevr", width: "auto" }, // ✅ UBAH KE AUTO AGAR SESUAI ISI
-                { title: "DISTRICT", data: "district", width: "120px" },
+                { title: "SEVR", data: "sevr", width: "70px" },
+                { title: "DISTRICT", data: "district", width: "100px" },
                 { title: "SITE ID", data: "siteId", width: "100px" },
                 { title: "NO TIKET", data: "noTiket", width: "130px" },
                 { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
@@ -516,7 +505,7 @@
                 pageLength: -1,        
                 lengthMenu: [],        
                 ordering: false,
-                autoWidth: true, // ✅ AKTIFKAN AUTO WIDTH
+                autoWidth: false, 
                 scrollX: false,        
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end"f>tip',
                 language: { 
@@ -561,7 +550,7 @@
               showToast(data.message || 'Gagal update', true);
             }
           })
-          .catch(error => { showToast('️ Gagal koneksi: ' + error.message, true); })
+          .catch(error => { showToast('⚠️ Gagal koneksi: ' + error.message, true); })
           .finally(() => {
             inputElement.prop('disabled', false);
             inputElement.siblings('button').prop('disabled', false);
@@ -622,7 +611,6 @@
         function forceRefresh() {
             showToast("⏳ Menyegarkan data...", false);
             isCurrentlyOffline = false;
-            connectionRetryCount = 0;
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') fetchLaporanData(true);
             else if (activeTab === 'dashboard') fetchDashboardData(true);
