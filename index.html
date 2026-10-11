@@ -88,8 +88,8 @@
         .table-white-container .dataTables_length select { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 8px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         .table-white-container .dataTables_filter input { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; border-radius: 4px !important; padding: 4px 10px !important; margin: 0 !important; height: 32px !important; line-height: 1.2 !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; font-size: 13px !important; }
         
-        /* ✅ TOMBOL GENERATOR KHUSUS DASHBOARD */
-        .generator-btn-inline {
+        /* ✅ TOMBOL TEMPLATE KHUSUS DASHBOARD */
+        .template-btn-inline {
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white !important;
             border: none;
@@ -104,9 +104,15 @@
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .generator-btn-inline:hover {
+        .template-btn-inline:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        .template-btn-close {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .template-btn-close:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
         
         .table-white-container .dataTables_paginate { display: flex !important; align-items: center !important; justify-content: flex-end !important; gap: 2px !important; }
@@ -324,7 +330,7 @@
             <div class="text-7xl mb-6 animate-bounce">⚠️</div>
             <h2 class="text-3xl md:text-5xl font-bold text-red-400 glow-text mb-4 tracking-wider">404 Not Found</h2>
             <p class="text-xl md:text-2xl text-red-200 mb-8 font-mono bg-red-900/30 p-4 rounded-lg border border-red-500/30">[Sistem Tidak Terhubung]</p>
-            <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">Peringatan!<br>Sinkronisasi Gagal ❌.</p>
+            <p class="text-sm md:text-base text-cyan-200/70 mb-8 leading-relaxed">Peringatan!<br>Sinkronisasi Gagal .</p>
             <button onclick="forceRefresh()" class="px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-lg flex items-center gap-3 mx-auto text-lg"><span>🔄</span> Coba Hubungkan Kembali</button>
         </div>
     </div>
@@ -370,12 +376,12 @@
                     <div class="table-white-container"><table id="table-nondown" class="w-full" style="width:100%"></table></div>
                 </section>
             </main>
-            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button></div>
+            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan"></button></div>
         </div>
 
         <div id="tab-dashboard" class="tab-content">
             <section class="mb-12">
-                <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text">📊 DASHBOARD TIKET AKTIF</h2>
+                <h2 class="text-2xl font-bold text-cyan-400 uppercase tracking-widest mb-4 text-center glow-text"> DASHBOARD TIKET AKTIF</h2>
                 
                 <div id="running-text-container" class="running-text-container">
                     <div class="running-text" id="running-text-content"></div>
@@ -400,13 +406,59 @@
         </div>
     </div>
 
-    <!-- ✅ GENERATOR MODAL -->
+    <!-- ✅ MODAL TEMPLATE WORKLOG -->
+    <div id="worklog-modal" class="generator-modal">
+        <div class="generator-content">
+            <div class="generator-header">
+                <div class="generator-title">
+                    <span>📋</span>
+                    <span>Template Worklog</span>
+                </div>
+                <button class="generator-close" onclick="closeWorklogModal()">Tutup ✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Pilih Template Worklog</label>
+                <select id="worklog-template" class="form-select" onchange="updateWorklogText()">
+                    <option value="">-- Pilih Template --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Keterangan (Otomatis terisi, bisa diedit)</label>
+                <textarea id="worklog-keterangan" class="form-textarea" placeholder="Keterangan akan muncul di sini..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ket + (Keterangan Tambahan - Opsional)</label>
+                <textarea id="worklog-ket-tambahan" class="form-textarea" placeholder="Tambahkan keterangan jika perlu..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <div class="preview-label">Hasil Akhir:</div>
+                <div id="worklog-preview" class="preview-box">
+                    <span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>
+                </div>
+            </div>
+
+            <div class="generator-actions">
+                <button class="btn-generator btn-generate" onclick="generateWorklog()">
+                    <span>⚡</span> Generate Text
+                </button>
+                <button class="btn-generator btn-copy" onclick="copyWorklogText()">
+                    <span>📋</span> Copy ke Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ MODAL TEMPLATE CLOSE -->
     <div id="generator-modal" class="generator-modal">
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span>📝</span>
-                    <span>Generator Keterangan Tiket</span>
+                    <span></span>
+                    <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
             </div>
@@ -475,7 +527,66 @@
         let isCurrentlyOffline = false;
         let sheetData = { actualSolutions: [], incidentDomains: [] };
         let generatedText = "";
+        let worklogText = "";
         let previousTicketIds = new Set();
+
+        // ✅ DATA TEMPLATE WORKLOG
+        const worklogTemplates = {
+            "TANYA INFO": "[TANYA INFO] Sedang dilakukan konfirmasi ke Tim mengenai proses penanganan gangguan terkini.",
+            "TANYA PROGRES": "[TANYA PROGRES] Mohon update progres penanganan gangguan dari Tim lapangan.",
+            "KOORD TT": "[KOORD TT] Koordinasi mengenai penanganan gangguan telah dilakukan ke Tim terkait.",
+            "KOORD KEMBALI": "[KOORD KEMBALI] Penanganan tiket gangguan saat ini sedang di eskalasikan ke Tim terkait.",
+            "NEED QE": "[NEED QE] kebutuhan material DC 10 roll untuk mengamankan KU sepanjang 12 km.",
+            "SKKL IMPACT": "[SKKL IMPACT] menunggu realisasi rencana untuk TS & Upg Cappacity Ruas Larantuka - Lewoleba",
+            "OTW": "[OTW] Tim sedang dalam perjalanan menuju lokasi, estimasi perjalanan ± 30 menit",
+            "N/A": "[N/A] Upaya konfirmasi telah dilakukan, hingga saat ini belum ada informasi mengenai proses penanganan terbaru dari tim.",
+            "CO CORE FO": "RFO : Disolusikan Dengan CO CORE FO, Disebabkan Oleh TSEL - TELKOM - DEGRADASI FO [ KET : CHANGE CORE UPLINK MINI OLT ]",
+            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO BENDING [ KET : GANTI DC 100 M PUTUS KETAREK SAMA RANTING POHON YG PATAH ]",
+            "RESTART/RESET": "RFO : Disolusikan Dengan RESTART/RESET MODUL ONT AKSES, Disebabkan Oleh TSEL - TELKOM - PERANGKAT HANG",
+            "PENGGANTIAN CONNECTOR": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ODC, Disebabkan Oleh TSEL - TELKOM - CONNECTOR RUSAK",
+            "PENGGANTIAN SFP": "RFO : Disolusikan Dengan PENGGANTIAN SFP IDU, Disebabkan Oleh TSEL - TELKOM - SFP RUSAK",
+            "REKONFIGURASI": "RFO : Disolusikan Dengan REKONFIGURASI, Disebabkan Oleh TSEL - TELKOM - MISSED CONFIG",
+            "PENGGANTIAN MODUL TRANSPORT": "RFO : Disolusikan Dengan PENGGANTIAN MODUL TRANSPORT, Disebabkan Oleh TSEL - TELKOM - CME RECTIFIER",
+            "PENGGANTIAN KABEL ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN KABEL ETHERNET, Disebabkan Oleh TSEL - TELKOM - CONNECTOR RUSAK",
+            "PENGGANTIAN PATCHCORE": "RFO : Disolusikan Dengan PENGGANTIAN PATCHCORE, Disebabkan Oleh TSEL - TELKOM - CRA ACTIVITY",
+            "REVISI CONNECTOR PATCHCORE": "RFO : Disolusikan Dengan REVISI CONNECTOR PATCHCORE, Disebabkan Oleh TSEL - TELKOM - DEGRADASI FO",
+            "PENGGANTIAN MODUL OLT AKSES": "RFO : Disolusikan Dengan PENGGANTIAN MODUL OLT AKSES, Disebabkan Oleh TSEL - TELKOM - FAN RUSAK/KOTOR",
+            "PENGGANTIAN SPLITER OTB": "RFO : Disolusikan Dengan PENGGANTIAN SPLITER OTB, Disebabkan Oleh TSEL - TELKOM - FO BENDING",
+            "PENGGANTIAN KABEL FO DISTRIBUSI": "RFO : Disolusikan Dengan PENGGANTIAN KABEL FO DISTRIBUSI, Disebabkan Oleh TSEL - TELKOM - FO CUT PRB",
+            "PENGGANTIAN DROPCORE": "RFO : Disolusikan Dengan PENGGANTIAN DROPCORE, Disebahkan Oleh TSEL - TELKOM - FO CUT PRT",
+            "PENYAMBUNGAN DROPCORE": "RFO : Disolusikan Dengan PENYAMBUNGAN DROPCORE, Disebabkan Oleh TSEL - TELKOM - FO CUT PRTENG",
+            "CHANGE FREQUENCY NON TELKOM": "RFO : Disolusikan Dengan CHANGE FREQUENCY NON TELKOM, Disebabkan Oleh TSEL - TELKOM - GANGGUAN HEWAN",
+            "TSA": "RFO : Disolusikan Dengan TSA, Disebabkan Oleh TSEL - TELKOM - IMPACT BACKBONE",
+            "BACKUP": "RFO : Disolusikan Dengan BACKUP, Disebabkan Oleh TSEL - TELKOM - INTERFERENCE",
+            "REVISI CORE BENDING": "RFO : Disolusikan Dengan REVISI CORE BENDING, Disebabkan Oleh TSEL - TELKOM - MISSED CONFIG",
+            "REVISI CONNECTOR ETHERNET": "RFO : Disolusikan Dengan REVISI CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOM - MODEM FAULTY",
+            "PENGGANTIAN MODUL METRO": "RFO : Disolusikan Dengan PENGGANTIAN MODUL METRO, Disebabkan Oleh TSEL - TELKOM - MODUL FAULTY",
+            "RESTART MODUL GPON": "RFO : Disolusikan Dengan RESTART MODUL GPON, Disebabkan Oleh TSEL - TELKOM - NO CRA ACTIVITY",
+            "PENGGANTIAN SPLITTER ODP": "RFO : Disolusikan Dengan PENGGANTIAN SPLITTER ODP, Disebabkan Oleh TSEL - TELKOM - NO INFO",
+            "PENYAMBUNGAN KABEL FO DISTRIBUSI": "RFO : Disolusikan Dengan PENYAMBUNGAN KABEL FO DISTRIBUSI, Disebabkan Oleh TSEL - TELKOM - ODC TERTABRAK KENDARAAN",
+            "PENGGANTIAN CONNECTOR COAX": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR COAX, Disebabkan Oleh TSEL - TELKOM - ORDER PSB/MODIFY",
+            "PENGGANTIAN KABEL GROUNDING": "RFO : Disolusikan Dengan PENGGANTIAN KABEL GROUNDING, Disebabkan Oleh TSEL - TELKOM - PEKERJAAN PIHAK KE-3",
+            "NORMALISASI SUHU PEMBERSIHAN SUHU": "RFO : Disolusikan Dengan NORMALISASI SUHU PEMBERSIHAN SUHU, Disebabkan Oleh TSEL - TELKOM - PERANGKAT HANG",
+            "MODUL POWER RECTIFIER": "RFO : Disolusikan Dengan MODUL POWER RECTIFIER, Disebabkan Oleh TSEL - TELKOM - PERANGKAT IDU FAULTY",
+            "PENGGANTIAN CONNECTOR ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOM - PERANGKAT ODU FAULTY",
+            "RESTART/RESET MODUL OLT AKSES": "RFO : Disolusikan Dengan RESTART/RESET MODUL OLT AKSES, Disebabkan Oleh TSEL - TELKOM - PETIR",
+            "PENGGANTIAN PERANGKAT ONT": "RFO : Disolusikan Dengan PENGGANTIAN PERANGKAT ONT, Disebabkan Oleh TSEL - TELKOM - PORT RUSAK",
+            "REVISI ODP": "RFO : Disolusikan Dengan REVISI ODP, Disebabkan Oleh TSEL - TELKOM - POWER",
+            "PENGGANTIAN KABEL DROPWIRE": "RFO : Disolusikan Dengan PENGGANTIAN KABEL DROPWIRE, Disebabkan Oleh TSEL - TELKOM - QUALITY",
+            "MENGHILANGKAN OBSTACLE": "RFO : Disolusikan Dengan MENGHILANGKAN OBSTACLE, Disebabkan Oleh TSEL - TELKOM - SARANG SEMUT DI ODC",
+            "PENGGANTIAN KABEL FO FEEDER": "RFO : Disolusikan Dengan PENGGANTIAN KABEL FO FEEDER, Disebabkan Oleh TSEL - TELKOM - SFP RUSAK",
+            "PENYAMBUNGAN KABEL FO FEEDER": "RFO : Disolusikan Dengan PENYAMBUNGAN KABEL FO FEEDER, Disebabkan Oleh TSEL - TELKOM - SOFTWARE",
+            "REVISI KABEL DROPWIRE": "RFO : Disolusikan Dengan REVISI KABEL DROPWIRE, Disebabkan Oleh TSEL - TELKOM - UNDERSPEC",
+            "PENGGANTIAN PERANGKAT IDU": "RFO : Disolusikan Dengan PENGGANTIAN PERANGKAT IDU, Disebabkan Oleh TSEL - TELKOM - VANDALISME",
+            "PENGGANTIAN MODUL IDU RADIO": "RFO : Disolusikan Dengan PENGGANTIAN MODUL IDU RADIO, Disebabkan Oleh TSEL - FORCE MAJEUR - GEMPA BUMI",
+            "FIMO": "RFO : Disolusikan Dengan FIMO, Disebabkan Oleh TSEL - FORCE MAJEUR - KEBAKARAN",
+            "PENYAMBUNGAN TRANSPORT SKKL": "RFO : Disolusikan Dengan PENYAMBUNGAN TRANSPORT SKKL, Disebabkan Oleh TSEL - FORCE MAJEUR - HUJAN BADAI",
+            "PENYAMBUNGAN TRANSPORT DWDM": "RFO : Disolusikan Dengan PENYAMBUNGAN TRANSPORT DWDM, Disebabkan Oleh TSEL - FORCE MAJEUR - LONGSOR",
+            "PENGGANTIAN CONNECTOR ETHERNET": "RFO : Disolusikan Dengan PENGGANTIAN CONNECTOR ETHERNET, Disebabkan Oleh TSEL - TELKOMSEL - ISP TSEL",
+            "PENGGANTIAN MODUL CONTROLLER": "RFO : Disolusikan Dengan PENGGANTIAN MODUL CONTROLLER, Disebabkan Oleh Telkom - ISP - CME - CATUAN - MCB",
+            "REVISI SPLICING CORE": "RFO : Disolusikan Dengan REVISI SPLICING CORE, Disebabkan Oleh TSEL - FORCE MAJEUR - LONGSOR",
+            "REENGINEERING": "RFO : Disolusikan Dengan REENGINEERING (PENGGANTIAN ANTENA, KONEKTOR, dll), Disebabkan Oleh TSEL - TELKOM - CRA ACTIVITY"
+        };
 
         window.onload = function() {
             updateClock();
@@ -484,6 +595,7 @@
             setInterval(checkRunningText, 60000);
             initTabs();
             fetchSheetData();
+            populateWorklogDropdown();
             fetchLaporanData(true);
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
@@ -584,8 +696,85 @@
             });
         }
 
+        function populateWorklogDropdown() {
+            const worklogSelect = document.getElementById('worklog-template');
+            worklogSelect.innerHTML = '<option value="">-- Pilih Template --</option>';
+            
+            Object.keys(worklogTemplates).forEach(template => {
+                const option = document.createElement('option');
+                option.value = template;
+                option.textContent = template;
+                worklogSelect.appendChild(option);
+            });
+        }
+
+        function updateWorklogText() {
+            const selectedTemplate = document.getElementById('worklog-template').value;
+            const keteranganTextarea = document.getElementById('worklog-keterangan');
+            
+            if (selectedTemplate && worklogTemplates[selectedTemplate]) {
+                keteranganTextarea.value = worklogTemplates[selectedTemplate];
+            } else {
+                keteranganTextarea.value = '';
+            }
+            
+            generateWorklogPreview();
+        }
+
+        function generateWorklogPreview() {
+            const keterangan = document.getElementById('worklog-keterangan').value;
+            const ketTambahan = document.getElementById('worklog-ket-tambahan').value;
+            const previewBox = document.getElementById('worklog-preview');
+            
+            if (keterangan) {
+                let finalText = keterangan;
+                if (ketTambahan.trim()) {
+                    finalText += ` [ KET : ${ketTambahan.trim().toUpperCase()} ]`;
+                }
+                previewBox.textContent = finalText;
+            } else {
+                previewBox.innerHTML = '<span style="color: #64748b; font-style: italic;">Preview akan muncul di sini...</span>';
+            }
+        }
+
+        function openWorklogModal() { 
+            document.getElementById('worklog-modal').classList.add('active');
+            generateWorklogPreview();
+        }
+        function closeWorklogModal() { document.getElementById('worklog-modal').classList.remove('active'); }
+
         function openGeneratorModal() { document.getElementById('generator-modal').classList.add('active'); }
         function closeGeneratorModal() { document.getElementById('generator-modal').classList.remove('active'); }
+
+        function generateWorklog() {
+            const keterangan = document.getElementById('worklog-keterangan').value;
+            const ketTambahan = document.getElementById('worklog-ket-tambahan').value;
+            
+            if (!keterangan) {
+                showToast('⚠️ Pilih template atau isi keterangan terlebih dahulu', true);
+                return;
+            }
+            
+            worklogText = keterangan;
+            if (ketTambahan.trim()) {
+                worklogText += ` [ KET : ${ketTambahan.trim().toUpperCase()} ]`;
+            }
+            
+            document.getElementById('worklog-preview').textContent = worklogText;
+            showToast('✅ Text berhasil di-generate', false);
+        }
+
+        function copyWorklogText() {
+            if (!worklogText) {
+                showToast('⚠️ Generate text terlebih dahulu', true);
+                return;
+            }
+            navigator.clipboard.writeText(worklogText).then(() => {
+                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V)', false);
+            }).catch(err => {
+                showToast('❌ Gagal copy: ' + err, true);
+            });
+        }
 
         function generateText() {
             const actualSolution = document.getElementById('actual-solution').value;
@@ -828,7 +1017,7 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? '🚨 ' : '';
+                    const prefix = menit >= 30 ? ' ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
@@ -836,15 +1025,24 @@
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                // ✅ TOMBOL GENERATOR HANYA DI SINI (Dashboard)
-                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"fB>tip',
-                buttons: [{
-                    text: '✏️ Generator Tiket',
-                    className: 'generator-btn-inline',
-                    action: function() {
-                        openGeneratorModal();
+                // ✅ DUA TOMBOL: TEMPLATE WORKLOG & TEMPLATE CLOSE
+                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"fBB>tip',
+                buttons: [
+                    {
+                        text: '📋 TEMPLATE WORKLOG',
+                        className: 'template-btn-inline',
+                        action: function() {
+                            openWorklogModal();
+                        }
+                    },
+                    {
+                        text: ' TEMPLATE CLOSE',
+                        className: 'template-btn-inline template-btn-close',
+                        action: function() {
+                            openGeneratorModal();
+                        }
                     }
-                }],
+                ],
                 language: { 
                     search: "", 
                     searchPlaceholder: "Cari:",
@@ -918,7 +1116,6 @@
             ];
             tableDownInstance = $('#table-down').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
-                // ✅ TIDAK ADA TOMBOL GENERATOR DI SINI
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
@@ -936,7 +1133,6 @@
             ];
             tableNonDownInstance = $('#table-nondown').DataTable({
                 data: data, columns: columns, pageLength: 10, order: [[10, 'desc']], autoWidth: false, scrollX: true,
-                // ✅ TIDAK ADA TOMBOL GENERATOR DI SINI
                 dom: '<"flex justify-between items-center mb-2"lf>rtip',
                 buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
                 language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
@@ -1018,7 +1214,15 @@
         if (captureModalEl) {
             captureModalEl.addEventListener('click', (e) => { if (e.target.id === 'capture-modal') closeCaptureModal(); });
         }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCaptureModal(); closeGeneratorModal(); }});
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCaptureModal(); closeGeneratorModal(); closeWorklogModal(); }});
+        
+        // Auto-update preview saat user mengetik di textarea
+        document.addEventListener('DOMContentLoaded', function() {
+            const worklogKeterangan = document.getElementById('worklog-keterangan');
+            const worklogKetTambahan = document.getElementById('worklog-ket-tambahan');
+            if (worklogKeterangan) worklogKeterangan.addEventListener('input', generateWorklogPreview);
+            if (worklogKetTambahan) worklogKetTambahan.addEventListener('input', generateWorklogPreview);
+        });
     </script>
 </body>
 </html>
