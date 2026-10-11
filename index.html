@@ -151,50 +151,39 @@
         .sidebar-btn:hover { background: rgba(34, 211, 238, 0.3); transform: translateX(4px); box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2); }
         .sidebar-btn span.icon { font-size: 16px; }
 
-        /* ✅ FLOATING ACTION BUTTON (FAB) */
+        /* ✅ FLOATING ACTION BUTTON (FAB) - DIPINDAH KE ATAS DEKAT SEARCH */
         .fab-container {
             position: fixed;
-            bottom: 100px;
-            right: 30px;
+            top: 170px; /* Posisi pas di atas field pencarian */
+            right: 40px;
             z-index: 1001;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 12px;
-            align-items: flex-end;
+            align-items: center;
+            justify-content: flex-end;
         }
         .fab-button {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            width: auto;
+            height: 42px;
+            border-radius: 8px;
             background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: #ffffff;
             border: none;
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.5);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 14px;
+            font-weight: bold;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fabPulse 2s infinite;
+            white-space: nowrap;
+            padding: 0 16px;
         }
         .fab-button:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.7);
-        }
-        @keyframes fabPulse {
-            0%, 100% { box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
-            50% { box-shadow: 0 6px 30px rgba(6, 182, 212, 0.8); }
-        }
-        .fab-label {
-            background: rgba(15, 23, 42, 0.9);
-            color: #22d3ee;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            border: 1px solid rgba(34, 211, 238, 0.3);
-            backdrop-filter: blur(8px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.7);
         }
 
         /* ✅ MODAL GENERATOR */
@@ -353,7 +342,7 @@
         </div>
     </div>
     
-    <div id="loading" class="flex justify-center items-center h-screen"><div class="text-cyan-400 text-xl animate-pulse"> Menghubungkan ke Poseidon...</div></div>
+    <div id="loading" class="flex justify-center items-center h-screen"><div class="text-cyan-400 text-xl animate-pulse">🌊 Menghubungkan ke Poseidon...</div></div>
     
     <div id="main-content" class="hidden">
         <header class="flex flex-col md:flex-row justify-between items-center mb-6 glass p-5 rounded-2xl">
@@ -424,11 +413,11 @@
         </div>
     </div>
 
-    <!-- ✅ FLOATING ACTION BUTTON (FAB) -->
+    <!-- ✅ FLOATING ACTION BUTTON (FAB) - POSISI BENAR DI BODY -->
     <div class="fab-container">
-        <div class="fab-label">📝 Generator Tiket</div>
         <button class="fab-button" onclick="openGeneratorModal()" title="Buka Generator Tiket">
-            ✏️
+            <span style="margin-right: 6px;">✏️</span>
+            <span>Generator</span>
         </button>
     </div>
 
@@ -474,7 +463,7 @@
                     <span>⚡</span> Generate Text
                 </button>
                 <button class="btn-generator btn-copy" onclick="copyGeneratedText()">
-                    <span></span> Copy ke Clipboard
+                    <span>📋</span> Copy ke Clipboard
                 </button>
             </div>
         </div>
@@ -507,6 +496,9 @@
         let isCurrentlyOffline = false;
         let sheetData = { actualSolutions: [], incidentDomains: [] };
         let generatedText = "";
+        
+        // ✅ VARIABEL UNTUK CEK PERUBAHAN TIKET
+        let previousTicketIds = new Set();
 
         window.onload = function() {
             updateClock();
@@ -514,7 +506,7 @@
             checkRunningText();
             setInterval(checkRunningText, 60000);
             initTabs();
-            fetchSheetData(); // ✅ FETCH DATA DARI SHEET DATA
+            fetchSheetData();
             fetchLaporanData(true);
             setInterval(() => {
                 const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
@@ -523,65 +515,103 @@
             }, 30000);
         };
 
-        // ✅ FETCH DATA DARI SHEET DATA
+        // ✅ FUNGSI NOTIFIKASI HALUS (TIDAK MENGGANGGU)
+        function showSubtleNotification(message, type) {
+            const notif = document.createElement('div');
+            const bgColor = type === 'info' ? 'rgba(6, 182, 212, 0.95)' : 'rgba(16, 185, 129, 0.95)';
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 13px;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                transform: translateX(120%);
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(8px);
+                border: 1px solid rgba(255,255,255,0.2);
+            `;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+
+            setTimeout(() => { notif.style.transform = 'translateX(0)'; }, 100);
+            setTimeout(() => {
+                notif.style.transform = 'translateX(120%)';
+                setTimeout(() => notif.remove(), 400);
+            }, 4000);
+        }
+
+        // ✅ CEK PERUBAHAN TIKET (BARU / CLEAR)
+        function checkTicketChanges(currentData) {
+            if (!currentData || currentData.length === 0) return;
+            
+            const currentIds = new Set(currentData.map(item => item.noTiket));
+            let newCount = 0;
+            let clearedCount = 0;
+
+            currentIds.forEach(id => {
+                if (!previousTicketIds.has(id)) newCount++;
+            });
+
+            previousTicketIds.forEach(id => {
+                if (!currentIds.has(id)) clearedCount++;
+            });
+
+            if (newCount > 0) {
+                showSubtleNotification(`📨 Ada ${newCount} tiket baru saat ini`, 'info');
+            }
+            if (clearedCount > 0) {
+                showSubtleNotification(`📤 ${clearedCount} tiket saat ini sudah clear`, 'success');
+            }
+
+            previousTicketIds = currentIds;
+        }
+
         async function fetchSheetData() {
             try {
                 const response = await fetch(SHEET_DATA_URL);
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47).slice(0, -2));
-                
                 const rows = json.table.rows;
                 sheetData.actualSolutions = [];
                 sheetData.incidentDomains = [];
                 
                 rows.forEach(row => {
-                    if (row.c && row.c[3] && row.c[3].v) {
-                        sheetData.actualSolutions.push(row.c[3].v);
-                    }
-                    if (row.c && row.c[4] && row.c[4].v) {
-                        sheetData.incidentDomains.push(row.c[4].v);
-                    }
+                    if (row.c && row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v);
+                    if (row.c && row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v);
                 });
-                
                 populateDropdowns();
             } catch (error) {
                 console.error("Gagal mengambil data sheet:", error);
             }
         }
 
-        // ✅ POPULATE DROPDOWNS
         function populateDropdowns() {
             const actualSelect = document.getElementById('actual-solution');
             const domainSelect = document.getElementById('incident-domain');
-            
             actualSelect.innerHTML = '<option value="">-- Pilih Actual Solution --</option>';
             domainSelect.innerHTML = '<option value="">-- Pilih Incident Domain --</option>';
             
             sheetData.actualSolutions.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item;
-                option.textContent = item;
+                option.value = item; option.textContent = item;
                 actualSelect.appendChild(option);
             });
-            
             sheetData.incidentDomains.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item;
-                option.textContent = item;
+                option.value = item; option.textContent = item;
                 domainSelect.appendChild(option);
             });
         }
 
-        // ✅ MODAL FUNCTIONS
-        function openGeneratorModal() {
-            document.getElementById('generator-modal').classList.add('active');
-        }
+        function openGeneratorModal() { document.getElementById('generator-modal').classList.add('active'); }
+        function closeGeneratorModal() { document.getElementById('generator-modal').classList.remove('active'); }
 
-        function closeGeneratorModal() {
-            document.getElementById('generator-modal').classList.remove('active');
-        }
-
-        // ✅ GENERATE TEXT
         function generateText() {
             const actualSolution = document.getElementById('actual-solution').value;
             const incidentDomain = document.getElementById('incident-domain').value;
@@ -592,32 +622,26 @@
                 return;
             }
             
-            // Format keterangan to UPPERCASE
             const keteranganUpper = keterangan.trim().toUpperCase();
-            
-            // Generate text
             if (keteranganUpper) {
                 generatedText = `RFO : Disolusikan Dengan ${actualSolution}, Disebabkan Oleh ${incidentDomain} [ KET : ${keteranganUpper} ]`;
             } else {
                 generatedText = `RFO : Disolusikan Dengan ${actualSolution}, Disebabkan Oleh ${incidentDomain}`;
             }
             
-            // Show preview
             document.getElementById('preview-hasil').textContent = generatedText;
             showToast('✅ Text berhasil di-generate', false);
         }
 
-        // ✅ COPY TO CLIPBOARD
         function copyGeneratedText() {
             if (!generatedText) {
                 showToast('⚠️ Generate text terlebih dahulu', true);
                 return;
             }
-            
             navigator.clipboard.writeText(generatedText).then(() => {
                 showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V)', false);
             }).catch(err => {
-                showToast(' Gagal copy: ' + err, true);
+                showToast('❌ Gagal copy: ' + err, true);
             });
         }
 
@@ -631,8 +655,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                const message = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
-                content.textContent = message;
+                content.textContent = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -731,7 +754,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('️ Gagal koneksi, coba lagi...', true);
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -750,6 +773,9 @@
                 updateConnectionStatus(data.connectionStatus);
                 if (isCurrentlyOffline) return;
                 if (data.lastSync) lastSyncTime = data.lastSync;
+                
+                // ✅ CEK PERUBAHAN TIKET SEBELUM RENDER
+                checkTicketChanges(data.data || []);
                 
                 renderDashboard(data.data || []);
                 
@@ -796,28 +822,18 @@
                 'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
                 'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
             };
-            
-            const sevrOrder = {
-                'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5
-            };
+            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
             
             data.sort((a, b) => {
                 const orderA_layanan = layananOrder[a.layanan] || 99;
                 const orderB_layanan = layananOrder[b.layanan] || 99;
-                
-                if (orderA_layanan !== orderB_layanan) {
-                    return orderA_layanan - orderB_layanan;
-                }
-                
+                if (orderA_layanan !== orderB_layanan) return orderA_layanan - orderB_layanan;
                 const orderA_sevr = sevrOrder[a.sevr] || 99;
                 const orderB_sevr = sevrOrder[b.sevr] || 99;
                 return orderA_sevr - orderB_sevr;
             });
             
-            const dataWithIndex = data.map((item, index) => ({
-                no: index + 1,
-                ...item
-            }));
+            const dataWithIndex = data.map((item, index) => ({ no: index + 1, ...item }));
             
             const columns = [
                 { title: "No", data: "no", width: "50px", className: "text-center" },
@@ -839,29 +855,16 @@
                     const menit = parseInt(data) || 0;
                     const text = formatLastUpd(menit);
                     const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? ' ' : '';
+                    const prefix = menit >= 30 ? '🚨 ' : '';
                     return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
                   }
                 }
             ];
             
             tableDashboardInstance = $('#table-dashboard').DataTable({
-                data: dataWithIndex, 
-                columns: columns, 
-                pageLength: -1,        
-                lengthMenu: [],        
-                ordering: false,
-                autoWidth: false, 
-                scrollX: false,        
+                data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end"f>tip',
-                language: { 
-                  search: "", 
-                  searchPlaceholder: "Cari:",
-                  info: "Menampilkan _TOTAL_ data", 
-                  paginate: { previous: "Sebelumnya", next: "Selanjutnya" },
-                  infoFiltered: "",
-                  infoEmpty: "Tidak ada data"
-                },
+                language: { search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data" },
                 drawCallback: function() {
                   $('.smart-send-btn').off('click').on('click', function() {
                     const noTiket = $(this).data('notiket');
@@ -874,7 +877,7 @@
                     if (e.which === 13) {
                       const noTiket = $(this).data('notiket');
                       const value = $(this).val().trim();
-                      if (!value) { showToast('️ Input kosong', true); return; }
+                      if (!value) { showToast('⚠️ Input kosong', true); return; }
                       sendSmartFieldUpdate(noTiket, value, $(this));
                     }
                   });
@@ -889,12 +892,8 @@
           fetch(url, { method: 'GET', mode: 'cors' })
           .then(response => response.json())
           .then(data => {
-            if (data.status === 'success') {
-              showToast(data.message, false);
-              inputElement.val('');
-            } else {
-              showToast(data.message || 'Gagal update', true);
-            }
+            if (data.status === 'success') { showToast(data.message, false); inputElement.val(''); } 
+            else { showToast(data.message || 'Gagal update', true); }
           })
           .catch(error => { showToast('⚠️ Gagal koneksi: ' + error.message, true); })
           .finally(() => {
@@ -985,7 +984,7 @@
                     copyCaptureToClipboard();
                 }).catch(err => {
                     if (header) header.style.display = 'none';
-                    showToast(' Gagal capture: ' + err.message, true);
+                    showToast('❌ Gagal capture: ' + err.message, true);
                 });
             }, 300);
         }
@@ -996,9 +995,9 @@
                 const response = await fetch(lastCaptureImage);
                 const blob = await response.blob();
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V) di WhatsApp');
+                showToast('✅ Berhasil di-copy! Langsung paste (Ctrl+V) di WhatsApp', false);
             } catch (err) {
-                showToast('️ Copy gagal, silakan download manual', true);
+                showToast('⚠️ Copy gagal, silakan download manual', true);
                 downloadCapture();
             }
         }
@@ -1009,7 +1008,7 @@
             link.download = `Laporan_CNOP_${currentArea}_${new Date().getTime()}.png`;
             link.href = lastCaptureImage;
             link.click();
-            showToast('️ Gambar berhasil di-download');
+            showToast('✅ Gambar berhasil di-download', false);
         }
 
         function closeCaptureModal() {
@@ -1029,10 +1028,7 @@
         if (captureModalEl) {
             captureModalEl.addEventListener('click', (e) => { if (e.target.id === 'capture-modal') closeCaptureModal(); });
         }
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') {
-            closeCaptureModal();
-            closeGeneratorModal();
-        }});
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeCaptureModal(); closeGeneratorModal(); }});
     </script>
 </body>
 </html>
