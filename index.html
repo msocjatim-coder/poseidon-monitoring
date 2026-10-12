@@ -178,7 +178,6 @@
         .sidebar-btn:hover { background: rgba(34, 211, 238, 0.3); transform: translateX(4px); box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2); }
         .sidebar-btn span.icon { font-size: 16px; }
 
-        /* ✅ MODAL GENERATOR */
         .generator-modal {
             display: none;
             position: fixed;
@@ -315,7 +314,6 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
-        /* ✅ WORKLOG LIST ITEMS */
         .worklog-list-container {
             display: flex;
             flex-direction: column;
@@ -358,7 +356,6 @@
             padding: 20px;
         }
 
-        /* ✅ HASIL GABUNGAN CLOSE */
         .hasil-gabungan-container {
             display: flex;
             gap: 8px;
@@ -475,7 +472,6 @@
         </div>
     </div>
 
-    <!-- ✅ MODAL TEMPLATE WORKLOG (BARU) -->
     <div id="worklog-modal" class="generator-modal">
         <div class="generator-content">
             <div class="generator-header">
@@ -493,19 +489,17 @@
                 </select>
             </div>
 
-            <!-- ✅ CONTAINER UNTUK LIST DATA WORKLOG -->
             <div id="worklog-list-container" class="worklog-list-container">
                 <div class="worklog-empty">Pilih template untuk menampilkan data...</div>
             </div>
         </div>
     </div>
 
-    <!-- ✅ MODAL TEMPLATE CLOSE (BARU) -->
     <div id="generator-modal" class="generator-modal">
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span></span>
+                    <span>📝</span>
                     <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
@@ -550,7 +544,7 @@
                 <span class="icon">🔄</span> Refresh
             </button>
             <button class="sidebar-btn" onclick="captureBothTables()" title="Ambil Gambar Laporan">
-                <span class="icon"></span> Capture
+                <span class="icon">📸</span> Capture
             </button>
             <button class="sidebar-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Kembali ke Bagian Atas">
                 <span class="icon">⬆️</span> Ke Atas
@@ -559,14 +553,14 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbw-lSFTifUXXdfbyGSfR1BHkIbXVJqM7BTiiYh9L0FJRlVRUTyBy7F8lJb9vY_ThgY4/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzJwEifw_kUH4ZP1jjhxIH0zBoI6-F1BN1Hz-NHwjp1f5Rdj0Ux1dqOHpecB97u_pw4/exec";
         const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/1hR6Tt0m773gG29tOrPObzFwrQwHZApM0O-qCjaScrBM/gviz/tq?tqx=out:json&sheet=DATA";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
         let isCurrentlyOffline = false;
         let sheetData = { actualSolutions: [], incidentDomains: [] };
-        let worklogData = {}; // { headerName: [data1, data2, ...] }
+        let worklogData = {};
         let generatedText = "";
         let previousTicketIds = new Set();
 
@@ -640,7 +634,6 @@
             previousTicketIds = currentIds;
         }
 
-        // ✅ FUNGSI COPY KE CLIPBOARD (REUSABLE)
         function copyToClipboard(text) {
             if (!text) {
                 showToast('⚠️ Tidak ada teks untuk di-copy', true);
@@ -649,7 +642,6 @@
             navigator.clipboard.writeText(text).then(() => {
                 showToast('✅ Berhasil di-copy ke clipboard!', false);
             }).catch(err => {
-                // Fallback untuk browser lama
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 textarea.style.position = 'fixed';
@@ -676,10 +668,7 @@
                 sheetData.incidentDomains = [];
                 worklogData = {};
                 
-                // Ambil header dari baris pertama (row 0)
-                // Kolom D = index 3, E = index 4, F-AB = index 5-27
                 if (rows.length > 0 && rows[0].c) {
-                    // Ambil data Actual Solution (kolom D, index 3) dan Incident Domain (kolom E, index 4)
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
                         if (row.c) {
@@ -688,13 +677,10 @@
                         }
                     }
                     
-                    // Ambil data worklog dari kolom F (index 5) sampai AB (index 27)
-                    // rows[0] = header, rows[1] = data baris 1, rows[2] = data baris 2
                     for (let colIdx = 5; colIdx <= 27; colIdx++) {
                         const header = rows[0].c[colIdx] ? rows[0].c[colIdx].v : null;
                         if (header) {
                             const dataList = [];
-                            // Ambil data dari baris 2 dan 3 (index 1 dan 2)
                             for (let rowIdx = 1; rowIdx <= 2; rowIdx++) {
                                 if (rows[rowIdx] && rows[rowIdx].c && rows[rowIdx].c[colIdx] && rows[rowIdx].c[colIdx].v) {
                                     dataList.push(rows[rowIdx].c[colIdx].v);
@@ -718,7 +704,6 @@
             actualSelect.innerHTML = '<option value="">-- Pilih Actual Solution --</option>';
             domainSelect.innerHTML = '<option value="">-- Pilih Incident Domain --</option>';
             
-            // Hapus duplikat
             const uniqueActual = [...new Set(sheetData.actualSolutions)];
             const uniqueDomain = [...new Set(sheetData.incidentDomains)];
             
@@ -766,9 +751,7 @@
             }
         }
 
-        function openWorklogModal() { 
-            document.getElementById('worklog-modal').classList.add('active');
-        }
+        function openWorklogModal() { document.getElementById('worklog-modal').classList.add('active'); }
         function closeWorklogModal() { 
             document.getElementById('worklog-modal').classList.remove('active');
             document.getElementById('worklog-template').value = '';
@@ -778,7 +761,6 @@
         function openGeneratorModal() { document.getElementById('generator-modal').classList.add('active'); }
         function closeGeneratorModal() { document.getElementById('generator-modal').classList.remove('active'); }
 
-        // ✅ UPDATE HASIL GABUNGAN OTOMATIS
         function updateHasilGabungan() {
             const actualSolution = document.getElementById('actual-solution').value;
             const incidentDomain = document.getElementById('incident-domain').value;
@@ -819,7 +801,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = `️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = `⚠️ WAKTU KIRIM LAPORAN WHATSAPP PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -856,6 +838,7 @@
             if (clockElement) clockElement.innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
         }
 
+        // ✅ PERBAIKAN DI SINI: Pengecekan status koneksi dibuat lebih ketat dan aman
         function updateConnectionStatus(connectionStatus) {
             const dot = document.getElementById('connection-dot');
             const statusText = document.getElementById('connection-status');
@@ -864,8 +847,14 @@
             const loading = document.getElementById('loading');
             
             if (!dot || !statusText) return;
-            const isTerputus = connectionStatus && connectionStatus.includes("TERPUTUS");
             
+            // ✅ Konversi ke string, ubah ke huruf besar, dan hapus spasi ekstra agar pencocokan 100% akurat
+            const statusStr = connectionStatus ? String(connectionStatus).toUpperCase().trim() : "";
+            const isTerputus = statusStr.includes("TERPUTUS");
+            
+            // Opsional: Hapus komentar di bawah ini untuk melihat nilai asli di Console browser (Tekan F12)
+            // console.log("Status dari Server:", connectionStatus, "| Diproses menjadi:", statusStr, "| isTerputus:", isTerputus);
+
             if (isTerputus) {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
                 statusText.innerHTML = '<span>⚠️</span><span>Sistem Tidak Terhubung</span>';
@@ -918,7 +907,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('️ Gagal koneksi, coba lagi...', true);
+                showToast('⚠️ Gagal koneksi, coba lagi...', true);
             }
         }
 
@@ -1027,24 +1016,12 @@
                 data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
                 dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
                 buttons: [
-                    {
-                        text: '📋 TEMPLATE WORKLOG',
-                        className: 'template-btn-inline',
-                        action: function() { openWorklogModal(); }
-                    },
-                    {
-                        text: '📝 TEMPLATE CLOSE',
-                        className: 'template-btn-inline template-btn-close',
-                        action: function() { openGeneratorModal(); }
-                    }
+                    { text: '📋 TEMPLATE WORKLOG', className: 'template-btn-inline', action: function() { openWorklogModal(); } },
+                    { text: '📝 TEMPLATE CLOSE', className: 'template-btn-inline template-btn-close', action: function() { openGeneratorModal(); } }
                 ],
                 language: { 
-                    search: "", 
-                    searchPlaceholder: "Cari:",
-                    info: "Menampilkan _TOTAL_ data", 
-                    paginate: { previous: "Sebelumnya", next: "Selanjutnya" },
-                    infoFiltered: "",
-                    infoEmpty: "Tidak ada data"
+                    search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", 
+                    paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data"
                 },
                 drawCallback: function() {
                   $('.smart-send-btn').off('click').on('click', function() {
@@ -1135,7 +1112,7 @@
         }
 
         function forceRefresh() {
-            showToast(" Menyegarkan data...", false);
+            showToast("⏳ Menyegarkan data...", false);
             isCurrentlyOffline = false;
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') fetchLaporanData(true);
@@ -1165,7 +1142,7 @@
                     copyCaptureToClipboard();
                 }).catch(err => {
                     if (header) header.style.display = 'none';
-                    showToast(' Gagal capture: ' + err.message, true);
+                    showToast('❌ Gagal capture: ' + err.message, true);
                 });
             }, 300);
         }
