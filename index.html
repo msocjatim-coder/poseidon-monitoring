@@ -966,82 +966,83 @@
             return 'durasi-high blink-urgent';
         }
 
-        function renderDashboard(data) {
-            if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
-            
-            const layananOrder = {
-                'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
-                'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
-            };
-            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
-            
-            data.sort((a, b) => {
-                const orderA_layanan = layananOrder[a.layanan] || 99;
-                const orderB_layanan = layananOrder[b.layanan] || 99;
-                if (orderA_layanan !== orderB_layanan) return orderA_layanan - orderB_layanan;
-                const orderA_sevr = sevrOrder[a.sevr] || 99;
-                const orderB_sevr = sevrOrder[b.sevr] || 99;
-                return orderA_sevr - orderB_sevr;
-            });
-            
-            const dataWithIndex = data.map((item, index) => ({ no: index + 1, ...item }));
-            
-            const columns = [
-                { title: "No", data: "no", width: "50px", className: "text-center" },
-                { title: "LAYANAN", data: "layanan", width: "90px" },
-                { title: "SEVR", data: "sevr", width: "70px" },
-                { title: "DISTRICT", data: "district", width: "100px" },
-                { title: "SITE ID", data: "siteId", width: "100px" },
-                { title: "NO TIKET", data: "noTiket", width: "130px" },
-                { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
-                { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
-                    return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/BB INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
-                  }
-                },
-                { title: "INFO", data: "info", className: "break-word", width: "550px", render: function(data) { 
-                    return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
-                  } 
-                },
-                { title: "LAST UPD", data: "lastUpdMenit", width: "120px", render: function(data, type, row) {
-                    const menit = parseInt(data) || 0;
-                    const text = formatLastUpd(menit);
-                    const cls = getLastUpdClass(menit);
-                    const prefix = menit >= 30 ? '🚨 ' : '';
-                    return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
-                  }
-                }
-            ];
-            
-            tableDashboardInstance = $('#table-dashboard').DataTable({
-                data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
-                buttons: [
-                    { text: '📋 TEMPLATE WORKLOG', className: 'template-btn-inline', action: function() { openWorklogModal(); } },
-                    { text: '📝 TEMPLATE CLOSE', className: 'template-btn-inline template-btn-close', action: function() { openGeneratorModal(); } }
-                ],
-                language: { 
-                    search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", 
-                    paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data"
-                },
-                drawCallback: function() {
-                  $('.smart-send-btn').off('click').on('click', function() {
-                    const noTiket = $(this).data('notiket');
-                    const input = $(this).siblings('.smart-input');
-                    const value = input.val().trim();
-                    if (!value) { showToast('⚠️ Input kosong', true); return; }
-                    sendSmartFieldUpdate(noTiket, value, input);
-                  });
-                  $('.smart-input').off('keypress').on('keypress', function(e) {
-                    if (e.which === 13) {
-                      const noTiket = $(this).data('notiket');
-                      const value = $(this).val().trim();
-                      if (!value) { showToast('⚠️ Input kosong', true); return; }
-                      sendSmartFieldUpdate(noTiket, value, $(this));
-                    }
-                  });
-                }
-            });
+function renderDashboard(data) {
+    if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
+    
+    const layananOrder = {
+        'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
+        'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
+    };
+    const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
+    
+    data.sort((a, b) => {
+        const orderA_layanan = layananOrder[a.layanan] || 99;
+        const orderB_layanan = layananOrder[b.layanan] || 99;
+        if (orderA_layanan !== orderB_layanan) return orderA_layanan - orderB_layanan;
+        const orderA_sevr = sevrOrder[a.sevr] || 99;
+        const orderB_sevr = sevrOrder[b.sevr] || 99;
+        return orderA_sevr - orderB_sevr;
+    });
+    
+    const dataWithIndex = data.map((item, index) => ({ no: index + 1, ...item }));
+    
+    // ✅ URUTAN KOLOM BARU SESUAI PERMINTAAN
+    const columns = [
+        { title: "NO", data: "no", width: "50px", className: "text-center" },
+        { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
+            return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/BB INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
+          }
+        },
+        { title: "INFO", data: "info", className: "break-word", width: "550px", render: function(data) { 
+            return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
+          } 
+        },
+        { title: "LAST UPD", data: "lastUpdMenit", width: "120px", render: function(data, type, row) {
+            const menit = parseInt(data) || 0;
+            const text = formatLastUpd(menit);
+            const cls = getLastUpdClass(menit);
+            const prefix = menit >= 30 ? ' ' : '';
+            return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
+          }
+        },
+        { title: "SITE ID", data: "siteId", width: "100px" },
+        { title: "NO TIKET", data: "noTiket", width: "130px" },
+        { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
+        { title: "LAYANAN", data: "layanan", width: "90px" },
+        { title: "SEVR", data: "sevr", width: "70px" },
+        { title: "DISTRICT", data: "district", width: "100px" }
+    ];
+    
+    tableDashboardInstance = $('#table-dashboard').DataTable({
+        data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
+        dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
+        buttons: [
+            { text: '📋 TEMPLATE WORKLOG', className: 'template-btn-inline', action: function() { openWorklogModal(); } },
+            { text: '📝 TEMPLATE CLOSE', className: 'template-btn-inline template-btn-close', action: function() { openGeneratorModal(); } }
+        ],
+        language: { 
+            search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", 
+            paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data"
+        },
+        drawCallback: function() {
+          $('.smart-send-btn').off('click').on('click', function() {
+            const noTiket = $(this).data('notiket');
+            const input = $(this).siblings('.smart-input');
+            const value = input.val().trim();
+            if (!value) { showToast('⚠️ Input kosong', true); return; }
+            sendSmartFieldUpdate(noTiket, value, input);
+          });
+          $('.smart-input').off('keypress').on('keypress', function(e) {
+            if (e.which === 13) {
+              const noTiket = $(this).data('notiket');
+              const value = $(this).val().trim();
+              if (!value) { showToast('⚠️ Input kosong', true); return; }
+              sendSmartFieldUpdate(noTiket, value, $(this));
+            }
+          });
         }
+    });
+}
 
         function sendSmartFieldUpdate(noTiket, value, inputElement) {
           inputElement.prop('disabled', true);
