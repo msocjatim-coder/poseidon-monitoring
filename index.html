@@ -553,8 +553,11 @@
     </div>
 
     <script>
+        // ✅ URL Apps Script (Tetap sama, ini yang mengurus data tabel utama dari sheet DATABASE_)
         const API_URL = "https://script.google.com/macros/s/AKfycbz4b6-a4GFJFgTxua7_wSOvELRHPyz_hHYkgc3HiT2BdI1fzAf0YRBIcVb0cOWAiGCh/exec";
-        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/1hR6Tt0m773gG29tOrPObzFwrQwHZApM0O-qCjaScrBM/gviz/tq?tqx=out:json&sheet=DATA";
+        
+        // ✅ URL Data Dropdown (DIUBAH ke Spreadsheet DATABASE MSO v2, sheet DATA, gid 627720026)
+        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/10V28zWHgr2TdLZzsa2XCthPj0Pj_2iZPL2PLj5rD3w0/gviz/tq?tqx=out:json&sheet=DATA&gid=627720026";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
@@ -672,8 +675,8 @@
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
                         if (row.c) {
-                            if (row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v);
-                            if (row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v);
+                            if (row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v); // Kolom D
+                            if (row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v); // Kolom E
                         }
                     }
                     
@@ -838,7 +841,6 @@
             if (clockElement) clockElement.innerText = now.toLocaleDateString('id-ID', options).replace('pukul', '');
         }
 
-        // ✅ PERBAIKAN DI SINI: Pengecekan status koneksi dibuat lebih ketat dan aman
         function updateConnectionStatus(connectionStatus) {
             const dot = document.getElementById('connection-dot');
             const statusText = document.getElementById('connection-status');
@@ -848,12 +850,8 @@
             
             if (!dot || !statusText) return;
             
-            // ✅ Konversi ke string, ubah ke huruf besar, dan hapus spasi ekstra agar pencocokan 100% akurat
             const statusStr = connectionStatus ? String(connectionStatus).toUpperCase().trim() : "";
             const isTerputus = statusStr.includes("TERPUTUS");
-            
-            // Opsional: Hapus komentar di bawah ini untuk melihat nilai asli di Console browser (Tekan F12)
-            // console.log("Status dari Server:", connectionStatus, "| Diproses menjadi:", statusStr, "| isTerputus:", isTerputus);
 
             if (isTerputus) {
                 dot.className = 'w-3 h-3 bg-red-500 rounded-full offline-dot';
@@ -966,83 +964,82 @@
             return 'durasi-high blink-urgent';
         }
 
-function renderDashboard(data) {
-    if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
-    
-    const layananOrder = {
-        'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
-        'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
-    };
-    const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
-    
-    data.sort((a, b) => {
-        const orderA_layanan = layananOrder[a.layanan] || 99;
-        const orderB_layanan = layananOrder[b.layanan] || 99;
-        if (orderA_layanan !== orderB_layanan) return orderA_layanan - orderB_layanan;
-        const orderA_sevr = sevrOrder[a.sevr] || 99;
-        const orderB_sevr = sevrOrder[b.sevr] || 99;
-        return orderA_sevr - orderB_sevr;
-    });
-    
-    const dataWithIndex = data.map((item, index) => ({ no: index + 1, ...item }));
-    
-    // ✅ URUTAN KOLOM BARU SESUAI PERMINTAAN
-    const columns = [
-        { title: "NO", data: "no", width: "50px", className: "text-center" },
-        { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
-            return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/BB INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
-          }
-        },
-        { title: "INFO", data: "info", className: "break-word", width: "550px", render: function(data) { 
-            return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
-          } 
-        },
-        { title: "LAST UPD", data: "lastUpdMenit", width: "120px", render: function(data, type, row) {
-            const menit = parseInt(data) || 0;
-            const text = formatLastUpd(menit);
-            const cls = getLastUpdClass(menit);
-            const prefix = menit >= 30 ? ' ' : '';
-            return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
-          }
-        },
-        { title: "SITE ID", data: "siteId", width: "100px" },
-        { title: "NO TIKET", data: "noTiket", width: "130px" },
-        { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
-        { title: "LAYANAN", data: "layanan", width: "90px" },
-        { title: "SEVR", data: "sevr", width: "70px" },
-        { title: "DISTRICT", data: "district", width: "100px" }
-    ];
-    
-    tableDashboardInstance = $('#table-dashboard').DataTable({
-        data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
-        dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
-        buttons: [
-            { text: '📋 TEMPLATE WORKLOG', className: 'template-btn-inline', action: function() { openWorklogModal(); } },
-            { text: '📝 TEMPLATE CLOSE', className: 'template-btn-inline template-btn-close', action: function() { openGeneratorModal(); } }
-        ],
-        language: { 
-            search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", 
-            paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data"
-        },
-        drawCallback: function() {
-          $('.smart-send-btn').off('click').on('click', function() {
-            const noTiket = $(this).data('notiket');
-            const input = $(this).siblings('.smart-input');
-            const value = input.val().trim();
-            if (!value) { showToast('⚠️ Input kosong', true); return; }
-            sendSmartFieldUpdate(noTiket, value, input);
-          });
-          $('.smart-input').off('keypress').on('keypress', function(e) {
-            if (e.which === 13) {
-              const noTiket = $(this).data('notiket');
-              const value = $(this).val().trim();
-              if (!value) { showToast('⚠️ Input kosong', true); return; }
-              sendSmartFieldUpdate(noTiket, value, $(this));
-            }
-          });
+        function renderDashboard(data) {
+            if (tableDashboardInstance) { tableDashboardInstance.destroy(); $('#table-dashboard').empty(); }
+            
+            const layananOrder = {
+                'METRO': 1, 'TOPOLO': 2, 'ASTINET': 3, 'OLO SENTRAL': 4, 'SLD': 5, 'IPTRANSIT': 6,
+                'CNOP': 7, 'BACKHAUL': 8, 'RADIOIP': 9, 'MET-CNQ': 10, 'RIP-CNQ': 11, 'RADIOLH': 12, 'SATELLITE': 13, 'LAINNYA': 14
+            };
+            const sevrOrder = { 'PREMIUM': 1, 'CRITICAL': 2, 'MAJOR': 3, 'MINOR': 4, 'LOW': 5 };
+            
+            data.sort((a, b) => {
+                const orderA_layanan = layananOrder[a.layanan] || 99;
+                const orderB_layanan = layananOrder[b.layanan] || 99;
+                if (orderA_layanan !== orderB_layanan) return orderA_layanan - orderB_layanan;
+                const orderA_sevr = sevrOrder[a.sevr] || 99;
+                const orderB_sevr = sevrOrder[b.sevr] || 99;
+                return orderA_sevr - orderB_sevr;
+            });
+            
+            const dataWithIndex = data.map((item, index) => ({ no: index + 1, ...item }));
+            
+            const columns = [
+                { title: "NO", data: "no", width: "50px", className: "text-center" },
+                { title: "KETERANGAN", data: "noTiket", width: "220px", render: function(data, type, row) {
+                    return `<input type="text" class="smart-input" data-notiket="${data}" placeholder="INC/xtemp/BB INC..."> <button class="smart-send-btn" data-notiket="${data}">✓</button>`;
+                  }
+                },
+                { title: "INFO", data: "info", className: "break-word", width: "550px", render: function(data) { 
+                    return data && data !== '-' ? `<span title="${data}">${data}</span>` : '-'; 
+                  } 
+                },
+                { title: "LAST UPD", data: "lastUpdMenit", width: "120px", render: function(data, type, row) {
+                    const menit = parseInt(data) || 0;
+                    const text = formatLastUpd(menit);
+                    const cls = getLastUpdClass(menit);
+                    const prefix = menit >= 30 ? '🚨 ' : '';
+                    return `<span class="${cls}" title="Sudah ${menit} menit sejak last update">${prefix}${text}</span>`;
+                  }
+                },
+                { title: "SITE ID", data: "siteId", width: "100px" },
+                { title: "NO TIKET", data: "noTiket", width: "130px" },
+                { title: "HEADLINE", data: "headline", className: "break-word", width: "400px" },
+                { title: "LAYANAN", data: "layanan", width: "90px" },
+                { title: "SEVR", data: "sevr", width: "70px" },
+                { title: "DISTRICT", data: "district", width: "100px" }
+            ];
+            
+            tableDashboardInstance = $('#table-dashboard').DataTable({
+                data: dataWithIndex, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false,
+                dom: '<"flex justify-between items-center mb-2"r><"flex justify-end items-center gap-2"Bf>tip',
+                buttons: [
+                    { text: '📋 TEMPLATE WORKLOG', className: 'template-btn-inline', action: function() { openWorklogModal(); } },
+                    { text: '📝 TEMPLATE CLOSE', className: 'template-btn-inline template-btn-close', action: function() { openGeneratorModal(); } }
+                ],
+                language: { 
+                    search: "", searchPlaceholder: "Cari:", info: "Menampilkan _TOTAL_ data", 
+                    paginate: { previous: "Sebelumnya", next: "Selanjutnya" }, infoFiltered: "", infoEmpty: "Tidak ada data"
+                },
+                drawCallback: function() {
+                  $('.smart-send-btn').off('click').on('click', function() {
+                    const noTiket = $(this).data('notiket');
+                    const input = $(this).siblings('.smart-input');
+                    const value = input.val().trim();
+                    if (!value) { showToast('⚠️ Input kosong', true); return; }
+                    sendSmartFieldUpdate(noTiket, value, input);
+                  });
+                  $('.smart-input').off('keypress').on('keypress', function(e) {
+                    if (e.which === 13) {
+                      const noTiket = $(this).data('notiket');
+                      const value = $(this).val().trim();
+                      if (!value) { showToast('⚠️ Input kosong', true); return; }
+                      sendSmartFieldUpdate(noTiket, value, $(this));
+                    }
+                  });
+                }
+            });
         }
-    });
-}
 
         function sendSmartFieldUpdate(noTiket, value, inputElement) {
           inputElement.prop('disabled', true);
