@@ -464,7 +464,7 @@
                 <div class="capture-modal-title">📸 Preview Capture</div>
                 <div class="capture-modal-actions">
                     <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()">📋 Copy ke Clipboard</button>
-                    <button class="modal-btn modal-btn-download" onclick="downloadCapture()">💾 Download PNG</button>
+                    <button class="modal-btn modal-btn-download" onclick="downloadCapture()"> Download PNG</button>
                     <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()">Tutup</button>
                 </div>
             </div>
@@ -479,7 +479,7 @@
                     <span>📋</span>
                     <span>Template Worklog</span>
                 </div>
-                <button class="generator-close" onclick="closeWorklogModal()">Tutup ✕</button>
+                <button class="generator-close" onclick="closeWorklogModal()">Tutup </button>
             </div>
             
             <div class="form-group">
@@ -499,7 +499,7 @@
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span>📝</span>
+                    <span></span>
                     <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
@@ -553,11 +553,11 @@
     </div>
 
     <script>
-        // ✅ URL Apps Script (Tetap sama, ini yang mengurus data tabel utama dari sheet DATABASE_)
+        // ✅ URL Apps Script
         const API_URL = "https://script.google.com/macros/s/AKfycbz4b6-a4GFJFgTxua7_wSOvELRHPyz_hHYkgc3HiT2BdI1fzAf0YRBIcVb0cOWAiGCh/exec";
         
-        // ✅ URL Data Dropdown (DIUBAH ke Spreadsheet DATABASE MSO v2, sheet DATA, gid 627720026)
-        const SHEET_DATA_URL = "https://docs.google.com/spreadsheets/d/10V28zWHgr2TdLZzsa2XCthPj0Pj_2iZPL2PLj5rD3w0/gviz/tq?tqx=out:json&sheet=DATA&gid=627720026";
+        // ✅ URL Data Dropdown (SEKARANG MENGAMBIL DARI APPS SCRIPT, BUKAN GVIZ API)
+        const SHEET_DATA_URL = API_URL + "?view=templates";
         
         let tableDownInstance = null, tableNonDownInstance = null, tableDashboardInstance = null;
         let currentArea = "JATIM", lastSyncTime = 0, lastCaptureImage = null, isFirstLoadComplete = false;
@@ -661,75 +661,37 @@
             });
         }
 
-// Ganti fungsi fetchSheetData() dengan kode ini:
-
-async function fetchSheetData() {
-    try {
-        console.log("🔄 Mengambil data dari sheet DATA...");
-        console.log("URL:", SHEET_DATA_URL);
-        
-        const response = await fetch(SHEET_DATA_URL);
-        console.log("Response status:", response.status);
-        
-        const text = await response.text();
-        console.log("Response text length:", text.length);
-        
-        // Parse JSON dari Google Sheets
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        console.log("JSON parsed successfully");
-        
-        const rows = json.table.rows;
-        console.log("Total rows:", rows.length);
-        
-        sheetData.actualSolutions = [];
-        sheetData.incidentDomains = [];
-        worklogData = {};
-        
-        if (rows.length > 0 && rows[0].c) {
-            // Ambil data dari kolom D (Actual Solution) dan E (Incident Domain)
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (row.c) {
-                    // Kolom D (index 3) = Actual Solution
-                    if (row.c[3] && row.c[3].v) {
-                        sheetData.actualSolutions.push(row.c[3].v);
-                    }
-                    // Kolom E (index 4) = Incident Domain
-                    if (row.c[4] && row.c[4].v) {
-                        sheetData.incidentDomains.push(row.c[4].v);
-                    }
+        async function fetchSheetData() {
+            try {
+                console.log("🔄 Mengambil data template dari Apps Script...");
+                
+                const response = await fetch(SHEET_DATA_URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                
+                if (data.status === 'error') {
+                    console.error("❌ Error dari server:", data.message);
+                    showToast('⚠️ Gagal load data template', true);
+                    return;
                 }
-            }
-            
-            console.log("✅ Actual Solutions:", sheetData.actualSolutions.length, "items");
-            console.log("✅ Incident Domains:", sheetData.incidentDomains.length, "items");
-            
-            // Ambil data worklog dari kolom F sampai AB
-            for (let colIdx = 5; colIdx <= 27; colIdx++) {
-                const header = rows[0].c[colIdx] ? rows[0].c[colIdx].v : null;
-                if (header) {
-                    const dataList = [];
-                    for (let rowIdx = 1; rowIdx <= 2; rowIdx++) {
-                        if (rows[rowIdx] && rows[rowIdx].c && rows[rowIdx].c[colIdx] && rows[rowIdx].c[colIdx].v) {
-                            dataList.push(rows[rowIdx].c[colIdx].v);
-                        }
-                    }
-                    worklogData[header] = dataList;
-                }
+                
+                sheetData.actualSolutions = data.actualSolutions || [];
+                sheetData.incidentDomains = data.incidentDomains || [];
+                worklogData = data.worklogData || {};
+                
+                console.log("✅ Actual Solutions:", sheetData.actualSolutions.length, "items");
+                console.log("✅ Incident Domains:", sheetData.incidentDomains.length, "items");
+                console.log("✅ Worklog Templates:", Object.keys(worklogData).length, "items");
+                
+                populateDropdowns();
+                populateWorklogDropdown();
+                
+            } catch (error) {
+                console.error("❌ Gagal mengambil data template:", error);
+                showToast('️ Gagal load data template', true);
             }
         }
-        
-        // Populate dropdowns
-        populateDropdowns();
-        populateWorklogDropdown();
-        
-        console.log("✅ Dropdowns populated");
-        
-    } catch (error) {
-        console.error("❌ Gagal mengambil data sheet:", error);
-        showToast('⚠️ Gagal load data template', true);
-    }
-}
 
         function populateDropdowns() {
             const actualSelect = document.getElementById('actual-solution');
@@ -834,7 +796,7 @@ async function fetchSheetData() {
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = `⏰ | WAKTU KIRIM LAPORAN WHATSAPP GRUP PADA PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = ` | WAKTU KIRIM LAPORAN WHATSAPP GRUP PADA PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -935,7 +897,7 @@ async function fetchSheetData() {
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast('⏳ Sinkronisasi...', true);
+                showToast(' Sinkronisasi...', true);
             }
         }
 
