@@ -1102,7 +1102,7 @@
         }
 
         function forceRefresh() {
-            showToast("⏳ Menyegarkan data...", false);
+            showToast("⏳ Sinkronisasi...", false);
             isCurrentlyOffline = false;
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') fetchLaporanData(true);
