@@ -661,45 +661,75 @@
             });
         }
 
-        async function fetchSheetData() {
-            try {
-                const response = await fetch(SHEET_DATA_URL);
-                const text = await response.text();
-                const json = JSON.parse(text.substring(47).slice(0, -2));
-                const rows = json.table.rows;
-                sheetData.actualSolutions = [];
-                sheetData.incidentDomains = [];
-                worklogData = {};
-                
-                if (rows.length > 0 && rows[0].c) {
-                    for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
-                        if (row.c) {
-                            if (row.c[3] && row.c[3].v) sheetData.actualSolutions.push(row.c[3].v); // Kolom D
-                            if (row.c[4] && row.c[4].v) sheetData.incidentDomains.push(row.c[4].v); // Kolom E
-                        }
+// Ganti fungsi fetchSheetData() dengan kode ini:
+
+async function fetchSheetData() {
+    try {
+        console.log("🔄 Mengambil data dari sheet DATA...");
+        console.log("URL:", SHEET_DATA_URL);
+        
+        const response = await fetch(SHEET_DATA_URL);
+        console.log("Response status:", response.status);
+        
+        const text = await response.text();
+        console.log("Response text length:", text.length);
+        
+        // Parse JSON dari Google Sheets
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        console.log("JSON parsed successfully");
+        
+        const rows = json.table.rows;
+        console.log("Total rows:", rows.length);
+        
+        sheetData.actualSolutions = [];
+        sheetData.incidentDomains = [];
+        worklogData = {};
+        
+        if (rows.length > 0 && rows[0].c) {
+            // Ambil data dari kolom D (Actual Solution) dan E (Incident Domain)
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.c) {
+                    // Kolom D (index 3) = Actual Solution
+                    if (row.c[3] && row.c[3].v) {
+                        sheetData.actualSolutions.push(row.c[3].v);
                     }
-                    
-                    for (let colIdx = 5; colIdx <= 27; colIdx++) {
-                        const header = rows[0].c[colIdx] ? rows[0].c[colIdx].v : null;
-                        if (header) {
-                            const dataList = [];
-                            for (let rowIdx = 1; rowIdx <= 2; rowIdx++) {
-                                if (rows[rowIdx] && rows[rowIdx].c && rows[rowIdx].c[colIdx] && rows[rowIdx].c[colIdx].v) {
-                                    dataList.push(rows[rowIdx].c[colIdx].v);
-                                }
-                            }
-                            worklogData[header] = dataList;
-                        }
+                    // Kolom E (index 4) = Incident Domain
+                    if (row.c[4] && row.c[4].v) {
+                        sheetData.incidentDomains.push(row.c[4].v);
                     }
                 }
-                
-                populateDropdowns();
-                populateWorklogDropdown();
-            } catch (error) {
-                console.error("Gagal mengambil data sheet:", error);
+            }
+            
+            console.log("✅ Actual Solutions:", sheetData.actualSolutions.length, "items");
+            console.log("✅ Incident Domains:", sheetData.incidentDomains.length, "items");
+            
+            // Ambil data worklog dari kolom F sampai AB
+            for (let colIdx = 5; colIdx <= 27; colIdx++) {
+                const header = rows[0].c[colIdx] ? rows[0].c[colIdx].v : null;
+                if (header) {
+                    const dataList = [];
+                    for (let rowIdx = 1; rowIdx <= 2; rowIdx++) {
+                        if (rows[rowIdx] && rows[rowIdx].c && rows[rowIdx].c[colIdx] && rows[rowIdx].c[colIdx].v) {
+                            dataList.push(rows[rowIdx].c[colIdx].v);
+                        }
+                    }
+                    worklogData[header] = dataList;
+                }
             }
         }
+        
+        // Populate dropdowns
+        populateDropdowns();
+        populateWorklogDropdown();
+        
+        console.log("✅ Dropdowns populated");
+        
+    } catch (error) {
+        console.error("❌ Gagal mengambil data sheet:", error);
+        showToast('⚠️ Gagal load data template', true);
+    }
+}
 
         function populateDropdowns() {
             const actualSelect = document.getElementById('actual-solution');
