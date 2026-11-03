@@ -1115,32 +1115,83 @@
         }
         
         function captureBothTables() {
-            const wrapper = document.getElementById('capture-wrapper');
-            const header = wrapper.querySelector('.capture-main-header');
-            const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
-            const now = new Date();
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const finalDate = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} pukul ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
-            if (timestampInline) timestampInline.textContent = finalDate;
-            if (header) header.style.display = 'block';
-            if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setTimeout(() => {
-                html2canvas(wrapper, { backgroundColor: '#0f172a', scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: wrapper.scrollWidth, windowHeight: wrapper.scrollHeight })
-                .then(canvas => {
-                    if (header) header.style.display = 'none';
-                    lastCaptureImage = canvas.toDataURL('image/png');
-                    const previewEl = document.getElementById('capture-preview');
-                    const modalEl = document.getElementById('capture-modal');
-                    if (previewEl) previewEl.src = lastCaptureImage;
-                    if (modalEl) modalEl.classList.add('active');
-                    copyCaptureToClipboard();
-                }).catch(err => {
-                    if (header) header.style.display = 'none';
-                    showToast('❌ Gagal capture: ' + err.message, true);
-                });
-            }, 300);
-        }
+    const wrapper = document.getElementById('capture-wrapper');
+    const header = wrapper.querySelector('.capture-main-header');
+    const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
+    const now = new Date();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const finalDate = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} pukul ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
+    if (timestampInline) timestampInline.textContent = finalDate;
+    if (header) header.style.display = 'block';
+    
+    // ✅ SIMPAN KONFIGURASI SCROLL TABLE SEBELUM CAPTURE
+    const tableDownWrapper = document.querySelector('#table-down_wrapper');
+    const tableNonDownWrapper = document.querySelector('#table-nondown_wrapper');
+    const tableDownScroll = tableDownWrapper?.querySelector('.dataTables_scrollBody');
+    const tableNonDownScroll = tableNonDownWrapper?.querySelector('.dataTables_scrollBody');
+    
+    // ✅ NONAKTIFKAN SCROLL SEMENTARA AGAR SEMUA KOLOM TERLIHAT
+    if (tableDownScroll) {
+        tableDownScroll.style.overflowX = 'visible';
+        tableDownScroll.style.width = '100%';
+    }
+    if (tableNonDownScroll) {
+        tableNonDownScroll.style.overflowX = 'visible';
+        tableNonDownScroll.style.width = '100%';
+    }
+    
+    if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    setTimeout(() => {
+        // ✅ GUNAKAN LEBAR YANG CUKUP BESAR UNTUK MENANGKAP SEMUA KOLOM
+        const captureWidth = Math.max(wrapper.scrollWidth, 1800);
+        
+        html2canvas(wrapper, { 
+            backgroundColor: '#0f172a', 
+            scale: 2, 
+            useCORS: true, 
+            logging: false, 
+            scrollX: 0, 
+            scrollY: 0, 
+            windowWidth: captureWidth,
+            windowHeight: wrapper.scrollHeight,
+            width: captureWidth
+        })
+        .then(canvas => {
+            // ✅ KEMBALIKAN KONFIGURASI SCROLL SETELAH CAPTURE
+            if (tableDownScroll) {
+                tableDownScroll.style.overflowX = 'auto';
+                tableDownScroll.style.width = '';
+            }
+            if (tableNonDownScroll) {
+                tableNonDownScroll.style.overflowX = 'auto';
+                tableNonDownScroll.style.width = '';
+            }
+            
+            if (header) header.style.display = 'none';
+            lastCaptureImage = canvas.toDataURL('image/png');
+            const previewEl = document.getElementById('capture-preview');
+            const modalEl = document.getElementById('capture-modal');
+            if (previewEl) previewEl.src = lastCaptureImage;
+            if (modalEl) modalEl.classList.add('active');
+            copyCaptureToClipboard();
+        }).catch(err => {
+            // ✅ KEMBALIKAN KONFIGURASI SCROLL JIKA ERROR
+            if (tableDownScroll) {
+                tableDownScroll.style.overflowX = 'auto';
+                tableDownScroll.style.width = '';
+            }
+            if (tableNonDownScroll) {
+                tableNonDownScroll.style.overflowX = 'auto';
+                tableNonDownScroll.style.width = '';
+            }
+            
+            if (header) header.style.display = 'none';
+            showToast('❌ Gagal capture: ' + err.message, true);
+        });
+    }, 500); // ✅ PERLAMA TIMEOUT AGAR TABEL SELESAI RENDER
+}
 
         async function copyCaptureToClipboard() {
             if (!lastCaptureImage) { showToast('❌ Tidak ada gambar untuk di-copy', true); return; }
