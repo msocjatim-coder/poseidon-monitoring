@@ -429,6 +429,12 @@
                 <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="KUPANG">KUPANG</button>
                 <button class="sub-tab-btn bg-slate-900/40 border border-cyan-700/30 rounded-lg text-cyan-300/60" data-area="BALI">BALI</button>
             </div>
+            
+            <!-- ✅ TOMBOL CAPTURE DIPINDAH KE ATAS (SEBELUM MAIN) -->
+            <div class="max-w-7xl mx-auto mb-4 flex justify-end">
+                <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button>
+            </div>
+
             <main class="max-w-full mx-auto px-8 space-y-10" id="capture-wrapper">
                 <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
                     <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px;"><div style="font-size: 14px; font-weight: normal; opacity: 0.9;" class="capture-timestamp-inline"></div></div>
@@ -442,7 +448,6 @@
                     <div class="table-white-container"><table id="table-nondown" class="w-full" style="width:100%"></table></div>
                 </section>
             </main>
-            <div class="max-w-7xl mx-auto mt-6 mb-4 flex justify-end"><button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button></div>
         </div>
 
         <div id="tab-dashboard" class="tab-content">
@@ -464,7 +469,7 @@
                 <div class="capture-modal-title">📸 Preview Capture</div>
                 <div class="capture-modal-actions">
                     <button class="modal-btn modal-btn-copy" onclick="copyCaptureToClipboard()">📋 Copy ke Clipboard</button>
-                    <button class="modal-btn modal-btn-download" onclick="downloadCapture()"> Download PNG</button>
+                    <button class="modal-btn modal-btn-download" onclick="downloadCapture()">💾 Download PNG</button>
                     <button class="modal-btn modal-btn-close" onclick="closeCaptureModal()">Tutup</button>
                 </div>
             </div>
@@ -479,7 +484,7 @@
                     <span>📋</span>
                     <span>Template Worklog</span>
                 </div>
-                <button class="generator-close" onclick="closeWorklogModal()">Tutup </button>
+                <button class="generator-close" onclick="closeWorklogModal()">Tutup ✕</button>
             </div>
             
             <div class="form-group">
@@ -499,7 +504,7 @@
         <div class="generator-content">
             <div class="generator-header">
                 <div class="generator-title">
-                    <span></span>
+                    <span>📝</span>
                     <span>Template Close</span>
                 </div>
                 <button class="generator-close" onclick="closeGeneratorModal()">Tutup ✕</button>
@@ -689,7 +694,7 @@
                 
             } catch (error) {
                 console.error("❌ Gagal mengambil data template:", error);
-                showToast('️ Gagal load data template', true);
+                showToast('⚠️ Gagal load data template', true);
             }
         }
 
@@ -796,7 +801,7 @@
             
             if (targetHours.includes(hour) && minutes < 5) {
                 const formattedHour = String(hour).padStart(2, '0');
-                content.textContent = ` | WAKTU KIRIM LAPORAN WHATSAPP GRUP PADA PUKUL ${formattedHour}:00 WIB ⚠️`;
+                content.textContent = `⏰ | WAKTU KIRIM LAPORAN WHATSAPP GRUP PADA PUKUL ${formattedHour}:00 WIB ⚠️`;
                 container.classList.add('active');
             } else {
                 container.classList.remove('active');
@@ -897,7 +902,7 @@
                 }
             } catch (error) {
                 console.error("Gagal mengambil data:", error);
-                showToast(' Sinkronisasi...', true);
+                showToast('⏳ Sinkronisasi...', true);
             }
         }
 
@@ -1102,7 +1107,7 @@
         }
 
         function forceRefresh() {
-            showToast("⏳ Sinkronisasi...", false);
+            showToast("⏳ Menyegarkan data...", false);
             isCurrentlyOffline = false;
             const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
             if (activeTab === 'laporan') fetchLaporanData(true);
