@@ -1114,7 +1114,7 @@
             else if (activeTab === 'dashboard') fetchDashboardData(true);
         }
         
-       function captureBothTables() {
+      function captureBothTables() {
     const wrapper = document.getElementById('capture-wrapper');
     const header = wrapper.querySelector('.capture-main-header');
     const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
@@ -1125,63 +1125,33 @@
     if (timestampInline) timestampInline.textContent = finalDate;
     if (header) header.style.display = 'block';
     
-    // ✅ CLONE WRAPPER UNTUK CAPTURE LEBAR
-    const clone = wrapper.cloneNode(true);
-    clone.style.position = 'fixed';
-    clone.style.left = '0';
-    clone.style.top = '0';
-    clone.style.width = '2000px'; // Lebar cukup untuk semua kolom
-    clone.style.height = 'auto';
-    clone.style.overflow = 'visible';
-    clone.style.zIndex = '99999';
-    clone.style.background = '#0f172a';
+    // ✅ SIMPAN DATA & KONFIGURASI TABLE SEBELUM DI-DESTROY
+    const downData = tableDownInstance ? tableDownInstance.data().toArray() : [];
+    const downSettings = tableDownInstance ? tableDownInstance.settings()[0] : null;
+    const nonDownData = tableNonDownInstance ? tableNonDownInstance.data().toArray() : [];
     
-    // ✅ HAPUS SEMUA SCROLL DI CLONE
-    const scrollBodies = clone.querySelectorAll('.dataTables_scrollBody');
-    scrollBodies.forEach(scrollBody => {
-        scrollBody.style.overflow = 'visible';
-        scrollBody.style.width = '100%';
-        scrollBody.style.maxWidth = 'none';
-    });
+    // ✅ DESTROY TABLES AGAR BISA DI-RENDER TANPA SCROLL
+    if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
+    if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
     
-    const scrollHeads = clone.querySelectorAll('.dataTables_scrollHead');
-    scrollHeads.forEach(scrollHead => {
-        scrollHead.style.width = '100%';
-        scrollHead.style.maxWidth = 'none';
-    });
-    
-    const scrollWrappers = clone.querySelectorAll('.dataTables_scroll');
-    scrollWrappers.forEach(scrollWrapper => {
-        scrollWrapper.style.width = '100%';
-        scrollWrapper.style.maxWidth = 'none';
-    });
-    
-    const tables = clone.querySelectorAll('table');
-    tables.forEach(table => {
-        table.style.width = '100%';
-        table.style.maxWidth = 'none';
-        table.style.tableLayout = 'auto';
-    });
-    
-    document.body.appendChild(clone);
+    // ✅ RENDER ULANG TANPA SCROLL (scrollX: false) UNTUK CAPTURE
+    renderTabelDownNoScroll(downData);
+    renderTabelNonDownNoScroll(nonDownData);
     
     if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     setTimeout(() => {
-        html2canvas(clone, { 
+        html2canvas(wrapper, { 
             backgroundColor: '#0f172a', 
             scale: 2, 
             useCORS: true, 
-            logging: false,
-            scrollX: 0,
-            scrollY: 0,
-            windowWidth: 2000,
-            windowHeight: clone.scrollHeight
+            logging: false, 
+            scrollX: 0, 
+            scrollY: 0, 
+            windowWidth: wrapper.scrollWidth,
+            windowHeight: wrapper.scrollHeight
         })
         .then(canvas => {
-            // ✅ HAPUS CLONE SETELAH CAPTURE
-            document.body.removeChild(clone);
-            
             if (header) header.style.display = 'none';
             lastCaptureImage = canvas.toDataURL('image/png');
             const previewEl = document.getElementById('capture-preview');
@@ -1189,15 +1159,75 @@
             if (previewEl) previewEl.src = lastCaptureImage;
             if (modalEl) modalEl.classList.add('active');
             copyCaptureToClipboard();
+            
+            // ✅ RESTORE TABLES KE KONDISI AWAL (DENGAN SCROLL)
+            restoreTablesWithScroll();
         }).catch(err => {
-            // ✅ HAPUS CLONE JIKA ERROR
-            if (clone.parentNode) {
-                document.body.removeChild(clone);
-            }
             if (header) header.style.display = 'none';
             showToast('❌ Gagal capture: ' + err.message, true);
+            // ✅ RESTORE TABLES WALAU ERROR
+            restoreTablesWithScroll();
         });
-    }, 800);
+    }, 500);
+}
+
+// ✅ FUNGSI RENDER TANPA SCROLL (UNTUK CAPTURE)
+function renderTabelDownNoScroll(data) {
+    const columns = [
+        { title: "Layanan", data: "layanan", width: "90px" }, 
+        { title: "Sevr", data: "sevr", width: "70px" }, 
+        { title: "WZ", data: "wz", width: "60px" },
+        { title: "District", data: "district", width: "100px" }, 
+        { title: "Area", data: "area", width: "90px" }, 
+        { title: "No Tiket", data: "noTiket", width: "130px" },
+        { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
+        { title: "Status", data: "status", width: "100px" },
+        { title: "Update", data: "update", className: "break-word", width: "620px" }, 
+        { title: "Tglopen", data: "tglopen", width: "140px" },
+        { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
+            const cls = getTtrClass(row.sevr, data); 
+            return `<span class="${cls}">${data}</span>`; 
+        }}
+    ];
+    tableDownInstance = $('#table-down').DataTable({
+        data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
+        dom: '<"flex justify-between items-center mb-2"lf>rtip',
+        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+        language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+    });
+}
+
+function renderTabelNonDownNoScroll(data) {
+    const columns = [
+        { title: "Layanan", data: "layanan", width: "90px" }, 
+        { title: "Sevr", data: "sevr", width: "70px" }, 
+        { title: "WZ", data: "wz", width: "60px" },
+        { title: "District", data: "district", width: "100px" }, 
+        { title: "Area", data: "area", width: "90px" }, 
+        { title: "No Tiket", data: "noTiket", width: "130px" },
+        { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
+        { title: "Status", data: "status", width: "100px" },
+        { title: "Update", data: "update", className: "break-word", width: "620px" }, 
+        { title: "Tglopen", data: "tglopen", width: "140px" },
+        { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
+            const cls = getTtrClass(row.sevr, data); 
+            return `<span class="${cls}">${data}</span>`; 
+        }}
+    ];
+    tableNonDownInstance = $('#table-nondown').DataTable({
+        data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
+        dom: '<"flex justify-between items-center mb-2"lf>rtip',
+        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+        language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+    });
+}
+
+// ✅ FUNGSI RESTORE KE KONDISI AWAL (DENGAN SCROLL)
+function restoreTablesWithScroll() {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'laporan') {
+        fetchLaporanData(false);
+    }
 }
         async function copyCaptureToClipboard() {
             if (!lastCaptureImage) { showToast('❌ Tidak ada gambar untuk di-copy', true); return; }
