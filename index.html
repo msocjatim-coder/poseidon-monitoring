@@ -431,9 +431,9 @@
             </div>
             
             <!-- ✅ TOMBOL CAPTURE DIPINDAH KE ATAS (SEBELUM MAIN) -->
-          <div class="max-w-full mx-auto mb-4 flex justify-end px-8">
+            <div class="max-w-full mx-auto mb-4 flex justify-end px-8">
                 <button class="capture-icon-btn" onclick="captureBothTables()" title="Capture Laporan">📸</button>
-          </div>
+            </div>
 
             <main class="max-w-full mx-auto px-8 space-y-10" id="capture-wrapper">
                 <div class="capture-main-header" style="background: #0f172a; color: #22d3ee; padding: 20px; font-weight: bold; font-size: 20px; border-radius: 12px 12px 0 0; display: none;">
@@ -545,14 +545,19 @@
     <div class="poseidon-sidebar">
         <div class="sidebar-indicator">◀</div>
         <div class="sidebar-content">
-            <button class="sidebar-btn" onclick="forceRefresh()" title="Muat Ulang Data">
-                <span class="icon">🔄</span> Refresh
+            <!-- ✅ MENU 1: BOT WORKLOG (KOSONG DULU, AKAN DIISI NANTI) -->
+            <button class="sidebar-btn" onclick="botWorklog()" title="BOT Worklog">
+                <span class="icon">🤖</span> BOT Worklog
             </button>
+            
+            <!-- ✅ MENU 2: CAPTURE (SUDAH SESUAI) -->
             <button class="sidebar-btn" onclick="captureBothTables()" title="Ambil Gambar Laporan">
                 <span class="icon">📸</span> Capture
             </button>
-            <button class="sidebar-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Kembali ke Bagian Atas">
-                <span class="icon">⬆️</span> Ke Atas
+            
+            <!-- ✅ MENU 3: REFRESH (SUDAH SESUAI) -->
+            <button class="sidebar-btn" onclick="forceRefresh()" title="Muat Ulang Data">
+                <span class="icon">🔄</span> Refresh
             </button>
         </div>
     </div>
@@ -1114,121 +1119,122 @@
             else if (activeTab === 'dashboard') fetchDashboardData(true);
         }
         
-      function captureBothTables() {
-    const wrapper = document.getElementById('capture-wrapper');
-    const header = wrapper.querySelector('.capture-main-header');
-    const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
-    const now = new Date();
-    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    const finalDate = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} pukul ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
-    if (timestampInline) timestampInline.textContent = finalDate;
-    if (header) header.style.display = 'block';
-    
-    // ✅ SIMPAN DATA & KONFIGURASI TABLE SEBELUM DI-DESTROY
-    const downData = tableDownInstance ? tableDownInstance.data().toArray() : [];
-    const downSettings = tableDownInstance ? tableDownInstance.settings()[0] : null;
-    const nonDownData = tableNonDownInstance ? tableNonDownInstance.data().toArray() : [];
-    
-    // ✅ DESTROY TABLES AGAR BISA DI-RENDER TANPA SCROLL
-    if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
-    if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
-    
-    // ✅ RENDER ULANG TANPA SCROLL (scrollX: false) UNTUK CAPTURE
-    renderTabelDownNoScroll(downData);
-    renderTabelNonDownNoScroll(nonDownData);
-    
-    if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    
-    setTimeout(() => {
-        html2canvas(wrapper, { 
-            backgroundColor: '#0f172a', 
-            scale: 2, 
-            useCORS: true, 
-            logging: false, 
-            scrollX: 0, 
-            scrollY: 0, 
-            windowWidth: wrapper.scrollWidth,
-            windowHeight: wrapper.scrollHeight
-        })
-        .then(canvas => {
-            if (header) header.style.display = 'none';
-            lastCaptureImage = canvas.toDataURL('image/png');
-            const previewEl = document.getElementById('capture-preview');
-            const modalEl = document.getElementById('capture-modal');
-            if (previewEl) previewEl.src = lastCaptureImage;
-            if (modalEl) modalEl.classList.add('active');
-            copyCaptureToClipboard();
+        function captureBothTables() {
+            const wrapper = document.getElementById('capture-wrapper');
+            const header = wrapper.querySelector('.capture-main-header');
+            const timestampInline = wrapper.querySelector('.capture-timestamp-inline');
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const finalDate = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} pukul ${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
+            if (timestampInline) timestampInline.textContent = finalDate;
+            if (header) header.style.display = 'block';
             
-            // ✅ RESTORE TABLES KE KONDISI AWAL (DENGAN SCROLL)
-            restoreTablesWithScroll();
-        }).catch(err => {
-            if (header) header.style.display = 'none';
-            showToast('❌ Gagal capture: ' + err.message, true);
-            // ✅ RESTORE TABLES WALAU ERROR
-            restoreTablesWithScroll();
-        });
-    }, 500);
-}
+            // ✅ SIMPAN DATA & KONFIGURASI TABLE SEBELUM DI-DESTROY
+            const downData = tableDownInstance ? tableDownInstance.data().toArray() : [];
+            const downSettings = tableDownInstance ? tableDownInstance.settings()[0] : null;
+            const nonDownData = tableNonDownInstance ? tableNonDownInstance.data().toArray() : [];
+            
+            // ✅ DESTROY TABLES AGAR BISA DI-RENDER TANPA SCROLL
+            if (tableDownInstance) { tableDownInstance.destroy(); $('#table-down').empty(); }
+            if (tableNonDownInstance) { tableNonDownInstance.destroy(); $('#table-nondown').empty(); }
+            
+            // ✅ RENDER ULANG TANPA SCROLL (scrollX: false) UNTUK CAPTURE
+            renderTabelDownNoScroll(downData);
+            renderTabelNonDownNoScroll(nonDownData);
+            
+            if (wrapper) wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            setTimeout(() => {
+                html2canvas(wrapper, { 
+                    backgroundColor: '#0f172a', 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false, 
+                    scrollX: 0, 
+                    scrollY: 0, 
+                    windowWidth: wrapper.scrollWidth,
+                    windowHeight: wrapper.scrollHeight
+                })
+                .then(canvas => {
+                    if (header) header.style.display = 'none';
+                    lastCaptureImage = canvas.toDataURL('image/png');
+                    const previewEl = document.getElementById('capture-preview');
+                    const modalEl = document.getElementById('capture-modal');
+                    if (previewEl) previewEl.src = lastCaptureImage;
+                    if (modalEl) modalEl.classList.add('active');
+                    copyCaptureToClipboard();
+                    
+                    // ✅ RESTORE TABLES KE KONDISI AWAL (DENGAN SCROLL)
+                    restoreTablesWithScroll();
+                }).catch(err => {
+                    if (header) header.style.display = 'none';
+                    showToast('❌ Gagal capture: ' + err.message, true);
+                    // ✅ RESTORE TABLES WALAU ERROR
+                    restoreTablesWithScroll();
+                });
+            }, 500);
+        }
 
-// ✅ FUNGSI RENDER TANPA SCROLL (UNTUK CAPTURE)
-function renderTabelDownNoScroll(data) {
-    const columns = [
-        { title: "Layanan", data: "layanan", width: "90px" }, 
-        { title: "Sevr", data: "sevr", width: "70px" }, 
-        { title: "WZ", data: "wz", width: "60px" },
-        { title: "District", data: "district", width: "100px" }, 
-        { title: "Area", data: "area", width: "90px" }, 
-        { title: "No Tiket", data: "noTiket", width: "130px" },
-        { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
-        { title: "Status", data: "status", width: "100px" },
-        { title: "Update", data: "update", className: "break-word", width: "620px" }, 
-        { title: "Tglopen", data: "tglopen", width: "140px" },
-        { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
-            const cls = getTtrClass(row.sevr, data); 
-            return `<span class="${cls}">${data}</span>`; 
-        }}
-    ];
-    tableDownInstance = $('#table-down').DataTable({
-        data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
-        dom: '<"flex justify-between items-center mb-2"lf>rtip',
-        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-        language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
-    });
-}
+        // ✅ FUNGSI RENDER TANPA SCROLL (UNTUK CAPTURE)
+        function renderTabelDownNoScroll(data) {
+            const columns = [
+                { title: "Layanan", data: "layanan", width: "90px" }, 
+                { title: "Sevr", data: "sevr", width: "70px" }, 
+                { title: "WZ", data: "wz", width: "60px" },
+                { title: "District", data: "district", width: "100px" }, 
+                { title: "Area", data: "area", width: "90px" }, 
+                { title: "No Tiket", data: "noTiket", width: "130px" },
+                { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
+                { title: "Status", data: "status", width: "100px" },
+                { title: "Update", data: "update", className: "break-word", width: "620px" }, 
+                { title: "Tglopen", data: "tglopen", width: "140px" },
+                { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
+                    const cls = getTtrClass(row.sevr, data); 
+                    return `<span class="${cls}">${data}</span>`; 
+                }}
+            ];
+            tableDownInstance = $('#table-down').DataTable({
+                data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+            });
+        }
 
-function renderTabelNonDownNoScroll(data) {
-    const columns = [
-        { title: "Layanan", data: "layanan", width: "90px" }, 
-        { title: "Sevr", data: "sevr", width: "70px" }, 
-        { title: "WZ", data: "wz", width: "60px" },
-        { title: "District", data: "district", width: "100px" }, 
-        { title: "Area", data: "area", width: "90px" }, 
-        { title: "No Tiket", data: "noTiket", width: "130px" },
-        { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
-        { title: "Status", data: "status", width: "100px" },
-        { title: "Update", data: "update", className: "break-word", width: "620px" }, 
-        { title: "Tglopen", data: "tglopen", width: "140px" },
-        { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
-            const cls = getTtrClass(row.sevr, data); 
-            return `<span class="${cls}">${data}</span>`; 
-        }}
-    ];
-    tableNonDownInstance = $('#table-nondown').DataTable({
-        data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
-        dom: '<"flex justify-between items-center mb-2"lf>rtip',
-        buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
-        language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
-    });
-}
+        function renderTabelNonDownNoScroll(data) {
+            const columns = [
+                { title: "Layanan", data: "layanan", width: "90px" }, 
+                { title: "Sevr", data: "sevr", width: "70px" }, 
+                { title: "WZ", data: "wz", width: "60px" },
+                { title: "District", data: "district", width: "100px" }, 
+                { title: "Area", data: "area", width: "90px" }, 
+                { title: "No Tiket", data: "noTiket", width: "130px" },
+                { title: "Headline", data: "headline", className: "break-word", width: "450px" }, 
+                { title: "Status", data: "status", width: "100px" },
+                { title: "Update", data: "update", className: "break-word", width: "620px" }, 
+                { title: "Tglopen", data: "tglopen", width: "140px" },
+                { title: "Ttr", data: "ttr", width: "70px", render: function(data, type, row) { 
+                    const cls = getTtrClass(row.sevr, data); 
+                    return `<span class="${cls}">${data}</span>`; 
+                }}
+            ];
+            tableNonDownInstance = $('#table-nondown').DataTable({
+                data: data, columns: columns, pageLength: -1, lengthMenu: [], ordering: false, autoWidth: false, scrollX: false, // ✅ TANPA SCROLL
+                dom: '<"flex justify-between items-center mb-2"lf>rtip',
+                buttons: [{ extend: 'copy', text: 'Copy', className: 'dt-button' }, { extend: 'excel', text: 'Excel', className: 'dt-button' }],
+                language: { search: "Cari:", lengthMenu: "Tampilkan _MENU_ data", info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data", paginate: { previous: "Sebelumnya", next: "Selanjutnya" } }
+            });
+        }
 
-// ✅ FUNGSI RESTORE KE KONDISI AWAL (DENGAN SCROLL)
-function restoreTablesWithScroll() {
-    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-    if (activeTab === 'laporan') {
-        fetchLaporanData(false);
-    }
-}
+        // ✅ FUNGSI RESTORE KE KONDISI AWAL (DENGAN SCROLL)
+        function restoreTablesWithScroll() {
+            const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+            if (activeTab === 'laporan') {
+                fetchLaporanData(false);
+            }
+        }
+
         async function copyCaptureToClipboard() {
             if (!lastCaptureImage) { showToast('❌ Tidak ada gambar untuk di-copy', true); return; }
             try {
@@ -1262,6 +1268,14 @@ function restoreTablesWithScroll() {
             toast.textContent = message;
             toast.className = 'toast show' + (isError ? ' error' : '');
             setTimeout(() => { toast.className = 'toast'; }, 3000);
+        }
+
+        // ==========================================
+        // BOT WORKLOG - AKAN DIISI NANTI
+        // ==========================================
+        function botWorklog() {
+            // TODO: Isi kode BOT Worklog di sini nanti
+            showToast('🤖 BOT Worklog - Fitur akan segera hadir!', false);
         }
 
         const captureModalEl = document.getElementById('capture-modal');
